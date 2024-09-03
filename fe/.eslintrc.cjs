@@ -10,7 +10,6 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:storybook/recommended',
     'plugin:import/recommended',
-    'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
   ],
   ignorePatterns: ['dist'],
