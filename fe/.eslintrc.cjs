@@ -3,6 +3,7 @@ module.exports = {
   env: {
     browser: true,
     es2020: true,
+    node: true,
   },
   extends: [
     'eslint:recommended',
@@ -28,22 +29,32 @@ module.exports = {
             position: 'before',
           },
           {
-            pattern: '@/**',
+            pattern: '@*/**',
             group: 'internal',
             position: 'after',
           },
         ],
-        // pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: { order: 'asc', caseInsensitive: true },
         'newlines-between': 'always',
       },
     ],
   },
+  overrides: [
+    {
+      files: ['vite.config.ts', 'vite.config.js'],
+      rules: {
+        'import/default': 'off',
+      },
+    },
+  ],
   settings: {
     'import/resolver': {
       alias: {
-        map: [['@', './src']],
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        map: [
+          ['@', './'],
+          ['@public', './public'],
+        ],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'],
       },
     },
   },
