@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,8 @@ public class WeightController {
     private final WeightService weightService;
 
     @GetMapping
-    public ResponseEntity<List<WeightResponse>> getAllWeightRecords(@RequestParam("petId") Long petId) {
+    public ResponseEntity<List<WeightResponse>> getAllWeightRecords(
+            @RequestParam("petId") Long petId) {
 
         List<WeightResponse> responses = weightService.getAllWeightRecords(petId);
         return ResponseEntity.ok(responses);
@@ -53,4 +55,11 @@ public class WeightController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWeightRecord(@PathVariable("id") Long id) {
+
+        weightService.deleteWeightRecord(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

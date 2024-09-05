@@ -60,4 +60,13 @@ public class WeightService {
         );
         // dirty checking 으로 자동 변경 되고 db에 저장 된다.
     }
+
+    @Transactional
+    public void deleteWeightRecord(Long id) {
+
+        Weight weight = weightRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
+
+        weightRepository.delete(weight);
+    }
 }
