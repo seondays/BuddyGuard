@@ -1,16 +1,17 @@
 package buddyguard.mybuddyguard.hospital.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "HOSPITAL_RECORDS")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class HospitalRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

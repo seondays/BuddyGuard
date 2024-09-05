@@ -37,9 +37,15 @@ public class HospitalRecordController {
     @PostMapping
     public ResponseEntity<HospitalRecord> createHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @RequestBody HospitalRecord hospitalRecord) {
-        hospitalRecord.setUserId(userId);
-        hospitalRecord.setPetId(petId);
-        HospitalRecord createdRecord = hospitalRecordService.createHospitalRecord(hospitalRecord);
+        HospitalRecord recordWithIds = new HospitalRecord(
+                hospitalRecord.getId(),
+                userId,
+                petId,
+                hospitalRecord.getVisitDate(),
+                hospitalRecord.getHospitalName(),
+                hospitalRecord.getDescription()
+        );
+        HospitalRecord createdRecord = hospitalRecordService.createHospitalRecord(recordWithIds);
         return ResponseEntity.ok(createdRecord);
     }
 
