@@ -4,11 +4,13 @@ import buddyguard.mybuddyguard.weight.domain.Weight;
 import buddyguard.mybuddyguard.weight.domain.mapper.WeightMapper;
 import buddyguard.mybuddyguard.weight.dto.WeightCreateRequest;
 import buddyguard.mybuddyguard.weight.dto.WeightResponse;
+import buddyguard.mybuddyguard.weight.dto.WeightUpdateRequest;
 import buddyguard.mybuddyguard.weight.repository.WeightRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +19,7 @@ public class WeightService {
 
     private final WeightRepository weightRepository;
 
+    @Transactional
     public void createNewWeightRecord(WeightCreateRequest request) {
         Weight weight = WeightMapper.toEntity(request);
 
@@ -43,5 +46,18 @@ public class WeightService {
                 .orElseThrow(RuntimeException::new);
 
         return WeightMapper.toResponse(weight);
+    }
+
+    @Transactional
+    public void updateWeightRecord(Long id, WeightUpdateRequest request) {
+
+        Weight weight = weightRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
+
+        weight.update( // 변경 포인트를 해당 메서드에 모아서 하나로 통일한다.
+                request.recordedAt(),
+                request.weight()
+        );
+        // dirty checking 으로 자동 변경 되고 db에 저장 된다.
     }
 }
