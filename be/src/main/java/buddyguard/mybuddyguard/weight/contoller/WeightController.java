@@ -2,12 +2,14 @@ package buddyguard.mybuddyguard.weight.contoller;
 
 import buddyguard.mybuddyguard.weight.dto.WeightCreateRequest;
 import buddyguard.mybuddyguard.weight.dto.WeightResponse;
+import buddyguard.mybuddyguard.weight.dto.WeightUpdateRequest;
 import buddyguard.mybuddyguard.weight.service.WeightService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,4 +44,13 @@ public class WeightController {
         weightService.createNewWeightRecord(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateWeightRecord(@PathVariable("id") Long id, @RequestBody WeightUpdateRequest request) {
+
+        weightService.updateWeightRecord(id, request);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
