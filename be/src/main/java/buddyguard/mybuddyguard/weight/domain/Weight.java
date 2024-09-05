@@ -35,4 +35,9 @@ public class Weight {
         this.recordedAt = recordedAt;
         this.weight = weight;
     }
+
+    public void update(LocalDateTime recordedAt, Double weight) { // 변경 포인트를 해당 메서드에 모아서 하나로 통일한다.
+        this.recordedAt = recordedAt;
+        this.weight = weight;
+    }
 }
