@@ -18,8 +18,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("API Test") // API의 제목
-                .description("Let's practice Swagger UI") // API에 대한 설명
+                .title("buddyGuard") // API의 제목
+                .description("Springdoc을 사용한 buddyGuard Swagger UI") // API에 대한 설명
                 .version("1.0.0"); // API의 버전
     }
 
