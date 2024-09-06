@@ -34,6 +34,9 @@ const colorValues = {
     textForce: '#FFBF78', // (TEXT_FORCE_DEF)
     textForce02: '#FF7D29', // (TEXT_FORCE_02_DEF)
   },
+  social: {
+    yellow: '#FEE500',
+  },
 };
 
 const lightTheme = {
@@ -78,12 +81,18 @@ const darkTheme = {
   white: colorValues.grayscale[50], // 흰색 #FEFEFE
 };
 
+const radius = {
+  small: '8px',
+  medium: '12px',
+  large: '16px',
+};
+
 export const theme = {
   colorValues,
   lightTheme,
   darkTheme,
   // typography,
-  // radius,
+  radius,
   // imgSize,
   // buttonSizes,
   // buttonStyles,
