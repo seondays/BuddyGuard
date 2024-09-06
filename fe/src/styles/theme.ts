@@ -37,45 +37,45 @@ const colorValues = {
 };
 
 const lightTheme = {
-  backgroundPrimary: colorValues.special.bgDefault, // 밝은 배경
-  modalBackground: colorValues.special.modalBg, // 모달 배경
-  textPrimary: colorValues.grayscale[900], // 주 텍스트 (진한 검정)
-  textSecondary: colorValues.grayscale[700], // 보조 텍스트 (어두운 회색)
-  textAccentPrimary: colorValues.special.textForce, // 주요 강조 텍스트
-  textAccentSecondary: colorValues.special.textForce02, // 보조 강조 텍스트
-  accentBlue: colorValues.accent.blue, // 액센트 블루
-  accentGreen: colorValues.accent.green, // 액센트 그린
-  accentYellow: colorValues.accent.yellow, // 액센트 옐로우
-  widgetBlue: colorValues.widget.blue, // 위젯 블루
-  widgetRed: colorValues.widget.red, // 위젯 레드
-  widgetGreen: colorValues.widget.green, // 위젯 그린
-  widgetYellow: colorValues.widget.yellow, // 위젯 옐로우
-  grayLight: colorValues.grayscale[200], // 라이트 그레이
-  grayLighter: colorValues.grayscale[100], // 더 밝은 그레이
-  grayDark: colorValues.grayscale[600], // 어두운 회색 (보조 텍스트에 사용)
-  black: colorValues.grayscale[900], // 검정
-  white: colorValues.grayscale[50], // 흰색
+  backgroundPrimary: colorValues.special.bgDefault, // 밝은 배경 #FEFFD2
+  modalBackground: colorValues.special.modalBg, // 모달 배경 #FFEEA9
+  textPrimary: colorValues.grayscale[900], // 주 텍스트 (진한 검정) #14142B
+  textSecondary: colorValues.grayscale[700], // 보조 텍스트 (어두운 회색) #4E4B66
+  textAccentPrimary: colorValues.special.textForce, // 주요 강조 텍스트 #FFBF78
+  textAccentSecondary: colorValues.special.textForce02, // 보조 강조 텍스트 #FF7D29
+  accentBlue: colorValues.accent.blue, // 액센트 블루 #007AFF
+  accentGreen: colorValues.accent.green, // 액센트 그린 #A7C4A5
+  accentYellow: colorValues.accent.yellow, // 액센트 옐로우 #F7DB78
+  widgetBlue: colorValues.widget.blue, // 위젯 블루 #A8D5FF
+  widgetRed: colorValues.widget.red, // 위젯 레드 #FF936F
+  widgetGreen: colorValues.widget.green, // 위젯 그린 #A6CAA3
+  widgetYellow: colorValues.widget.yellow, // 위젯 옐로우 #F7DB78
+  grayLight: colorValues.grayscale[200], // 라이트 그레이 #EFF0F6
+  grayLighter: colorValues.grayscale[100], // 더 밝은 그레이 #F7F7FC
+  grayDark: colorValues.grayscale[600], // 어두운 회색 (보조 텍스트에 사용) #6E7191
+  black: colorValues.grayscale[900], // 검정 #14142B
+  white: colorValues.grayscale[50], // 흰색 #FEFEFE
 };
 
 const darkTheme = {
-  backgroundPrimary: colorValues.grayscale[800], // 어두운 배경
-  modalBackground: colorValues.grayscale[700], // 모달 어두운 배경
-  textPrimary: colorValues.grayscale[50], // 밝은 텍스트 (흰색에 가까움)
-  textSecondary: colorValues.grayscale[300], // 보조 텍스트 (밝은 회색)
-  textAccentPrimary: colorValues.special.textForce, // 주요 강조 텍스트 (동일)
-  textAccentSecondary: colorValues.special.textForce02, // 보조 강조 텍스트 (동일)
-  accentBlue: colorValues.accent.lightBlue, // 연한 액센트 블루
-  accentGreen: colorValues.accent.green, // 동일한 그린
-  accentYellow: colorValues.accent.yellow, // 동일한 옐로우
-  widgetBlue: colorValues.widget.blue, // 위젯 블루 (동일)
-  widgetRed: colorValues.widget.red, // 위젯 레드 (동일)
-  widgetGreen: colorValues.widget.green, // 위젯 그린 (동일)
-  widgetYellow: colorValues.widget.yellow, // 위젯 옐로우 (동일)
-  grayLight: colorValues.grayscale[600], // 어두운 회색 (라이트 그레이)
-  grayLighter: colorValues.grayscale[500], // 중간 회색
-  grayDark: colorValues.grayscale[900], // 거의 검정
-  black: colorValues.grayscale[900], // 검정 (기본 검정)
-  white: colorValues.grayscale[50], // 흰색
+  backgroundPrimary: colorValues.grayscale[800], // 어두운 배경 #2A2A44
+  modalBackground: colorValues.grayscale[700], // 모달 어두운 배경 #4E4B66
+  textPrimary: colorValues.grayscale[50], // 밝은 텍스트 (흰색에 가까움) #FEFEFE
+  textSecondary: colorValues.grayscale[300], // 보조 텍스트 (밝은 회색) #D9DBE9
+  textAccentPrimary: colorValues.special.textForce, // 주요 강조 텍스트 (동일) #FFBF78
+  textAccentSecondary: colorValues.special.textForce02, // 보조 강조 텍스트 (동일) #FF7D29
+  accentBlue: colorValues.accent.lightBlue, // 연한 액센트 블루 #A6C8DD
+  accentGreen: colorValues.accent.green, // 동일한 그린 #A7C4A5
+  accentYellow: colorValues.accent.yellow, // 동일한 옐로우 #F7DB78
+  widgetBlue: colorValues.widget.blue, // 위젯 블루 (동일) #A8D5FF
+  widgetRed: colorValues.widget.red, // 위젯 레드 (동일) #FF936F
+  widgetGreen: colorValues.widget.green, // 위젯 그린 (동일) #A6CAA3
+  widgetYellow: colorValues.widget.yellow, // 위젯 옐로우 (동일) #F7DB78
+  grayLight: colorValues.grayscale[600], // 어두운 회색 (라이트 그레이) #6E7191
+  grayLighter: colorValues.grayscale[500], // 중간 회색 #A0A3BD
+  grayDark: colorValues.grayscale[900], // 거의 검정 #14142B
+  black: colorValues.grayscale[900], // 검정 (기본 검정) #14142B
+  white: colorValues.grayscale[50], // 흰색 #FEFEFE
 };
 
 export const theme = {
