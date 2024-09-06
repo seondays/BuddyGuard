@@ -83,17 +83,19 @@ class HospitalRecordServiceTest {
     @Test
     void 병원기록_생성_시_생성된_기록_반환() {
         // Given
+        Long 사용자ID = 1L;
+        Long 반려동물ID = 1L;
         when(hospitalRecordRepository.save(any(HospitalRecord.class))).thenReturn(샘플기록);
 
         // When
-        HospitalRecord 생성된기록 = hospitalRecordService.createHospitalRecord(샘플기록);
+        HospitalRecord 생성된기록 = hospitalRecordService.createHospitalRecord(사용자ID, 반려동물ID, 샘플기록);
 
         // Then
         assertThat(생성된기록)
                 .isNotNull()
                 .usingRecursiveComparison()
                 .isEqualTo(샘플기록);
-        verify(hospitalRecordRepository).save(샘플기록);
+        verify(hospitalRecordRepository).save(any(HospitalRecord.class));
     }
 
     @Test
@@ -110,7 +112,7 @@ class HospitalRecordServiceTest {
 
         // When
         Optional<HospitalRecord> 결과 = hospitalRecordService.updateHospitalRecord(기록ID, 사용자ID,
-                반려동물ID, 업데이트된기록);
+                반려동물ID, 업데이트된기록.getVisitDate(),업데이트된기록.getHospitalName(),업데이트된기록.getDescription());
 
         // Then
         assertThat(결과)
