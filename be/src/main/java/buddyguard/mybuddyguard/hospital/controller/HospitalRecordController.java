@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/{userId}/{petId}/hospital-records")
+@RequestMapping("/{userId}/{petId}/hospitalRecords")
 public class HospitalRecordController {
 
     private final HospitalRecordService hospitalRecordService;
@@ -37,15 +37,8 @@ public class HospitalRecordController {
     @PostMapping
     public ResponseEntity<HospitalRecord> createHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @RequestBody HospitalRecord hospitalRecord) {
-        HospitalRecord recordWithIds = new HospitalRecord(
-                hospitalRecord.getId(),
-                userId,
-                petId,
-                hospitalRecord.getVisitDate(),
-                hospitalRecord.getHospitalName(),
-                hospitalRecord.getDescription()
-        );
-        HospitalRecord createdRecord = hospitalRecordService.createHospitalRecord(recordWithIds);
+        HospitalRecord createdRecord = hospitalRecordService.createHospitalRecord(userId, petId,
+                hospitalRecord);
         return ResponseEntity.ok(createdRecord);
     }
 
@@ -53,7 +46,9 @@ public class HospitalRecordController {
     public ResponseEntity<HospitalRecord> updateHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @PathVariable Long id,
             @RequestBody HospitalRecord hospitalRecord) {
-        return hospitalRecordService.updateHospitalRecord(id, userId, petId, hospitalRecord)
+        return hospitalRecordService.updateHospitalRecord(id, userId, petId,
+                        hospitalRecord.getVisitDate(),
+                        hospitalRecord.getHospitalName(), hospitalRecord.getDescription())
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

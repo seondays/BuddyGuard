@@ -2,6 +2,7 @@ package buddyguard.mybuddyguard.hospital.service;
 
 import buddyguard.mybuddyguard.hospital.entity.HospitalRecord;
 import buddyguard.mybuddyguard.hospital.repository.HospitalRecordRepository;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,22 +28,39 @@ public class HospitalRecordService {
         return hospitalRecordRepository.findByIdAndUserIdAndPetId(id, userId, petId);
     }
 
+
     @Transactional
-    public HospitalRecord createHospitalRecord(HospitalRecord hospitalRecord) {
-        return hospitalRecordRepository.save(hospitalRecord);
+    public HospitalRecord createHospitalRecord(Long userId, Long petId,
+            HospitalRecord hospitalRecord) {
+        HospitalRecord recordWithIds = new HospitalRecord(
+                hospitalRecord.getId(),
+                userId,
+                petId,
+                hospitalRecord.getVisitDate(),
+                hospitalRecord.getHospitalName(),
+                hospitalRecord.getDescription()
+        );
+        return hospitalRecordRepository.save(recordWithIds);
     }
 
     @Transactional
     public Optional<HospitalRecord> updateHospitalRecord(Long id, Long userId, Long petId,
-            HospitalRecord hospitalRecord) {
+            LocalDate visitDate, String hospitalName,
+            String description) {
         return hospitalRecordRepository.findByIdAndUserIdAndPetId(id, userId, petId)
                 .map(existingRecord -> {
-                    existingRecord.setVisitDate(hospitalRecord.getVisitDate());
-                    existingRecord.setHospitalName(hospitalRecord.getHospitalName());
-                    existingRecord.setDescription(hospitalRecord.getDescription());
-                    return hospitalRecordRepository.save(existingRecord);
+                    HospitalRecord updatedRecord = new HospitalRecord(
+                            existingRecord.getId(),
+                            existingRecord.getUserId(),
+                            existingRecord.getPetId(),
+                            visitDate,
+                            hospitalName,
+                            description
+                    );
+                    return hospitalRecordRepository.save(updatedRecord);
                 });
     }
+
 
     @Transactional
     public void deleteHospitalRecord(Long id, Long userId, Long petId) {
