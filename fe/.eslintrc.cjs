@@ -52,7 +52,7 @@ module.exports = {
     'import/resolver': {
       alias: {
         map: [
-          ['@', './'],
+          ['@', './src'],
           ['@public', './public'],
         ],
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'],
