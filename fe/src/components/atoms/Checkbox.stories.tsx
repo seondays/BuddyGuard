@@ -5,16 +5,7 @@ import Checkbox, { CheckboxProps } from './Checkbox';
 export default {
   title: 'Components/Checkbox',
   component: Checkbox,
-  argTypes: {
-    default: {
-      description: 'check 안했을 때',
-      control: 'boolean',
-    },
-    checked: {
-      description: 'check 했을 때',
-      control: 'boolean',
-    },
-  },
+  argTypes: {},
 } as Meta<CheckboxProps>;
 
 const Template: StoryFn<CheckboxProps> = (args) => <Checkbox {...args} />;
