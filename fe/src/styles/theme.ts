@@ -82,6 +82,18 @@ const darkTheme = {
 };
 
 const radius = {
+  small: '0.3rem', //'4.8px'
+  medium: '0.4rem', //'6.4px'
+  large: '0.5rem', //'8px'
+};
+
+const typography = {
+  small: '0.5rem', //'8px'
+  medium: '0.75rem', //'12px'
+  large: '1rem', //'16px'
+};
+
+const spacing = {
   small: '0.5rem', //'8px'
   medium: '0.75rem', //'12px'
   large: '1rem', //'16px'
@@ -91,9 +103,7 @@ export const theme = {
   colorValues,
   lightTheme,
   darkTheme,
-  // typography,
+  typography,
   radius,
-  // imgSize,
+  spacing,
 };
-
-export default theme;
