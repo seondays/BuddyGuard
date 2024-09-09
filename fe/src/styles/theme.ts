@@ -82,9 +82,9 @@ const darkTheme = {
 };
 
 const radius = {
-  small: '8px',
-  medium: '12px',
-  large: '16px',
+  small: '0.5rem', //'8px'
+  medium: '0.75rem', //'12px'
+  large: '1rem', //'16px'
 };
 
 export const theme = {
@@ -94,9 +94,6 @@ export const theme = {
   // typography,
   radius,
   // imgSize,
-  // buttonSizes,
-  // buttonStyles,
-  // buttonStates,
 };
 
 export default theme;
