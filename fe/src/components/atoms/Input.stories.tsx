@@ -16,8 +16,8 @@ Default.args = {
   size: 'medium',
   label: '제목', // 기본으로 보여질 label 값
   placeholder: '제목을 입력하세요.',
-  widthPercent: 100, // 기본 100%
-  isBottomLine: true, // 기본 하단 라인 있음
+  $widthPercent: 100, // 기본 100%
+  $isBottomLine: true, // 기본 하단 라인 있음
 };
 
 // 하단 라인 없는 스토리
@@ -26,8 +26,8 @@ BottomLine.args = {
   size: 'medium',
   label: '제목', // 기본으로 보여질 label 값
   placeholder: '하단 라인 없이 input만',
-  widthPercent: 100, // 기본 100%
-  isBottomLine: false, // 기본 하단 라인 있음
+  $widthPercent: 100, // 기본 100%
+  $isBottomLine: false, // 기본 하단 라인 있음
 };
 
 // 너비 지정한 Input 스토리
@@ -36,6 +36,6 @@ CustomWidth.args = {
   size: 'medium',
   label: '제목', // 기본으로 보여질 label 값
   placeholder: '제목을 입력하세요.',
-  widthPercent: 50, // 기본 100%
-  isBottomLine: true, // 기본 하단 라인 있음
+  $widthPercent: 50, // 기본 100%
+  $isBottomLine: true, // 기본 하단 라인 있음
 };

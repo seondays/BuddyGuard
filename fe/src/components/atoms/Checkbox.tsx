@@ -48,12 +48,12 @@ const StyledCheckboxContainer = styled.div`
 `;
 
 const StyledCheckboxLabel = styled.label<{ size: CheckboxSizeType }>`
-  font-size: ${({ theme, size }) => theme.typography[size]};
-  margin-right: ${({ theme, size }) => theme.spacing[size]};
+  font-size: ${({ theme, size }) => theme.themeValues.typography[size]};
+  margin-right: ${({ theme, size }) => theme.themeValues.spacing[size]};
   cursor: pointer;
   user-select: none;
 
-  /* TODO: 다크모드 color:  */
+  margin-right: ${({ theme }) => theme.currentTheme.backgroundPrimary};
 `;
 
 const StyledHiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
@@ -67,15 +67,15 @@ const StyledHiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
 const StyledCheckbox = styled.label<{ checked: boolean; size: CheckboxSizeType }>`
   width: ${({ size }) => checkboxSize[size]};
   height: ${({ size }) => checkboxSize[size]};
-  border: ${({ theme }) => `0.1rem solid ${theme.colorValues.grayscale[200]}`};
+  border: ${({ theme }) => `0.1rem solid ${theme.themeValues.colorValues.grayscale[200]}`};
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  border-radius: ${({ size, theme }) => theme.radius[size]};
+  border-radius: ${({ size, theme }) => theme.themeValues.radius[size]};
   user-select: none;
   background: ${({ checked, theme }) =>
-    checked ? theme.colorValues.special.textForce : theme.colorValues.grayscale[50]};
+    checked ? theme.themeValues.colorValues.special.textForce : theme.themeValues.colorValues.grayscale[50]};
   transition: all 0.2s ease-in-out;
 
   svg {
