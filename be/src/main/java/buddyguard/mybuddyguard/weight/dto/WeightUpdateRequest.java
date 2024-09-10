@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 
 public record WeightUpdateRequest(
         LocalDateTime recordedAt,
-        Double weight
+        Double weight,
+        String memo
 ) {
 
 }

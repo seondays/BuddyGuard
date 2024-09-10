@@ -56,7 +56,8 @@ public class WeightService {
 
         weight.update( // 변경 포인트를 해당 메서드에 모아서 하나로 통일한다.
                 request.recordedAt(),
-                request.weight()
+                request.weight(),
+                request.memo()
         );
         // dirty checking 으로 자동 변경 되고 db에 저장 된다.
     }

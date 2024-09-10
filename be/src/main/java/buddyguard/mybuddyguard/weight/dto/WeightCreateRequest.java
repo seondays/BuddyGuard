@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 public record WeightCreateRequest(
         Integer petId,
         LocalDateTime recordedAt,
-        Double weight
+        Double weight,
+        String memo
 ) {
 
 }

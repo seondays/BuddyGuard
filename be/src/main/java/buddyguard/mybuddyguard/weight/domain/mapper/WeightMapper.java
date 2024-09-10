@@ -12,7 +12,9 @@ public class WeightMapper {
                 weight.getId(),
                 weight.getPetId(),
                 weight.getWeight(),
-                weight.getRecordedAt());
+                weight.getRecordedAt(),
+                weight.getMemo()
+        );
     }
 
     public static List<WeightResponse> toResponseList(List<Weight> weights) {
@@ -26,6 +28,7 @@ public class WeightMapper {
                 .petId(request.petId())
                 .recordedAt(request.recordedAt())
                 .weight(request.weight())
+                .memo(request.memo())
                 .build();
     }
 }
