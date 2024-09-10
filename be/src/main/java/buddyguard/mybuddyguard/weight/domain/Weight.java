@@ -29,15 +29,19 @@ public class Weight {
 
     double weight;
 
+    String memo;
+
     @Builder
-    public Weight(long petId, LocalDateTime recordedAt, double weight) {
+    public Weight(long petId, LocalDateTime recordedAt, double weight, String memo) {
         this.petId = petId;
         this.recordedAt = recordedAt;
         this.weight = weight;
+        this.memo = memo;
     }
 
-    public void update(LocalDateTime recordedAt, Double weight) { // 변경 포인트를 해당 메서드에 모아서 하나로 통일한다.
+    public void update(LocalDateTime recordedAt, Double weight, String memo) { // 변경 포인트를 해당 메서드에 모아서 하나로 통일한다.
         this.recordedAt = recordedAt;
         this.weight = weight;
+        this.memo = memo;
     }
 }
