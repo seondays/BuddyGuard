@@ -10,10 +10,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public class CustomOAuth2User implements OAuth2User {
     private final OAuth2Request oAuth2Request;
     private final String role;
+    private final Long id;
 
-    public CustomOAuth2User(OAuth2Request oAuth2Request, String role) {
+    public CustomOAuth2User(OAuth2Request oAuth2Request, String role, Long id) {
         this.oAuth2Request = oAuth2Request;
         this.role = role;
+        this.id = id;
     }
 
     @Override
@@ -36,5 +38,9 @@ public class CustomOAuth2User implements OAuth2User {
     @Override
     public String getName() {
         return oAuth2Request.getName();
+    }
+
+    public Long getId() {
+        return id;
     }
 }

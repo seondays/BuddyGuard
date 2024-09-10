@@ -35,6 +35,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 oAuth2Request.getProviderId(), oAuth2Request.getEmail(), oAuth2Request.getProfileImage());
 
         Users checkUser = userRepository.findByOauthId(oAuthId);
+        Long userId;
+
         // 최초 로그인 회원이면 우리 DB에 저장
         if (checkUser == null) {
             Users user = new Users();
@@ -45,9 +47,11 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             user.setRole(defaultRole);
 
             userRepository.save(user);
+            userId = user.getId();
             logger.info("DB에 {}번 {} 회원 저장완료", user.getOauthId(), user.getName());
+        } else {
+            userId = checkUser.getId();
         }
-        // todo : 토큰 생성
-        return new CustomOAuth2User(oAuth2Request, defaultRole);
+        return new CustomOAuth2User(oAuth2Request, defaultRole, userId);
     }
 }
