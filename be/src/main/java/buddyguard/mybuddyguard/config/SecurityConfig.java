@@ -1,11 +1,13 @@
 package buddyguard.mybuddyguard.config;
 
+import buddyguard.mybuddyguard.login.handler.CustomSuccessHandler;
 import buddyguard.mybuddyguard.login.service.OAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -13,9 +15,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final OAuth2UserService oAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
 
-    public SecurityConfig(OAuth2UserService oAuth2UserService) {
+    public SecurityConfig(OAuth2UserService oAuth2UserService,
+            CustomSuccessHandler customSuccessHandler) {
         this.oAuth2UserService = oAuth2UserService;
+        this.customSuccessHandler = customSuccessHandler;
     }
 
     @Bean
@@ -26,12 +31,16 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         http.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
-                userInfoEndpointConfig -> userInfoEndpointConfig.userService(
-                        oAuth2UserService)));
+                        userInfoEndpointConfig -> userInfoEndpointConfig.userService(
+                                oAuth2UserService))
+                .successHandler(customSuccessHandler));
 
         http.authorizeHttpRequests(
                 auth -> auth.requestMatchers("/", "/login", "/oauth2**").permitAll()
                         .anyRequest().authenticated());
+
+        http.sessionManagement((session) -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
