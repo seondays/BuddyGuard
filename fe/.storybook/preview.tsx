@@ -2,8 +2,7 @@ import React from 'react';
 import type { Preview } from '@storybook/react';
 
 import { GlobalStyles } from '../src/styles/globalStyles';
-import { theme } from '../src/styles/theme';
-import { ThemeProvider } from 'styled-components';
+import { StorybookThemeProvider } from './StorybookThemeProvider';
 
 const preview: Preview = {
   parameters: {
@@ -16,12 +15,26 @@ const preview: Preview = {
   },
 };
 
+export const globalTypes = {
+  theme: {
+    name: 'Theme',
+    description: 'Global theme for components',
+    defaultValue: 'light',
+    toolbar: {
+      title: 'Theme',
+      icon: 'circlehollow',
+      items: ['light', 'dark'],
+      dynamicTitle: true,
+    },
+  },
+};
+
 export const decorators = [
-  (Story) => (
-    <ThemeProvider theme={theme}>
+  (Story, context) => (
+    <StorybookThemeProvider isDarkMode={context.globals.theme === 'dark'}>
       <GlobalStyles />
       <Story />
-    </ThemeProvider>
+    </StorybookThemeProvider>
   ),
 ];
 export default preview;
