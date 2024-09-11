@@ -22,6 +22,31 @@ public class JwtUtil {
                 SIG.HS256.key().build().getAlgorithm());
     }
 
+    public Long getUserId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("userId", Long.class);
+    }
+
+    public String getRole(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("role", String.class);
+    }
+
+    public String getName(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("name", String.class);
+    }
+
+    /**
+     * 토큰의 유효기간이 만료되었는지 확인합니다
+     * @param token
+     * @return
+     */
+    public Boolean isExpired(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .getExpiration().before(new Date());
+    }
+
     /**
      * JWT 토큰을 생성합니다
      * @param userId

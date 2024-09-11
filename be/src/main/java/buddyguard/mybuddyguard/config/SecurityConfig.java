@@ -1,5 +1,7 @@
 package buddyguard.mybuddyguard.config;
 
+import buddyguard.mybuddyguard.jwt.JwtFilter;
+import buddyguard.mybuddyguard.jwt.JwtUtil;
 import buddyguard.mybuddyguard.login.handler.CustomSuccessHandler;
 import buddyguard.mybuddyguard.login.service.OAuth2UserService;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -16,11 +19,13 @@ public class SecurityConfig {
 
     private final OAuth2UserService oAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
+    private final JwtUtil jwtUtil;
 
     public SecurityConfig(OAuth2UserService oAuth2UserService,
-            CustomSuccessHandler customSuccessHandler) {
+            CustomSuccessHandler customSuccessHandler, JwtUtil jwtUtil) {
         this.oAuth2UserService = oAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
+        this.jwtUtil = jwtUtil;
     }
 
     @Bean
@@ -30,9 +35,9 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
 
-        http.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
-                        userInfoEndpointConfig -> userInfoEndpointConfig.userService(
-                                oAuth2UserService))
+        http.oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfoEndpointConfig ->
+                        userInfoEndpointConfig.userService(oAuth2UserService))
                 .successHandler(customSuccessHandler));
 
         http.authorizeHttpRequests(
@@ -41,6 +46,10 @@ public class SecurityConfig {
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http
+                .addFilterBefore(new JwtFilter(jwtUtil),
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

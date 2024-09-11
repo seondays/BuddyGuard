@@ -3,6 +3,7 @@ package buddyguard.mybuddyguard.login.service;
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
 import buddyguard.mybuddyguard.login.controller.request.KakaoRequest;
 import buddyguard.mybuddyguard.login.controller.request.OAuth2Request;
+import buddyguard.mybuddyguard.login.dto.UserDto;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
@@ -24,18 +26,19 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     }
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         OAuth2Request oAuth2Request = new KakaoRequest(oAuth2User.getAttributes());
-        String oAuthId = "kakao"+ oAuth2Request.getProviderId();
+        String oAuthId = "kakao" + oAuth2Request.getProviderId();
         String defaultRole = "ROLE_USER";
 
         logger.info("로그인 유저 -> name : {}, id : {}, email : {} image : {}", oAuth2Request.getName(),
-                oAuth2Request.getProviderId(), oAuth2Request.getEmail(), oAuth2Request.getProfileImage());
+                oAuth2Request.getProviderId(), oAuth2Request.getEmail(),
+                oAuth2Request.getProfileImage());
 
         Users checkUser = userRepository.findByOauthId(oAuthId);
-        Long userId;
 
         // 최초 로그인 회원이면 우리 DB에 저장
         if (checkUser == null) {
@@ -47,11 +50,19 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             user.setRole(defaultRole);
 
             userRepository.save(user);
-            userId = user.getId();
             logger.info("DB에 {}번 {} 회원 저장완료", user.getOauthId(), user.getName());
-        } else {
-            userId = checkUser.getId();
+
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setRole(defaultRole);
+            userDto.setName(user.getName());
+            return new CustomOAuth2User(userDto);
         }
-        return new CustomOAuth2User(oAuth2Request, defaultRole, userId);
+        UserDto userDto = new UserDto();
+        userDto.setId(checkUser.getId());
+        userDto.setRole(defaultRole);
+        userDto.setName(checkUser.getName());
+
+        return new CustomOAuth2User(userDto);
     }
 }

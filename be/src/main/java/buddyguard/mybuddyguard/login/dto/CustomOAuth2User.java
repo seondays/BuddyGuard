@@ -8,14 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 public class CustomOAuth2User implements OAuth2User {
-    private final OAuth2Request oAuth2Request;
-    private final String role;
-    private final Long id;
+    private final UserDto userDto;
 
-    public CustomOAuth2User(OAuth2Request oAuth2Request, String role, Long id) {
-        this.oAuth2Request = oAuth2Request;
-        this.role = role;
-        this.id = id;
+    public CustomOAuth2User(UserDto userDto) {
+        this.userDto = userDto;
     }
 
     @Override
@@ -29,7 +25,7 @@ public class CustomOAuth2User implements OAuth2User {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return role;
+                return userDto.getRole();
             }
         });
         return collection;
@@ -37,10 +33,10 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return oAuth2Request.getName();
+        return userDto.getName();
     }
 
     public Long getId() {
-        return id;
+        return userDto.getId();
     }
 }
