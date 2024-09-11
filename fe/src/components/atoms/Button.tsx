@@ -67,6 +67,7 @@ const StyledButton = styled.button<ButtonProps & { isClicked: boolean }>`
   color: ${({ color = theme.colorValues.grayscale[900] }) => color};
   cursor: pointer;
   transition: all 0.3s ease;
+  
   &:hover, &:focus {
     background-color: ${theme.colorValues.special.modalBg};
   }
