@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { HOME_DESCRIPTION_TEXT } from '@/constants/textConstants';
+import { HOME_DESCRIPTION_TEXT1, HOME_DESCRIPTION_TEXT2 } from '@/constants/textConstants';
 
 interface ResponsiveLayoutProps {
   children: ReactNode;
@@ -13,15 +13,22 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
   return (
     <StyledScreenWrapper>
       <StyledContentWrapper>
-        <DescriptionArea>{HOME_DESCRIPTION_TEXT}</DescriptionArea>
-        <StyledMobileFrame>
-          {children}
+        <StyledDescriptionArea>
+          <div>{HOME_DESCRIPTION_TEXT1}</div>
+          <div>{HOME_DESCRIPTION_TEXT2}</div>
+        </StyledDescriptionArea>
+        <StyledMain>
+          <StyledMobileFrame>{children}</StyledMobileFrame>
           <StyledToggleTheme onClick={toggleDarkMode}>🌗</StyledToggleTheme>
-        </StyledMobileFrame>
+        </StyledMain>
       </StyledContentWrapper>
     </StyledScreenWrapper>
   );
 }
+
+const StyledMain = styled.main`
+  position: relative;
+`;
 
 const StyledToggleTheme = styled.button`
   z-index: 999;
@@ -40,11 +47,18 @@ const StyledToggleTheme = styled.button`
   }
 `;
 
-const DescriptionArea = styled.div`
+const StyledDescriptionArea = styled.article`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   text-align: right;
-  font-size: 1.5rem;
-  color: ${({ theme }) => theme.currentTheme.textPrimary};
+  font-size: 2rem;
+  font-weight: bold;
   margin-right: 2rem;
+
+  & div {
+    color: ${({ theme }) => theme.currentTheme.textPrimary};
+  }
 
   @media (max-width: 600px) {
     display: none;
@@ -58,6 +72,7 @@ const StyledMobileFrame = styled.div`
   max-width: 440px; // iPhone 16 Pro Max 기준
   max-height: 956px;
   margin: 0 auto;
+  overflow: hidden;
 
   @media (min-width: 440px) {
     border: 0.3rem solid ${({ theme }) => theme.themeValues.colorValues.grayscale[600]};
