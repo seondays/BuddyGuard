@@ -1,8 +1,8 @@
-package buddyguard.mybuddyguard.hospital.dto;
+package buddyguard.mybuddyguard.hospital.controller.reponse;
 
 import java.time.LocalDateTime;
 
-public record HospitalRecordDTO(
+public record HospitalRecordResponse(
         Long id,
         Long userId,
         Long petId,
@@ -13,3 +13,4 @@ public record HospitalRecordDTO(
 ) {
 
 }
+

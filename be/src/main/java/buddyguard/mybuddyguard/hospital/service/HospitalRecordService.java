@@ -1,8 +1,8 @@
 package buddyguard.mybuddyguard.hospital.service;
 
-import buddyguard.mybuddyguard.hospital.dto.HospitalRecordDTO;
+import buddyguard.mybuddyguard.hospital.controller.reponse.HospitalRecordResponse;
 import buddyguard.mybuddyguard.hospital.entity.HospitalRecord;
-import buddyguard.mybuddyguard.hospital.exception.RecordNotFoundException;
+import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.hospital.mapper.HospitalRecordMapper;
 import buddyguard.mybuddyguard.hospital.repository.HospitalRecordRepository;
 import java.time.LocalDateTime;
@@ -23,21 +23,21 @@ public class HospitalRecordService {
         this.hospitalRecordRepository = hospitalRecordRepository;
     }
 
-    public List<HospitalRecordDTO> getAllHospitalRecords(Long userId, Long petId) {
+    public List<HospitalRecordResponse> getAllHospitalRecords(Long userId, Long petId) {
         List<HospitalRecord> records = hospitalRecordRepository.findByUserIdAndPetId(userId, petId);
         return records.stream()
-                .map(HospitalRecordMapper::toDTO)
+                .map(HospitalRecordMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public HospitalRecordDTO getHospitalRecord(Long id, Long userId, Long petId) {
+    public HospitalRecordResponse getHospitalRecord(Long id, Long userId, Long petId) {
         return hospitalRecordRepository.findByIdAndUserIdAndPetId(id, userId, petId)
-                .map(HospitalRecordMapper::toDTO)
+                .map(HospitalRecordMapper::toResponse)
                 .orElseThrow(RecordNotFoundException::new);
     }
 
     @Transactional
-    public HospitalRecordDTO createHospitalRecord(Long userId, Long petId,
+    public HospitalRecordResponse createHospitalRecord(Long userId, Long petId,
             HospitalRecord hospitalRecord) {
         HospitalRecord recordWithIds = new HospitalRecord(
                 hospitalRecord.getId(),
@@ -48,11 +48,11 @@ public class HospitalRecordService {
                 hospitalRecord.getDescription()
         );
         HospitalRecord savedRecord = hospitalRecordRepository.save(recordWithIds);
-        return HospitalRecordMapper.toDTO(savedRecord);
+        return HospitalRecordMapper.toResponse(savedRecord);
     }
 
     @Transactional
-    public HospitalRecordDTO updateHospitalRecord(Long id, Long userId, Long petId,
+    public HospitalRecordResponse updateHospitalRecord(Long id, Long userId, Long petId,
             LocalDateTime visitDate, String hospitalName, String description) {
         HospitalRecord existingRecord = hospitalRecordRepository.findByIdAndUserIdAndPetId(id,
                         userId, petId)
@@ -68,7 +68,7 @@ public class HospitalRecordService {
         );
 
         HospitalRecord savedRecord = hospitalRecordRepository.save(updatedRecord);
-        return HospitalRecordMapper.toDTO(savedRecord);
+        return HospitalRecordMapper.toResponse(savedRecord);
     }
 
 

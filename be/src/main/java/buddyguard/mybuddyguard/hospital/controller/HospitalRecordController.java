@@ -1,6 +1,6 @@
 package buddyguard.mybuddyguard.hospital.controller;
 
-import buddyguard.mybuddyguard.hospital.dto.HospitalRecordDTO;
+import buddyguard.mybuddyguard.hospital.controller.reponse.HospitalRecordResponse;
 import buddyguard.mybuddyguard.hospital.entity.HospitalRecord;
 import buddyguard.mybuddyguard.hospital.service.HospitalRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,37 +21,37 @@ public class HospitalRecordController {
     }
 
     @GetMapping
-    public ResponseEntity<List<HospitalRecordDTO>> getAllHospitalRecords(@PathVariable Long userId,
+    public ResponseEntity<List<HospitalRecordResponse>> getAllHospitalRecords(@PathVariable Long userId,
             @PathVariable Long petId) {
-        List<HospitalRecordDTO> records = hospitalRecordService.getAllHospitalRecords(userId,
+        List<HospitalRecordResponse> records = hospitalRecordService.getAllHospitalRecords(userId,
                 petId);
         return ResponseEntity.ok(records);
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<HospitalRecordDTO> getHospitalRecord(@PathVariable Long userId,
+    public ResponseEntity<HospitalRecordResponse> getHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @PathVariable Long id) {
-        HospitalRecordDTO record = hospitalRecordService.getHospitalRecord(id, userId, petId);
+        HospitalRecordResponse record = hospitalRecordService.getHospitalRecord(id, userId, petId);
         return ResponseEntity.ok(record);
     }
 
     @PostMapping
-    public ResponseEntity<HospitalRecordDTO> createHospitalRecord(@PathVariable Long userId,
+    public ResponseEntity<HospitalRecordResponse> createHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @RequestBody HospitalRecord hospitalRecord) {
-        HospitalRecordDTO createdRecord = hospitalRecordService.createHospitalRecord(userId, petId,
+        HospitalRecordResponse createdRecord = hospitalRecordService.createHospitalRecord(userId, petId,
                 hospitalRecord);
         return ResponseEntity.ok(createdRecord);
     }
 
     @PutMapping("/detail/{id}")
-    public ResponseEntity<HospitalRecordDTO> updateHospitalRecord(@PathVariable Long userId,
+    public ResponseEntity<HospitalRecordResponse> updateHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @PathVariable Long id,
-            @RequestBody HospitalRecordDTO hospitalRecordDTO) {
-        HospitalRecordDTO updatedRecord = hospitalRecordService.updateHospitalRecord(
+            @RequestBody HospitalRecordResponse HospitalRecordResponse) {
+        HospitalRecordResponse updatedRecord = hospitalRecordService.updateHospitalRecord(
                 id, userId, petId,
-                hospitalRecordDTO.visitDate(),
-                hospitalRecordDTO.hospitalName(),
-                hospitalRecordDTO.description()
+                HospitalRecordResponse.visitDate(),
+                HospitalRecordResponse.hospitalName(),
+                HospitalRecordResponse.description()
         );
         return ResponseEntity.ok(updatedRecord);
     }

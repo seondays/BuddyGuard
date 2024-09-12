@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.hospital.service;
 
-import buddyguard.mybuddyguard.hospital.dto.HospitalRecordDTO;
+import buddyguard.mybuddyguard.hospital.controller.reponse.HospitalRecordResponse;
+import buddyguard.mybuddyguard.hospital.controller.reponse.HospitalRecordResponse;
 import buddyguard.mybuddyguard.hospital.entity.HospitalRecord;
 import buddyguard.mybuddyguard.hospital.mapper.HospitalRecordMapper;
 import buddyguard.mybuddyguard.hospital.repository.HospitalRecordRepository;
@@ -47,7 +48,7 @@ class HospitalRecordServiceTest {
                 expectedRecords);
 
         // When
-        List<HospitalRecordDTO> actualRecords = hospitalRecordService.getAllHospitalRecords(userId,
+        List<HospitalRecordResponse> actualRecords = hospitalRecordService.getAllHospitalRecords(userId,
                 petId);
 
         // Then
@@ -55,7 +56,7 @@ class HospitalRecordServiceTest {
                 .isNotNull()
                 .hasSize(1)
                 .usingRecursiveFieldByFieldElementComparator()
-                .isEqualTo(expectedRecords.stream().map(HospitalRecordMapper::toDTO).toList());
+                .isEqualTo(expectedRecords.stream().map(HospitalRecordMapper::toResponse).toList());
         verify(hospitalRecordRepository).findByUserIdAndPetId(userId, petId);
     }
 
@@ -70,14 +71,14 @@ class HospitalRecordServiceTest {
                 Optional.of(sampleHospitalRecord));
 
         // When
-        HospitalRecordDTO result = hospitalRecordService.getHospitalRecord(hospitalRecordId, userId,
+        HospitalRecordResponse result = hospitalRecordService.getHospitalRecord(hospitalRecordId, userId,
                 petId);
 
         // Then
         assertThat(result)
                 .isNotNull()
                 .usingRecursiveComparison()
-                .isEqualTo(HospitalRecordMapper.toDTO(sampleHospitalRecord));
+                .isEqualTo(HospitalRecordMapper.toResponse(sampleHospitalRecord));
         verify(hospitalRecordRepository).findByIdAndUserIdAndPetId(hospitalRecordId, userId, petId);
     }
 
@@ -90,7 +91,7 @@ class HospitalRecordServiceTest {
                 sampleHospitalRecord);
 
         // When
-        HospitalRecordDTO createdRecord = hospitalRecordService.createHospitalRecord(userId, petId,
+        HospitalRecordResponse createdRecord = hospitalRecordService.createHospitalRecord(userId, petId,
                 sampleHospitalRecord);
         // Then
         assertThat(createdRecord)
@@ -115,7 +116,7 @@ class HospitalRecordServiceTest {
         when(hospitalRecordRepository.save(any(HospitalRecord.class))).thenReturn(updatedRecord);
 
         // When
-        HospitalRecordDTO result = hospitalRecordService.updateHospitalRecord(hospitalRecordId,
+        HospitalRecordResponse result = hospitalRecordService.updateHospitalRecord(hospitalRecordId,
                 userId,
                 petId, updatedRecord.getVisitDate(), updatedRecord.getHospitalName(),
                 updatedRecord.getDescription());
@@ -124,7 +125,7 @@ class HospitalRecordServiceTest {
         assertThat(result)
                 .isNotNull()
                 .usingRecursiveComparison()
-                .isEqualTo(HospitalRecordMapper.toDTO(updatedRecord));
+                .isEqualTo(HospitalRecordMapper.toResponse(updatedRecord));
         verify(hospitalRecordRepository).findByIdAndUserIdAndPetId(hospitalRecordId, userId, petId);
         verify(hospitalRecordRepository).save(any(HospitalRecord.class));
     }

@@ -1,12 +1,12 @@
 package buddyguard.mybuddyguard.hospital.mapper;
 
-import buddyguard.mybuddyguard.hospital.dto.HospitalRecordDTO;
+import buddyguard.mybuddyguard.hospital.controller.reponse.HospitalRecordResponse;
 import buddyguard.mybuddyguard.hospital.entity.HospitalRecord;
 
 public class HospitalRecordMapper {
 
-    public static HospitalRecordDTO toDTO(HospitalRecord hospitalRecord) {
-        return new HospitalRecordDTO(
+    public static HospitalRecordResponse toResponse(HospitalRecord hospitalRecord) {
+        return new HospitalRecordResponse(
                 hospitalRecord.getId(),
                 hospitalRecord.getUserId(),
                 hospitalRecord.getPetId(),
@@ -16,7 +16,7 @@ public class HospitalRecordMapper {
         );
     }
 
-    public static HospitalRecord toEntity(HospitalRecordDTO hospitalRecordDTO) {
+    public static HospitalRecord toEntity(HospitalRecordResponse hospitalRecordDTO) {
         return new HospitalRecord(
                 hospitalRecordDTO.id(),
                 hospitalRecordDTO.userId(),
