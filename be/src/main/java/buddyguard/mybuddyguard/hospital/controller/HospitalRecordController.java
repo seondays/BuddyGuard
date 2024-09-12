@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.hospital.controller;
 
+import buddyguard.mybuddyguard.hospital.dto.HospitalRecordDTO;
 import buddyguard.mybuddyguard.hospital.entity.HospitalRecord;
 import buddyguard.mybuddyguard.hospital.service.HospitalRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/{userId}/{petId}/hospitalRecords")
+@RequestMapping("/hospitalRecords/{userId}/{petId}")
 public class HospitalRecordController {
 
     private final HospitalRecordService hospitalRecordService;
@@ -20,40 +21,42 @@ public class HospitalRecordController {
     }
 
     @GetMapping
-    public ResponseEntity<List<HospitalRecord>> getAllHospitalRecords(@PathVariable Long userId,
+    public ResponseEntity<List<HospitalRecordDTO>> getAllHospitalRecords(@PathVariable Long userId,
             @PathVariable Long petId) {
-        List<HospitalRecord> records = hospitalRecordService.getAllHospitalRecords(userId, petId);
+        List<HospitalRecordDTO> records = hospitalRecordService.getAllHospitalRecords(userId,
+                petId);
         return ResponseEntity.ok(records);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<HospitalRecord> getHospitalRecord(@PathVariable Long userId,
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<HospitalRecordDTO> getHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @PathVariable Long id) {
-        return hospitalRecordService.getHospitalRecord(id, userId, petId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        HospitalRecordDTO record = hospitalRecordService.getHospitalRecord(id, userId, petId);
+        return ResponseEntity.ok(record);
     }
 
     @PostMapping
-    public ResponseEntity<HospitalRecord> createHospitalRecord(@PathVariable Long userId,
+    public ResponseEntity<HospitalRecordDTO> createHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @RequestBody HospitalRecord hospitalRecord) {
-        HospitalRecord createdRecord = hospitalRecordService.createHospitalRecord(userId, petId,
+        HospitalRecordDTO createdRecord = hospitalRecordService.createHospitalRecord(userId, petId,
                 hospitalRecord);
         return ResponseEntity.ok(createdRecord);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<HospitalRecord> updateHospitalRecord(@PathVariable Long userId,
+    @PutMapping("/detail/{id}")
+    public ResponseEntity<HospitalRecordDTO> updateHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @PathVariable Long id,
-            @RequestBody HospitalRecord hospitalRecord) {
-        return hospitalRecordService.updateHospitalRecord(id, userId, petId,
-                        hospitalRecord.getVisitDate(),
-                        hospitalRecord.getHospitalName(), hospitalRecord.getDescription())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+            @RequestBody HospitalRecordDTO hospitalRecordDTO) {
+        HospitalRecordDTO updatedRecord = hospitalRecordService.updateHospitalRecord(
+                id, userId, petId,
+                hospitalRecordDTO.visitDate(),
+                hospitalRecordDTO.hospitalName(),
+                hospitalRecordDTO.description()
+        );
+        return ResponseEntity.ok(updatedRecord);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/detail/{id}")
     public ResponseEntity<Void> deleteHospitalRecord(@PathVariable Long userId,
             @PathVariable Long petId, @PathVariable Long id) {
         hospitalRecordService.deleteHospitalRecord(id, userId, petId);
