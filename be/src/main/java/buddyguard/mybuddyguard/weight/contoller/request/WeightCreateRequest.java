@@ -6,7 +6,7 @@ public record WeightCreateRequest(
         Integer petId,
         LocalDateTime recordedAt,
         Double weight,
-        String memo
+        String description
 ) {
 
 }

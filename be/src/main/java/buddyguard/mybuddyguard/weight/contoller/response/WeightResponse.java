@@ -7,7 +7,7 @@ public record WeightResponse(
         Long petId,
         Double weight,
         LocalDateTime recordedAt,
-        String memo
+        String description
 ) {
 
 }

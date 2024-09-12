@@ -13,7 +13,7 @@ public class WeightMapper {
                 weight.getPetId(),
                 weight.getWeight(),
                 weight.getRecordedAt(),
-                weight.getMemo()
+                weight.getDescription()
         );
     }
 
@@ -28,7 +28,7 @@ public class WeightMapper {
                 .petId(request.petId())
                 .recordedAt(request.recordedAt())
                 .weight(request.weight())
-                .memo(request.memo())
+                .description(request.description())
                 .build();
     }
 }
