@@ -1,4 +1,4 @@
-package buddyguard.mybuddyguard.weight.domain;
+package buddyguard.mybuddyguard.weight.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

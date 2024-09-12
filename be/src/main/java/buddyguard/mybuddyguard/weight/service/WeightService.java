@@ -1,7 +1,7 @@
 package buddyguard.mybuddyguard.weight.service;
 
-import buddyguard.mybuddyguard.weight.domain.Weight;
-import buddyguard.mybuddyguard.weight.domain.mapper.WeightMapper;
+import buddyguard.mybuddyguard.weight.entity.Weight;
+import buddyguard.mybuddyguard.mapper.WeightMapper;
 import buddyguard.mybuddyguard.weight.dto.WeightCreateRequest;
 import buddyguard.mybuddyguard.weight.dto.WeightResponse;
 import buddyguard.mybuddyguard.weight.dto.WeightUpdateRequest;

@@ -1,6 +1,6 @@
 package buddyguard.mybuddyguard.weight.repository;
 
-import buddyguard.mybuddyguard.weight.domain.Weight;
+import buddyguard.mybuddyguard.weight.entity.Weight;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
