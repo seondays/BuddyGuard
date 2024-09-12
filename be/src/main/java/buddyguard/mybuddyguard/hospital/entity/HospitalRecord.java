@@ -1,18 +1,21 @@
 package buddyguard.mybuddyguard.hospital.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "HOSPITAL_RECORDS")
-@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class HospitalRecord {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +27,7 @@ public class HospitalRecord {
     private Long petId;
 
     @Column(name = "visit_date", nullable = false)
-    private LocalDate visitDate;
+    private LocalDateTime visitDate;
 
     @Column(name = "hospital_name", nullable = false)
     private String hospitalName;
