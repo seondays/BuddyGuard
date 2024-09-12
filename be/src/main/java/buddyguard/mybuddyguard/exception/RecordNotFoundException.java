@@ -1,6 +1,5 @@
-package buddyguard.mybuddyguard.hospital.exception;
+package buddyguard.mybuddyguard.exception;
 
-import buddyguard.mybuddyguard.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 public class RecordNotFoundException extends BusinessException {
