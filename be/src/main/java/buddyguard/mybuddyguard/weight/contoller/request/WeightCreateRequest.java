@@ -1,4 +1,4 @@
-package buddyguard.mybuddyguard.weight.dto;
+package buddyguard.mybuddyguard.weight.contoller.request;
 
 import java.time.LocalDateTime;
 

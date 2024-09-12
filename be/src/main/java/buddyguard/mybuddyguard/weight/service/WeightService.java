@@ -2,9 +2,9 @@ package buddyguard.mybuddyguard.weight.service;
 
 import buddyguard.mybuddyguard.weight.entity.Weight;
 import buddyguard.mybuddyguard.mapper.WeightMapper;
-import buddyguard.mybuddyguard.weight.dto.WeightCreateRequest;
-import buddyguard.mybuddyguard.weight.dto.WeightResponse;
-import buddyguard.mybuddyguard.weight.dto.WeightUpdateRequest;
+import buddyguard.mybuddyguard.weight.contoller.request.WeightCreateRequest;
+import buddyguard.mybuddyguard.weight.contoller.response.WeightResponse;
+import buddyguard.mybuddyguard.weight.contoller.request.WeightUpdateRequest;
 import buddyguard.mybuddyguard.weight.repository.WeightRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

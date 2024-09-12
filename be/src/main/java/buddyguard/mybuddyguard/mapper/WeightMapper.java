@@ -1,8 +1,8 @@
 package buddyguard.mybuddyguard.mapper;
 
 import buddyguard.mybuddyguard.weight.entity.Weight;
-import buddyguard.mybuddyguard.weight.dto.WeightCreateRequest;
-import buddyguard.mybuddyguard.weight.dto.WeightResponse;
+import buddyguard.mybuddyguard.weight.contoller.request.WeightCreateRequest;
+import buddyguard.mybuddyguard.weight.contoller.response.WeightResponse;
 import java.util.List;
 
 public class WeightMapper {

@@ -1,8 +1,8 @@
 package buddyguard.mybuddyguard.weight.contoller;
 
-import buddyguard.mybuddyguard.weight.dto.WeightCreateRequest;
-import buddyguard.mybuddyguard.weight.dto.WeightResponse;
-import buddyguard.mybuddyguard.weight.dto.WeightUpdateRequest;
+import buddyguard.mybuddyguard.weight.contoller.request.WeightCreateRequest;
+import buddyguard.mybuddyguard.weight.contoller.response.WeightResponse;
+import buddyguard.mybuddyguard.weight.contoller.request.WeightUpdateRequest;
 import buddyguard.mybuddyguard.weight.service.WeightService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
