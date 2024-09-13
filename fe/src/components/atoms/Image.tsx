@@ -8,8 +8,7 @@ export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   isClicked?: boolean;
   src: string;
 }
-
-const Image = ({
+export default function Image({
   width = '100%',
   height = 'auto',
   borderRadius = '0',
@@ -17,17 +16,19 @@ const Image = ({
   isClicked = false,
   src,
   ...rest
-}: ImageProps) => (
-  <StyledImage
-    width={width}
-    height={height}
-    borderRadius={borderRadius}
-    boxShadow={boxShadow}
-    isClicked={isClicked}
-    src={src}
-    {...rest}
-  />
-);
+}: ImageProps) {
+  return (
+    <StyledImage
+      width={width}
+      height={height}
+      borderRadius={borderRadius}
+      boxShadow={boxShadow}
+      isClicked={isClicked}
+      src={src}
+      {...rest}
+    />
+  );
+}
 
 const StyledImage = styled.img<ImageProps & { isClicked: boolean }>`
   width: ${({ width }) => width};
@@ -46,5 +47,3 @@ const StyledImage = styled.img<ImageProps & { isClicked: boolean }>`
     transform: scale(1.05);
   }
 `;
-
-export default Image;
