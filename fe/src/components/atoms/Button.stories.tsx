@@ -4,7 +4,7 @@ import { useTheme } from 'styled-components';
 import Button, { ButtonProps } from './Button';
 
 export default {
-  title: 'Components/Button',
+  title: 'Atoms/Button',
   component: Button,
   argTypes: {
     width: { control: 'text' },

@@ -5,7 +5,7 @@ import CalendarIcon from '@public/assets/icons/calendarIcon.png';
 import Image, { ImageProps } from './Image';
 
 export default {
-  title: 'Components/Image',
+  title: 'Atoms/Image',
   component: Image,
   argTypes: {
     width: { control: 'text' },
