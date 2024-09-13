@@ -6,7 +6,7 @@ export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   borderRadius?: string;
   boxShadow?: boolean;
   isClicked?: boolean;
-  src: string;  
+  src: string;
 }
 
 const Image = ({
@@ -15,7 +15,7 @@ const Image = ({
   borderRadius = '0',
   boxShadow = false,
   isClicked = false,
-  src, 
+  src,
   ...rest
 }: ImageProps) => (
   <StyledImage
@@ -24,7 +24,7 @@ const Image = ({
     borderRadius={borderRadius}
     boxShadow={boxShadow}
     isClicked={isClicked}
-    src={src} 
+    src={src}
     {...rest}
   />
 );
@@ -35,12 +35,11 @@ const StyledImage = styled.img<ImageProps & { isClicked: boolean }>`
   border-radius: ${({ borderRadius }) => borderRadius};
   background: transparent;
   cursor: pointer;
-  
-  // 클릭 상태와 박스 쉐도우 여부에 따라 스타일 동적 적용 
-  box-shadow: ${({ isClicked, boxShadow }) =>
-    isClicked || boxShadow ? '0px 4px 12px rgba(0, 0, 0, 0.2)' : 'none'};
+
+  // 클릭 상태와 박스 쉐도우 여부에 따라 스타일 동적 적용
+  box-shadow: ${({ isClicked, boxShadow }) => (isClicked || boxShadow ? '0px 4px 12px rgba(0, 0, 0, 0.2)' : 'none')};
   transform: ${({ isClicked }) => (isClicked ? 'scale(1.05)' : 'none')};
-  
+
   transition: all 0.3s ease;
 
   &:hover {
