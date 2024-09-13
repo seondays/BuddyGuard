@@ -10,7 +10,7 @@ export interface SpanProps extends React.HTMLAttributes<HTMLSpanElement> {
   padding?: string;
 }
 
-const Span = ({
+export default function Span({
   color = 'black',
   fontSize = '2rem',
   fontWeight = 'normal',
@@ -20,20 +20,22 @@ const Span = ({
   padding = '0',
   children,
   ...rest
-}: SpanProps) => (
-  <StyledSpan
-    color={color}
-    fontSize={fontSize}
-    fontWeight={fontWeight}
-    textAlign={textAlign}
-    textTransform={textTransform}
-    margin={margin}
-    padding={padding}
-    {...rest}
-  >
-    {children}
-  </StyledSpan>
-);
+}: SpanProps) {
+  return (
+    <StyledSpan
+      color={color}
+      fontSize={fontSize}
+      fontWeight={fontWeight}
+      textAlign={textAlign}
+      textTransform={textTransform}
+      margin={margin}
+      padding={padding}
+      {...rest}
+    >
+      {children}
+    </StyledSpan>
+  );
+}
 
 const StyledSpan = styled.span<SpanProps>`
   color: ${({ color }) => color};
@@ -44,5 +46,3 @@ const StyledSpan = styled.span<SpanProps>`
   margin: ${({ margin }) => margin};
   padding: ${({ padding }) => padding};
 `;
-
-export default Span;
