@@ -10,10 +10,10 @@ export default {
     color: { control: 'color' },
     fontSize: { control: 'text' },
     fontWeight: { control: 'text' },
-    textAlign: { control: { type: 'select', options: ['left', 'center', 'right'] } },
-    textTransform: { control: { type: 'select', options: ['none', 'capitalize', 'uppercase', 'lowercase'] } },
-    margin: { control: 'text' },
-    padding: { control: 'text' },
+    $textAlign: { control: { type: 'select', options: ['left', 'center', 'right'] } },
+    $textTransform: { control: { type: 'select', options: ['none', 'capitalize', 'uppercase', 'lowercase'] } },
+    $margin: { control: 'text' },
+    $padding: { control: 'text' },
   },
 } as Meta<SpanProps>;
 
@@ -27,10 +27,10 @@ const Template: StoryFn<SpanProps> = (args) => {
       color={args.color || defaultColor}
       fontSize={args.fontSize || '2rem'}
       fontWeight={args.fontWeight || 'normal'}
-      textAlign={args.textAlign || 'left'}
-      textTransform={args.textTransform || 'none'}
-      margin={args.margin || '0'}
-      padding={args.padding || '0'}
+      $textAlign={args.$textAlign || 'left'}
+      $textTransform={args.$textTransform || 'none'}
+      $margin={args.$margin || '0'}
+      $padding={args.$padding || '0'}
     >
       {args.children || 'Default Span Text'}
     </Span>
@@ -47,9 +47,9 @@ CustomStyledSpan.args = {
   color: '#FF5733',
   fontSize: '3rem',
   fontWeight: 'bold',
-  textAlign: 'center',
-  textTransform: 'uppercase',
-  margin: '10px 0',
-  padding: '10px',
+  $textAlign: 'center',
+  $textTransform: 'uppercase',
+  $margin: '10px 0',
+  $padding: '10px',
   children: 'Custom Styled Span',
 };
