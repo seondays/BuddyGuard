@@ -47,6 +47,12 @@ public class JwtUtil {
                 .getExpiration().before(new Date());
     }
 
+    public Tokens getTokenType(String token) {
+        String stringTokens = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("tokenType", String.class);
+        return Tokens.valueOf(stringTokens);
+    }
+
     /**
      * JWT 토큰을 생성합니다
      * @param userId
@@ -54,10 +60,11 @@ public class JwtUtil {
      * @param expiredSeconds
      * @return
      */
-    public String createJwt(Long userId, String role, Long expiredSeconds) {
+    public String createJwt(Long userId, String role, Tokens tokenType, Long expiredSeconds) {
         return Jwts.builder()
                 .claim("userId", userId)
                 .claim("role", role)
+                .claim("tokenType", tokenType)
                 .issuedAt(Date.from(Instant.now()))
                 .expiration(Date.from(Instant.now().plusSeconds(expiredSeconds)))
                 .signWith(secretKey)
