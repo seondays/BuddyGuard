@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 export interface SpanProps extends React.HTMLAttributes<HTMLSpanElement> {
   color?: string;
@@ -11,7 +11,7 @@ export interface SpanProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export default function Span({
-  color = 'black',
+  color,
   fontSize = '2rem',
   fontWeight = 'normal',
   textAlign = 'left',
@@ -21,9 +21,11 @@ export default function Span({
   children,
   ...rest
 }: SpanProps) {
+  const theme = useTheme();
+  const defaultColor = `${theme.themeValues.colorValues.grayscale[800]}`;
   return (
     <StyledSpan
-      color={color}
+      color={color || defaultColor}
       fontSize={fontSize}
       fontWeight={fontWeight}
       textAlign={textAlign}
