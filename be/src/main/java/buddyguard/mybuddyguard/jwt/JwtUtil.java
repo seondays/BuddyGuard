@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
 import java.nio.charset.StandardCharsets;
@@ -43,8 +44,12 @@ public class JwtUtil {
      * @return
      */
     public Boolean isExpired(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-                .getExpiration().before(new Date());
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            return false;
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
     }
 
     public Tokens getTokenType(String token) {
