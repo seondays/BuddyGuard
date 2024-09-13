@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import theme from '@/styles/theme';
+
+import { theme } from '@/styles/theme';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   width?: string;
@@ -16,7 +17,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   children: React.ReactNode;
 }
 
-const Button = ({
+export default function Button({
   children,
   width = '100%',
   height = '4rem',
@@ -30,23 +31,26 @@ const Button = ({
   isClicked = false,
   onClick,
   ...rest
-}: ButtonProps) => (
-  <StyledButton
-    width={width}
-    height={height}
-    bgColor={bgColor}
-    border={border}
-    display={display}
-    fontSize={fontSize}
-    textAlign={textAlign}
-    alignItems={alignItems}
-    isClicked={isClicked}
-    onClick={onClick}
-    {...rest}
-  >
-    {children}
-  </StyledButton>
-);
+}: ButtonProps) {
+  return (
+    <StyledButton
+      width={width}
+      height={height}
+      bgColor={bgColor}
+      border={border}
+      display={display}
+      fontSize={fontSize}
+      textAlign={textAlign}
+      justifyContent={justifyContent}
+      alignItems={alignItems}
+      isClicked={isClicked}
+      onClick={onClick}
+      {...rest}
+    >
+      {children}
+    </StyledButton>
+  );
+}
 
 const getButtonStyle = (isClicked: boolean, bgColor: string | undefined) => ({
   backgroundColor: isClicked ? theme.colorValues.special.modalBg : bgColor,
@@ -61,16 +65,15 @@ const StyledButton = styled.button<ButtonProps & { isClicked: boolean }>`
   text-align: ${({ textAlign }) => textAlign};
   width: ${({ width }) => width};
   height: ${({ height }) => height};
-  ${({ isClicked, bgColor }) => getButtonStyle(isClicked, bgColor)};  
+  ${({ isClicked, bgColor }) => getButtonStyle(isClicked, bgColor)};
   border: ${({ border }) => border};
   font-size: ${({ fontSize }) => fontSize};
   color: ${({ color = theme.colorValues.grayscale[900] }) => color};
   cursor: pointer;
   transition: all 0.3s ease;
-  
-  &:hover, &:focus {
+
+  &:hover,
+  &:focus {
     background-color: ${theme.colorValues.special.modalBg};
   }
 `;
-
-export default Button;
