@@ -1,5 +1,12 @@
 import styled, { DefaultTheme, useTheme } from 'styled-components';
 
+interface ButtonStyleProps {
+  $isClicked: boolean;
+  $boxShadow: string | undefined;
+  $bgColor: string | undefined;
+  theme: DefaultTheme;
+}
+
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   width?: string;
   height?: string;
@@ -11,6 +18,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   $justifyContent?: string;
   $alignItems?: string;
   $isClicked?: boolean;
+  $boxShadow?: string;
+  $borderRadius?: string;
   onClick?: () => void;
   children: React.ReactNode;
 }
@@ -21,12 +30,14 @@ export default function Button({
   height = '4rem',
   $bgColor = 'white',
   $border,
+  $borderRadius,
   display = 'flex',
   fontSize = '1rem',
   $textAlign = 'center',
   $justifyContent = 'center',
   $alignItems = 'center',
   $isClicked = false,
+  $boxShadow = '0px 4px 12px rgba(0, 0, 0, 0.2)',
   onClick,
   ...rest
 }: ButtonProps) {
@@ -39,12 +50,14 @@ export default function Button({
       height={height}
       $bgColor={$bgColor}
       $border={$border || defaultBorder}
+      $borderRadius={$borderRadius}
       display={display}
       fontSize={fontSize}
       $textAlign={$textAlign}
       $justifyContent={$justifyContent}
       $alignItems={$alignItems}
       $isClicked={$isClicked}
+      $boxShadow={$boxShadow}
       onClick={onClick}
       {...rest}
     >
@@ -53,9 +66,9 @@ export default function Button({
   );
 }
 
-const getButtonStyle = ($isClicked: boolean, $bgColor: string | undefined, theme: DefaultTheme) => ({
+const getButtonStyle = ({ $isClicked, $boxShadow, $bgColor, theme }: ButtonStyleProps) => ({
   backgroundColor: $isClicked ? theme.themeValues.colorValues.special.modalBg : $bgColor,
-  boxShadow: $isClicked ? '0px 4px 12px rgba(0, 0, 0, 0.2)' : 'none',
+  boxShadow: $isClicked ? $boxShadow : 'none',
   transform: $isClicked ? 'translateY(-2px)' : 'none',
 });
 
@@ -66,10 +79,12 @@ const StyledButton = styled.button<ButtonProps & { $isClicked: boolean }>`
   text-align: ${({ $textAlign }) => $textAlign};
   width: ${({ width }) => width};
   height: ${({ height }) => height};
-  ${({ $isClicked, $bgColor, theme }) => getButtonStyle($isClicked, $bgColor, theme)};
+  ${({ $isClicked, $boxShadow, $bgColor, theme }) => getButtonStyle({ $isClicked, $boxShadow, $bgColor, theme })};
   $border: ${({ $border }) => $border};
   font-size: ${({ fontSize }) => fontSize};
   color: ${({ color, theme }) => color || theme.themeValues.colorValues.grayscale[900]};
+  ${({ $borderRadius }) => $borderRadius && `border-radius: ${$borderRadius}`};
+
   cursor: pointer;
   transition: all 0.3s ease;
 
