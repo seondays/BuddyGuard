@@ -1,12 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import GoWalk from '@/components/pages/walk/GoWalk';
+// import GoWalk from '@/components/pages/walk/GoWalk';
 
 export const router = createBrowserRouter([
-  {
-    path: '/menu/walk/go',
-    element: <GoWalk />,
-  },
+  // {
+  //   path: '/menu/walk/go',
+  //   element: <GoWalk />,
+  // },
   // { path: '*', element: <Root /> },
   // { path: '/', element: <Home /> },
   // { path: '/login', element: <Login /> },
