@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
-
+import Nav from '@/components/organism/Nav';
 import { HOME_DESCRIPTION_TEXT1, HOME_DESCRIPTION_TEXT2 } from '@/constants/textConstants';
 
 interface ResponsiveLayoutProps {
@@ -18,7 +18,10 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
           <div>{HOME_DESCRIPTION_TEXT2}</div>
         </StyledDescriptionArea>
         <StyledMain>
-          <StyledMobileFrame>{children}</StyledMobileFrame>
+          <StyledMobileFrame>
+            {children}
+            <Nav />
+          </StyledMobileFrame>
           <StyledToggleTheme onClick={toggleDarkMode}>🌗</StyledToggleTheme>
         </StyledMain>
       </StyledContentWrapper>
