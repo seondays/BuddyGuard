@@ -2,8 +2,8 @@ import styled, { DefaultTheme, useTheme } from 'styled-components';
 
 interface ButtonStyleProps {
   $isClicked: boolean;
-  $boxShadow: string | undefined;
-  $bgColor: string | undefined;
+  $boxShadow?: string;
+  $bgColor?: string;
   theme: DefaultTheme;
 }
 
@@ -11,6 +11,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   $isClicked?: boolean;
   $boxShadow?: string;
   $bgColor?: string;
+  style?: React.CSSProperties;
   onClick?: () => void;
   children: React.ReactNode;
 }
@@ -33,7 +34,7 @@ export default function Button({
       $isClicked={$isClicked}
       $boxShadow={$boxShadow}
       onClick={onClick}
-      style={{ border: style?.border || defaultBorder, ...style }} // style prop을 통해 스타일 처리
+      style={{ border: style?.border || defaultBorder, ...style }}
       {...rest}
     >
       {children}
@@ -47,7 +48,7 @@ const getButtonStyle = ({ $isClicked, $boxShadow, $bgColor, theme }: ButtonStyle
   transform: $isClicked ? 'translateY(-2px)' : 'none',
 });
 
-const StyledButton = styled.button<ButtonProps & { $isClicked: boolean }>`
+const StyledButton = styled.button<ButtonStyleProps>`
   display: ${({ style }) => style?.display || 'flex'};
   justify-content: ${({ style }) => style?.justifyContent || 'center'};
   align-items: ${({ style }) => style?.alignItems || 'center'};
