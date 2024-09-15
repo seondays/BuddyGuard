@@ -1,10 +1,20 @@
-import { useState } from 'react';
+import { RouterProvider } from 'react-router-dom';
 
-import reactLogo from '@public/react.svg';
-import viteLogo from '@public/vite.svg';
+import ResponsiveLayout from './components/templates/ResponsiveLayout';
+import { router } from './routes/router';
+import { GlobalStyles } from './styles/globalStyles';
+import { ResetStyles } from './styles/resetStyles';
 
 function App() {
-  return <div>메인 화면</div>;
+  return (
+    <>
+      <ResetStyles />
+      <GlobalStyles />
+      <ResponsiveLayout>
+        <RouterProvider router={router} />
+      </ResponsiveLayout>
+    </>
+  );
 }
 
 export default App;
