@@ -4,7 +4,7 @@ import Menu from '@/components/pages/Menu';
 import MyPage from '@/components/pages/MyPage';
 import Walk from '@/components/pages/Walk';
 import ResponsiveLayout from '@/components/templates/ResponsiveLayout';
-import Notification from '@/components/pages/Notification';
+import Notification from '@/components/pages/notification';
 
 export const router = createBrowserRouter([
   {

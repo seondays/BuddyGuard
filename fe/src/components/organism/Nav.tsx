@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Link 추가
+import { Link } from 'react-router-dom';
 import Image from '../atoms/Image';
 import Div from '../atoms/Div';
 
