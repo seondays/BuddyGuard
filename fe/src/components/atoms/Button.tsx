@@ -8,37 +8,20 @@ interface ButtonStyleProps {
 }
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  width?: string;
-  height?: string;
-  $bgColor?: string;
-  $border?: string;
-  fontSize?: string;
-  display?: string;
-  $textAlign?: string;
-  $justifyContent?: string;
-  $alignItems?: string;
   $isClicked?: boolean;
   $boxShadow?: string;
-  $borderRadius?: string;
+  $bgColor?: string;
   onClick?: () => void;
   children: React.ReactNode;
 }
 
 export default function Button({
   children,
-  width = '100%',
-  height = '4rem',
   $bgColor = 'white',
-  $border,
-  $borderRadius,
-  display = 'flex',
-  fontSize = '1rem',
-  $textAlign = 'center',
-  $justifyContent = 'center',
-  $alignItems = 'center',
   $isClicked = false,
   $boxShadow = '0px 4px 12px rgba(0, 0, 0, 0.2)',
   onClick,
+  style,
   ...rest
 }: ButtonProps) {
   const theme = useTheme();
@@ -46,19 +29,11 @@ export default function Button({
 
   return (
     <StyledButton
-      width={width}
-      height={height}
       $bgColor={$bgColor}
-      $border={$border || defaultBorder}
-      $borderRadius={$borderRadius}
-      display={display}
-      fontSize={fontSize}
-      $textAlign={$textAlign}
-      $justifyContent={$justifyContent}
-      $alignItems={$alignItems}
       $isClicked={$isClicked}
       $boxShadow={$boxShadow}
       onClick={onClick}
+      style={{ border: style?.border || defaultBorder, ...style }} // style prop을 통해 스타일 처리
       {...rest}
     >
       {children}
@@ -73,17 +48,16 @@ const getButtonStyle = ({ $isClicked, $boxShadow, $bgColor, theme }: ButtonStyle
 });
 
 const StyledButton = styled.button<ButtonProps & { $isClicked: boolean }>`
-  display: ${({ display }) => display};
-  justify-content: ${({ $justifyContent }) => $justifyContent};
-  align-items: ${({ $alignItems }) => $alignItems};
-  text-align: ${({ $textAlign }) => $textAlign};
-  width: ${({ width }) => width};
-  height: ${({ height }) => height};
+  display: ${({ style }) => style?.display || 'flex'};
+  justify-content: ${({ style }) => style?.justifyContent || 'center'};
+  align-items: ${({ style }) => style?.alignItems || 'center'};
+  text-align: ${({ style }) => style?.textAlign || 'center'};
+  width: ${({ style }) => style?.width || '100%'};
+  height: ${({ style }) => style?.height || '4rem'};
   ${({ $isClicked, $boxShadow, $bgColor, theme }) => getButtonStyle({ $isClicked, $boxShadow, $bgColor, theme })};
-  $border: ${({ $border }) => $border};
-  font-size: ${({ fontSize }) => fontSize};
-  color: ${({ color, theme }) => color || theme.themeValues.colorValues.grayscale[900]};
-  ${({ $borderRadius }) => $borderRadius && `border-radius: ${$borderRadius}`};
+  font-size: ${({ style }) => style?.fontSize || '1rem'};
+  color: ${({ style, theme }) => style?.color || theme.themeValues.colorValues.grayscale[900]};
+  ${({ style }) => style?.borderRadius && `border-radius: ${style.borderRadius}`};
 
   cursor: pointer;
   transition: all 0.3s ease;

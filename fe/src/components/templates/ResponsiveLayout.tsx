@@ -6,7 +6,7 @@ import { HOME_DESCRIPTION_TEXT1, HOME_DESCRIPTION_TEXT2 } from '@/constants/text
 interface ResponsiveLayoutProps {
   children: ReactNode;
 }
-// TODO: 레이아웃, 다크모드 토글 버튼, 소개글
+
 export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
   const { toggleDarkMode } = useTheme();
 
@@ -20,8 +20,11 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
         <StyledMain>
           <StyledMobileFrame>
             {children}
-            <Nav />
+            <StyledNavWrapper>
+              <Nav />
+            </StyledNavWrapper>
           </StyledMobileFrame>
+
           <StyledToggleTheme onClick={toggleDarkMode}>🌗</StyledToggleTheme>
         </StyledMain>
       </StyledContentWrapper>
@@ -81,6 +84,12 @@ const StyledMobileFrame = styled.div`
     border: 0.3rem solid ${({ theme }) => theme.themeValues.colorValues.grayscale[600]};
     border-radius: 1rem;
   }
+`;
+
+const StyledNavWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 `;
 
 const StyledContentWrapper = styled.div`
