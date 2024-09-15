@@ -1,55 +1,52 @@
 import { Meta, StoryFn } from '@storybook/react';
-import { useTheme } from 'styled-components';
-
 import Span, { SpanProps } from './Span';
 
 export default {
   title: 'Atoms/Span',
   component: Span,
   argTypes: {
-    color: { control: 'color' },
-    fontSize: { control: 'text' },
-    fontWeight: { control: 'text' },
-    $textAlign: { control: { type: 'select', options: ['left', 'center', 'right'] } },
-    $textTransform: { control: { type: 'select', options: ['none', 'capitalize', 'uppercase', 'lowercase'] } },
-    $margin: { control: 'text' },
-    $padding: { control: 'text' },
+    $color: { control: 'color' },
+    children: { control: 'text' },
+    style: { control: 'object' },
   },
 } as Meta<SpanProps>;
 
-const Template: StoryFn<SpanProps> = (args) => {
-  const theme = useTheme();
-  const defaultColor = `${theme.themeValues.colorValues.grayscale[800]}`;
-
-  return (
-    <Span
-      {...args}
-      color={args.color || defaultColor}
-      fontSize={args.fontSize || '2rem'}
-      fontWeight={args.fontWeight || 'normal'}
-      $textAlign={args.$textAlign || 'left'}
-      $textTransform={args.$textTransform || 'none'}
-      $margin={args.$margin || '0'}
-      $padding={args.$padding || '0'}
-    >
-      {args.children || 'Default Span Text'}
-    </Span>
-  );
-};
+const Template: StoryFn<SpanProps> = (args) => <Span {...args}>{args.children || 'Span Text'}</Span>;
 
 // 기본 Span 스토리
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  $color: undefined,
+  children: 'Default Span',
+  style: {},
+};
 
-// 커스텀 스타일의 Span
+// 색상이 있는 Span
+export const ColoredSpan = Template.bind({});
+ColoredSpan.args = {
+  $color: 'blue',
+  children: 'Blue Span',
+  style: {},
+};
+
+// 스타일이 적용된 Span
+export const StyledSpan = Template.bind({});
+StyledSpan.args = {
+  $color: 'red',
+  children: 'Styled Span',
+  style: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+  },
+};
+
+// 커스텀 스타일 Span
 export const CustomStyledSpan = Template.bind({});
 CustomStyledSpan.args = {
-  color: '#FF5733',
-  fontSize: '3rem',
-  fontWeight: 'bold',
-  $textAlign: 'center',
-  $textTransform: 'uppercase',
-  $margin: '10px 0',
-  $padding: '10px',
+  $color: 'green',
   children: 'Custom Styled Span',
+  style: {
+    fontSize: '18px',
+    fontStyle: 'italic',
+  },
 };
