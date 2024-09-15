@@ -2,32 +2,22 @@ import 'styled-components';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
-    colorValues: {
-      grayscale: Record<number, string>;
-      accent: Record<number, string>;
-      widget: Record<string, string>;
-      special: Record<number, string>;
-      social: Record<number, string>;
+    currentTheme: Record<string, string>;
+    themeValues: {
+      colorValues: {
+        grayscale: Record<number, string>;
+        accent: Record<string, string>;
+        widget: Record<string, string>;
+        special: Record<string, string>;
+        social: Record<string, string>;
+      };
+      typography: Record<string, string>;
+      radius: Record<string, string>;
+      spacing: Record<string, string>;
+      lightTheme: Record<string, string>;
+      darkTheme: Record<string, string>;
     };
-
-    lightTheme: Record<string, string>;
-
-    darkTheme: Record<string, string>;
-
-    typography: {
-      small: string;
-      medium: string;
-      large: string;
-    };
-    radius: {
-      small: string;
-      medium: string;
-      large: string;
-    };
-    spacing: {
-      small: string;
-      medium: string;
-      large: string;
-    };
+    isDarkMode: boolean;
+    toggleDarkMode: () => void;
   }
 }
