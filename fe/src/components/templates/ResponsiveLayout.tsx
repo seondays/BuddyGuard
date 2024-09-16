@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
+
 import Nav from '@/components/organism/Nav';
 import { HOME_DESCRIPTION_TEXT1, HOME_DESCRIPTION_TEXT2 } from '@/constants/textConstants';
 
@@ -87,6 +88,7 @@ const StyledMobileFrame = styled.div`
 `;
 
 const StyledNavWrapper = styled.div`
+  z-index: 999;
   position: absolute;
   bottom: 0;
   width: 100%;
