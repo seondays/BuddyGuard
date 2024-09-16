@@ -24,7 +24,7 @@ export default function Nav() {
       <Link to="/">
         <Image src="/assets/icons/home.png" text="홈" textPosition="bottom" style={commonStyle} />
       </Link>
-      <Link to="/menu/walk">
+      <Link to="/menu/walk/go">
         <Image src="/assets/icons/walk.png" text="산책" textPosition="bottom" style={commonStyle} />
       </Link>
       <Link to="/menu">
