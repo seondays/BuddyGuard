@@ -19,39 +19,21 @@ export default function Image({
   style,
   ...rest
 }: ImageProps) {
+  const commonStyle = { fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color };
   return (
     <StyledImageContainer>
-      {text && textPosition === 'top' && (
-        <StyledText style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color }}>
-          {text}
-        </StyledText>
-      )}
-      <StyledImage
-        $borderRadius={$borderRadius}
-        $boxShadow={$boxShadow}
-        $isClicked={$isClicked}
-        src={src}
-        style={style}
-        {...rest}
-      />
-      {text && textPosition === 'bottom' && (
-        <StyledText style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color }}>
-          {text}
-        </StyledText>
-      )}
+      {text && textPosition === 'top' && <StyledText style={commonStyle}>{text}</StyledText>}
+
+      <StyledImage {...{ $borderRadius, $boxShadow, $isClicked, src, style, ...rest }} />
+
+      {text && textPosition === 'bottom' && <StyledText style={commonStyle}>{text}</StyledText>}
       {text && textPosition === 'left' && (
-        <StyledText
-          style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color }}
-          position="left"
-        >
+        <StyledText style={commonStyle} position={textPosition}>
           {text}
         </StyledText>
       )}
       {text && textPosition === 'right' && (
-        <StyledText
-          style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color }}
-          position="right"
-        >
+        <StyledText style={commonStyle} position={textPosition}>
           {text}
         </StyledText>
       )}
