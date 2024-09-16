@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import Image from '../atoms/Image';
-import Div from '../atoms/Div';
 import { useTheme } from 'styled-components';
+
+import Div from '../atoms/Div';
+import Image from '../atoms/Image';
 
 export default function Nav() {
   const theme = useTheme();
