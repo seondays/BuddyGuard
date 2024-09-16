@@ -40,7 +40,7 @@ const colorValues = {
 };
 
 const lightTheme = {
-  backgroundPrimary: colorValues.grayscale[50], // 밝은 배경 #FEFFD2
+  backgroundPrimary: colorValues.grayscale[50], // 밝은 배경 #FEFEFE
   modalBackground: colorValues.special.modalBg, // 모달 배경 #FFEEA9
   textPrimary: colorValues.grayscale[900], // 주 텍스트 (진한 검정) #14142B
   textSecondary: colorValues.grayscale[700], // 보조 텍스트 (어두운 회색) #4E4B66
