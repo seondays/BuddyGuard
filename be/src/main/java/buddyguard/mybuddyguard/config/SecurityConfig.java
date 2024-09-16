@@ -2,6 +2,7 @@ package buddyguard.mybuddyguard.config;
 
 import buddyguard.mybuddyguard.jwt.JwtFilter;
 import buddyguard.mybuddyguard.jwt.JwtUtil;
+import buddyguard.mybuddyguard.login.exception.CustomAuthenticationEntryPoint;
 import buddyguard.mybuddyguard.login.handler.CustomSuccessHandler;
 import buddyguard.mybuddyguard.login.service.OAuth2UserService;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -19,12 +22,15 @@ public class SecurityConfig {
 
     private final OAuth2UserService oAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
+    private final CustomAuthenticationEntryPoint entryPoint;
     private final JwtUtil jwtUtil;
 
     public SecurityConfig(OAuth2UserService oAuth2UserService,
-            CustomSuccessHandler customSuccessHandler, JwtUtil jwtUtil) {
+            CustomSuccessHandler customSuccessHandler, JwtUtil jwtUtil,
+            CustomAuthenticationEntryPoint entryPoint) {
         this.oAuth2UserService = oAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
+        this.entryPoint = entryPoint;
         this.jwtUtil = jwtUtil;
     }
 
@@ -41,16 +47,20 @@ public class SecurityConfig {
                 .successHandler(customSuccessHandler));
 
         http.authorizeHttpRequests(
-                auth -> auth.requestMatchers("/", "/login", "/oauth2**").permitAll()
+                auth -> auth.requestMatchers("/", "/login", "/oauth2**", "/swagger-ui/**",
+                                "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs")
+                        .permitAll()
                         .anyRequest().authenticated());
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http
-                .addFilterBefore(new JwtFilter(jwtUtil),
+                .addFilterBefore(new JwtFilter(jwtUtil, entryPoint),
                         UsernamePasswordAuthenticationFilter.class);
 
+        http
+                .exceptionHandling(handler -> handler.authenticationEntryPoint(entryPoint));
         return http.build();
     }
 }
