@@ -26,14 +26,15 @@ export default function GoWalk() {
     const initializeMap = async () => {
       try {
         await loadKakaoMapScript();
-        if (!(window.kakao.maps && mapRef.current)) return;
+        if (!(window.kakao && mapRef.current)) return;
 
         window.kakao.maps.load(() => {
+          //지도를 생성할 때 필요한 기본 옵션
           const mapOptions = {
-            center: new window.kakao.maps.LatLng(33.450701, 126.570667),
-            level: 3,
+            center: new window.kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표
+            level: 3, //지도의 레벨(확대, 축소 정도)
           };
-          const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
+          const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions); //지도 생성 및 객체 리턴
           setMap(mapInstance);
         });
       } catch (error) {
@@ -41,18 +42,7 @@ export default function GoWalk() {
       }
     };
 
-    initializeMap(); // 비동기 함수 호출
-  }, []);
-
-  useEffect(() => {
-    if (!(mapRef.current && window.kakao)) return;
-    //지도를 생성할 때 필요한 기본 옵션
-    const options = {
-      center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
-      level: 3, //지도의 레벨(확대, 축소 정도)
-    };
-    const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, options); //지도 생성 및 객체 리턴
-    setMap(mapInstance);
+    initializeMap();
   }, []);
 
   useEffect(() => {
@@ -67,9 +57,7 @@ export default function GoWalk() {
 
   return (
     <StyledWalkWrapper>
-      <header>헤더입니다</header>
       <StyledMap ref={mapRef}></StyledMap>
-      <nav>하단 네비입니다.</nav>
     </StyledWalkWrapper>
   );
 }
@@ -77,15 +65,9 @@ const StyledWalkWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: aliceblue;
-  /* padding: 30px; */
-  /* position: relative; */
 `;
 const StyledMap = styled.div`
-  width: '90%';
-  height: '90%';
-  /* min-width: 390px; */
-  /* min-height: 844px; */
-  min-width: 90%;
-  min-height: 95%;
+  min-width: 100%;
+  min-height: 100%;
   object-fit: cover;
 `;
