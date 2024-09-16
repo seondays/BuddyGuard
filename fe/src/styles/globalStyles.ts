@@ -7,4 +7,7 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
     color: ${theme.colorValues.grayscale[800]};
   }
+  a {
+    text-decoration: none;
+  }
 `;
