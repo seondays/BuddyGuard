@@ -12,6 +12,7 @@ module.exports = {
     'plugin:storybook/recommended',
     'plugin:import/recommended',
     'plugin:prettier/recommended',
+    'prettier',
   ],
   ignorePatterns: ['dist'],
   parser: '@typescript-eslint/parser',
