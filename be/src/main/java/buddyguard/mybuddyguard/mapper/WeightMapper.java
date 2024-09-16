@@ -24,11 +24,11 @@ public class WeightMapper {
     }
 
     public static Weight toEntity(WeightCreateRequest request) {
-        return Weight.builder()
-                .petId(request.petId())
-                .recordedAt(request.recordedAt())
-                .weight(request.weight())
-                .description(request.description())
-                .build();
+        return new Weight(
+                request.petId(),
+                request.recordedAt(),
+                request.weight(),
+                request.description()
+        );
     }
 }

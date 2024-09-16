@@ -7,13 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "WEIGHT_RECORDS")
 @ToString
 @Getter
@@ -31,7 +32,6 @@ public class Weight {
 
     String description;
 
-    @Builder
     public Weight(long petId, LocalDateTime recordedAt, double weight, String description) {
         this.petId = petId;
         this.recordedAt = recordedAt;
