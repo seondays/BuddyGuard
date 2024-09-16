@@ -22,7 +22,9 @@ export default function Image({
   return (
     <StyledImageContainer>
       {text && textPosition === 'top' && (
-        <StyledText style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight }}>{text}</StyledText>
+        <StyledText style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color }}>
+          {text}
+        </StyledText>
       )}
       <StyledImage
         $borderRadius={$borderRadius}
@@ -33,15 +35,23 @@ export default function Image({
         {...rest}
       />
       {text && textPosition === 'bottom' && (
-        <StyledText style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight }}>{text}</StyledText>
+        <StyledText style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color }}>
+          {text}
+        </StyledText>
       )}
       {text && textPosition === 'left' && (
-        <StyledText style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight }} position="left">
+        <StyledText
+          style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color }}
+          position="left"
+        >
           {text}
         </StyledText>
       )}
       {text && textPosition === 'right' && (
-        <StyledText style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight }} position="right">
+        <StyledText
+          style={{ fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color }}
+          position="right"
+        >
           {text}
         </StyledText>
       )}
@@ -66,6 +76,7 @@ const StyledText = styled.span<{ position?: 'left' | 'right' }>`
   right: ${({ position }) => (position === 'right' ? '-1.5rem' : 'auto')};
   top: ${({ position }) => (position ? '50%' : 'auto')};
   transform: ${({ position }) => (position ? 'translateY(-50%)' : 'none')};
+  color: ${({ style }) => style?.color || 'red'};
   white-space: nowrap;
 `;
 
