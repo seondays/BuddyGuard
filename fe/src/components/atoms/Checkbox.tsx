@@ -23,13 +23,13 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   isChecked?: boolean;
 }
 
-export default function Checkbox({ size = 'small', label = '', isChecked = false }: CheckboxProps) {
+export default function Checkbox({ className, size = 'small', label = '', isChecked = false }: CheckboxProps) {
   const [checked, setChecked] = useState(isChecked);
 
   const handleCheckboxChange = () => setChecked((prevChecked) => !prevChecked);
 
   return (
-    <StyledCheckboxContainer>
+    <StyledCheckboxContainer className={className}>
       <StyledCheckboxLabel htmlFor="chk" size={size}>
         {label}
       </StyledCheckboxLabel>
