@@ -9,6 +9,7 @@ const colorValues = {
     400: '#BEC1D5', // (GRAYSCALE 중간값)
     500: '#A0A3BD', // (GRAYSCALE 중간값)
     600: '#6E7191', // (BLACK_02)
+    650: '#8C8C8C', // 새로운 중간값
     700: '#4E4B66', // (GRAY_DEF_02)
     800: '#2A2A44', // (BLACK_DEF)
     900: '#14142B', // (DARK_BLACK)
@@ -31,6 +32,7 @@ const colorValues = {
   special: {
     bgDefault: '#FEFFD2', // (BG_DEF)
     modalBg: '#FFEEA9', // (MODAL_BG_DEF)
+    modalBg2: '#FFFEF3', // (POPUP_YLW)
     textForce: '#FFBF78', // (TEXT_FORCE_DEF)
     textForce02: '#FF7D29', // (TEXT_FORCE_02_DEF)
   },
@@ -42,8 +44,10 @@ const colorValues = {
 const lightTheme = {
   backgroundPrimary: colorValues.grayscale[50], // 밝은 배경 #FEFEFE
   modalBackground: colorValues.special.modalBg, // 모달 배경 #FFEEA9
+  modalBackground2: colorValues.special.modalBg2, // 모달 배경2 #FFFEF3
   textPrimary: colorValues.grayscale[900], // 주 텍스트 (진한 검정) #14142B
   textSecondary: colorValues.grayscale[700], // 보조 텍스트 (어두운 회색) #4E4B66
+  textSubtle: colorValues.grayscale[650], // 보조 텍스트 #8C8C8C
   textAccentPrimary: colorValues.special.textForce, // 주요 강조 텍스트 #FFBF78
   textAccentSecondary: colorValues.special.textForce02, // 보조 강조 텍스트 #FF7D29
   accentBlue: colorValues.accent.blue, // 액센트 블루 #007AFF
@@ -63,8 +67,10 @@ const lightTheme = {
 const darkTheme = {
   backgroundPrimary: colorValues.grayscale[800], // 어두운 배경 #2A2A44
   modalBackground: colorValues.grayscale[700], // 모달 어두운 배경 #4E4B66
+  modalBackground2: colorValues.grayscale[500], // 모달 어두운 배경2 #A0A3BD
   textPrimary: colorValues.grayscale[50], // 밝은 텍스트 (흰색에 가까움) #FEFEFE
   textSecondary: colorValues.grayscale[300], // 보조 텍스트 (밝은 회색) #D9DBE9
+  textSubtle: colorValues.grayscale[300], // 보조 텍스트 (밝은 회색) #EFF0F6
   textAccentPrimary: colorValues.special.textForce, // 주요 강조 텍스트 (동일) #FFBF78
   textAccentSecondary: colorValues.special.textForce02, // 보조 강조 텍스트 (동일) #FF7D29
   accentBlue: colorValues.accent.lightBlue, // 연한 액센트 블루 #A6C8DD
