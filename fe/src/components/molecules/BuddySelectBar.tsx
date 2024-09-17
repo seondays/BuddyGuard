@@ -1,17 +1,29 @@
 import styled, { useTheme } from 'styled-components';
 
 //NOTE: 임시 이미지
-// import profile01 from '@public/images/profile01.png';
-// import profile02 from '@public/images/profile02.png';
-// import profile03 from '@public/images/profile03.png';
+import profile01 from '@public/images/profile01.png';
+import profile02 from '@public/images/profile02.png';
+import profile03 from '@public/images/profile03.png';
 
-// import Checkbox from '../atoms/Checkbox';
-// import Image from '../atoms/Image';
+import Checkbox from '../atoms/Checkbox';
+import Image from '../atoms/Image';
 import Span from '../atoms/Span';
 
 export default function BuddySelectBar() {
-  // const buddys = [profile01, profile02, profile03];
-  // const buddys = [profile01];
+  let buddys = [
+    profile01,
+    profile02,
+    profile03,
+    profile01,
+    profile02,
+    profile01,
+    profile02,
+    profile03,
+    profile01,
+    profile02,
+  ];
+  buddys = [profile01, profile02, profile01, profile02];
+
   const theme = useTheme();
   const spanColor = theme.currentTheme.textSubtle;
   return (
@@ -20,17 +32,50 @@ export default function BuddySelectBar() {
         <Span style={{ color: spanColor }}>함께 산책할 버디를 선택해 주세요</Span>
       </section>
 
-      <div>
-        {/* {buddys.map((e, idx) => (
-          <Div key={`duddy-no-${idx}-${e}`}>
-            <Checkbox></Checkbox>
-            <Image src={profile01}></Image>
-          </Div>
-        ))} */}
-      </div>
+      <StyledSlideWrapper buddyCount={buddys.length}>
+        {buddys.map((buddyImg, idx) => (
+          <StyledBuddyWrapper key={`duddy-no-${idx}-${buddyImg}`}>
+            <StyledCheckbox />
+            <Image
+              style={{ width: '50%', color: spanColor, marginTop: '1rem' }}
+              $borderRadius={'50%'}
+              src={buddyImg}
+              text={`버디이름sfsfsd${idx}`}
+              textPosition={'bottom'}
+            ></Image>
+          </StyledBuddyWrapper>
+        ))}
+      </StyledSlideWrapper>
     </StyledSelectBar>
   );
 }
+
+const StyledCheckbox = styled(Checkbox)`
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  right: 0;
+`;
+
+const StyledBuddyWrapper = styled.div`
+  position: relative;
+  width: 25%;
+  flex-shrink: 0;
+  margin-right: 1rem;
+`;
+
+const StyledSlideWrapper = styled.div<{ buddyCount: number }>`
+  margin-top: 1rem;
+  display: flex;
+  overflow-x: auto;
+  width: 100%;
+  height: 80%;
+  align-items: center;
+  justify-content: ${({ buddyCount }) => (buddyCount < 4 ? `center` : `flex-start`)};
+  //TODO(Woody): 차이가 있는지 체감
+  /* scroll-snap-type: x mandatory; */
+  /* -webkit-overflow-scrolling: touch; */
+`;
 
 const StyledSelectBar = styled.div`
   z-index: 999;
@@ -41,5 +86,5 @@ const StyledSelectBar = styled.div`
   border: 0.15rem solid ${({ theme }) => theme.currentTheme.modalBackground};
   border-radius: 2rem 2rem 0 0;
   background-color: ${({ theme }) => theme.currentTheme.modalBackground2};
-  padding: 1rem;
+  padding: 1.2rem;
 `;
