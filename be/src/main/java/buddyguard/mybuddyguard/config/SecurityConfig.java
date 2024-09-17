@@ -48,7 +48,8 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(
                 auth -> auth.requestMatchers("/", "/login", "/oauth2**", "/swagger-ui/**",
-                                "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs")
+                                "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs",
+                                "/reissue")
                         .permitAll()
                         .anyRequest().authenticated());
 
@@ -58,9 +59,6 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new JwtFilter(jwtUtil, entryPoint),
                         UsernamePasswordAuthenticationFilter.class);
-
-        http
-                .exceptionHandling(handler -> handler.authenticationEntryPoint(entryPoint));
         return http.build();
     }
 }
