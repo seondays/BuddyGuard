@@ -59,10 +59,12 @@ public class WeightController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWeightRecord(@PathVariable("id") Long id) {
+    @DeleteMapping("/{petId}/detail/{id}")
+    public ResponseEntity<Void> deleteWeightRecord(
+            @PathVariable("petId") Long petId,
+            @PathVariable("id") Long id) {
 
-        weightService.deleteWeightRecord(id);
+        weightService.deleteWeightRecord(id, petId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
