@@ -103,6 +103,10 @@ public class TokenService {
         if (tokenType != Tokens.REFRESH) {
             throw new NotAccessTokenException(HttpStatus.UNAUTHORIZED, "unauthorized token");
         }
+        // DB와 비교
+        if (!repository.existsByToken(refresh)) {
+            throw new TokenNotFountException(HttpStatus.UNAUTHORIZED, "unauthorized token");
+        }
 
         Long userId = getUserId(refresh);
         String userRole = getRole(refresh);

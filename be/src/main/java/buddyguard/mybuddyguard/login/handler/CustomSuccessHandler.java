@@ -1,7 +1,9 @@
 package buddyguard.mybuddyguard.login.handler;
 
-import buddyguard.mybuddyguard.jwt.JwtUtil;
+import buddyguard.mybuddyguard.jwt.service.TokenService;
 import buddyguard.mybuddyguard.jwt.Tokens;
+import buddyguard.mybuddyguard.jwt.entity.RefreshToken;
+import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -9,7 +11,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,18 +21,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 로그인이 성공하는 경우 동작하는 핸들러 클래스
  */
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final JwtUtil jwtUtil;
+    private final TokenService tokenService;
+    private final RefreshTokenRepository repository;
 
-    public CustomSuccessHandler(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public CustomSuccessHandler(TokenService tokenService, RefreshTokenRepository repository) {
+        this.tokenService = tokenService;
+        this.repository = repository;
     }
 
+    @Transactional
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
@@ -42,13 +50,16 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority authority = iterator.next();
         String role = authority.getAuthority();
 
-        String refreshToken = jwtUtil.createJwt(userId, role, Tokens.REFRESH, 7 * 24 * 60 * 60L);
-        String accessToken = jwtUtil.createJwt(userId, role, Tokens.ACCESS, 10 * 60L);
+        String refreshToken = tokenService.createJwt(userId, role, Tokens.REFRESH, 7 * 24 * 60 * 60L);
+        String accessToken = tokenService.createJwt(userId, role, Tokens.ACCESS, 10 * 60L);
+
+        // refresh 토큰 저장
+        saveRefreshToken(userId, refreshToken, 7 * 24 * 60 * 60L);
 
         // body에 토큰 저장
         Map<String, String> bodyMap = new HashMap<>();
-        bodyMap.put("refresh", "Bearer " + refreshToken);
-        bodyMap.put("access", "Bearer " + accessToken);
+        bodyMap.put("refresh", refreshToken);
+        bodyMap.put("access", accessToken);
 
         ObjectMapper mapper = new ObjectMapper();
         String body = mapper.writeValueAsString(bodyMap);
@@ -68,5 +79,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         return cookie;
+    }
+
+    private void saveRefreshToken(Long userId, String refreshToken, Long expiredSeconds) {
+        RefreshToken token = new RefreshToken();
+        token.setUserId(userId);
+        token.setToken(refreshToken);
+        token.setExpiration(String.valueOf(Date.from(Instant.now().plusSeconds(expiredSeconds))));
+        repository.save(token);
     }
 }
