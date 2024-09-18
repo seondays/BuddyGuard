@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
+import PlayIcon from '@/components/icons/PlayIcon';
+import { NAV_HEIGHT } from '@/components/organism/Nav';
+
 // import StopWatch from './StopWatch';
-import PlayIcon from '../icons/PlayIcon';
-import { NAV_HEIGHT } from '../organism/Nav';
 
 const WALK_STATUS_BAR_HEIGHT = '8rem';
 export default function WalkSatusBar() {
