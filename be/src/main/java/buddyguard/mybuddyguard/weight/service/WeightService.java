@@ -35,15 +35,12 @@ public class WeightService {
         return WeightMapper.toResponseList(weights);
     }
 
-    public WeightResponse getDetailWeightRecord(Long id) {
-        // Optional 처리 고민
-        // 즉 값이 없을때 어떻게 하는지에 대한 고민
-        // 방법1) 예외를 던지게 한다. 방법2) 기본값을 주게 한다. ex) orElse(new Weight());
-        // + 예외를 던지는 걸로 가려면, 어떤 상황에 어떤 예외를 던질지 정해야 한다.
-        // ex) id로 값을 찾는 요청인데 없다면 ResourceNotFoundException
+    public WeightResponse getDetailWeightRecord(Long id, Long petId) {
 
         Weight weight = weightRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(RuntimeException::new); // 적절한 예외 적용하기
+
+        weight.validateOwnership(petId);
 
         return WeightMapper.toResponse(weight);
     }
@@ -66,7 +63,7 @@ public class WeightService {
     public void deleteWeightRecord(Long id) {
 
         Weight weight = weightRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(RuntimeException::new); // 적절한 예외 적용하기
 
         weightRepository.delete(weight);
     }

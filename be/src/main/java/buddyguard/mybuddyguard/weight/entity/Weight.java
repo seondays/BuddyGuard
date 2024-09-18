@@ -44,4 +44,10 @@ public class Weight {
         this.weight = weight;
         this.description = description;
     }
+
+    public void validateOwnership(Long petId) {
+        if (!this.petId.equals(petId)) {
+            throw new RuntimeException(); // 적절한 예외 적용하기
+        }
+    }
 }
