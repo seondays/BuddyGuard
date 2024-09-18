@@ -9,8 +9,8 @@ export default function UserInfoBar() {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '1rem',
-        padding: '1rem',
+        marginBottom: '3rem',
+        padding: '2rem 1rem',
         borderBottom: '1px solid #ddd',
       }}
     >
