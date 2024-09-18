@@ -63,10 +63,12 @@ public class WeightService {
     }
 
     @Transactional
-    public void deleteWeightRecord(Long id) {
+    public void deleteWeightRecord(Long id, Long petId) {
 
         Weight weight = weightRepository.findById(id)
                 .orElseThrow(RecordNotFoundException::new);
+
+        weight.validateOwnership(petId);
 
         weightRepository.delete(weight);
     }
