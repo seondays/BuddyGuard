@@ -1,7 +1,9 @@
 package buddyguard.mybuddyguard.config;
 
 import buddyguard.mybuddyguard.jwt.JwtFilter;
+import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
+import buddyguard.mybuddyguard.login.CustomLogoutFilter;
 import buddyguard.mybuddyguard.login.exception.CustomAuthenticationEntryPoint;
 import buddyguard.mybuddyguard.login.handler.CustomSuccessHandler;
 import buddyguard.mybuddyguard.login.service.OAuth2UserService;
@@ -15,6 +17,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -26,14 +29,16 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final CustomAuthenticationEntryPoint entryPoint;
     private final TokenService tokenService;
+    private final RefreshTokenRepository repository;
 
     public SecurityConfig(OAuth2UserService oAuth2UserService,
             CustomSuccessHandler customSuccessHandler, TokenService tokenService,
-            CustomAuthenticationEntryPoint entryPoint) {
+            CustomAuthenticationEntryPoint entryPoint, RefreshTokenRepository repository) {
         this.oAuth2UserService = oAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.entryPoint = entryPoint;
         this.tokenService = tokenService;
+        this.repository = repository;
     }
 
     @Bean
@@ -58,9 +63,11 @@ public class SecurityConfig {
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http
-                .addFilterBefore(new JwtFilter(tokenService, entryPoint),
-                        UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(tokenService, entryPoint),
+                UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(new CustomLogoutFilter(tokenService, repository, entryPoint),
+                LogoutFilter.class);
 
         http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
                 new CorsConfigurationSource() {
