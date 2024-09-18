@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { StatusOfTime } from './WalkSatusBar';
@@ -13,18 +13,18 @@ export default function StopWatch({ className, children, status }: StopWatchProp
   const [time, setTime] = useState(0);
   const timeoutRef = useRef<number | null>(null);
 
-  const startTimer = () => {
+  const startTimer = useCallback(() => {
     timeoutRef.current = window.setTimeout(() => {
       setTime((prev) => prev + 1);
       startTimer();
     }, 1000);
-  };
+  }, []);
 
-  const stopTimer = () => {
+  const stopTimer = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (status === 'start') {
@@ -43,7 +43,7 @@ export default function StopWatch({ className, children, status }: StopWatchProp
     }
 
     return () => stopTimer();
-  }, [status]);
+  }, [status, startTimer, stopTimer]);
 
   const getTimeFormatString = (time: number) => {
     const hour = Math.floor(time / 3600)
