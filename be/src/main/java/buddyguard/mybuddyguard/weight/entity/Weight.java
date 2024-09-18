@@ -22,17 +22,17 @@ public class Weight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    Long id;
 
-    long petId;
+    Long petId;
 
     LocalDateTime recordedAt;
 
-    double weight;
+    Double weight;
 
     String description;
 
-    public Weight(long petId, LocalDateTime recordedAt, double weight, String description) {
+    public Weight(Long petId, LocalDateTime recordedAt, Double weight, String description) {
         this.petId = petId;
         this.recordedAt = recordedAt;
         this.weight = weight;
