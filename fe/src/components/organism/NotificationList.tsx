@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NotificationItem from '../molecule/NotificationItem';
+import NotificationPopup from '../molecule/NotificationModal';
 
 export default function NotificationList() {
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   const notifications = [
     {
       title: '알림 1',
@@ -28,6 +32,15 @@ export default function NotificationList() {
     },
   ];
 
+  const handleNotificationClick = (notification: any) => {
+    setSelectedNotification(notification);
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+
   return (
     <div>
       {notifications.map((notification, index) => (
@@ -36,8 +49,18 @@ export default function NotificationList() {
           title={notification.title}
           time={notification.time}
           content={notification.content}
+          onClick={() => handleNotificationClick(notification)}
         />
       ))}
+
+      {isPopupOpen && selectedNotification && (
+        <NotificationPopup
+          title={selectedNotification.title}
+          time={selectedNotification.time}
+          content={selectedNotification.content}
+          onClose={closePopup}
+        />
+      )}
     </div>
   );
 }
