@@ -1,7 +1,7 @@
 package buddyguard.mybuddyguard.login.handler;
 
 import buddyguard.mybuddyguard.jwt.service.TokenService;
-import buddyguard.mybuddyguard.jwt.Tokens;
+import buddyguard.mybuddyguard.jwt.utils.TokenType;
 import buddyguard.mybuddyguard.jwt.entity.RefreshToken;
 import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
@@ -50,8 +50,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority authority = iterator.next();
         String role = authority.getAuthority();
 
-        String refreshToken = tokenService.createJwt(userId, role, Tokens.REFRESH, 7 * 24 * 60 * 60L);
-        String accessToken = tokenService.createJwt(userId, role, Tokens.ACCESS, 10 * 60L);
+        String refreshToken = tokenService.createJwt(userId, role, TokenType.REFRESH, 7 * 24 * 60 * 60L);
+        String accessToken = tokenService.createJwt(userId, role, TokenType.ACCESS, 10 * 60L);
 
         // refresh 토큰 저장
         saveRefreshToken(userId, refreshToken, 7 * 24 * 60 * 60L);

@@ -1,6 +1,6 @@
 package buddyguard.mybuddyguard.jwt.service;
 
-import buddyguard.mybuddyguard.jwt.Tokens;
+import buddyguard.mybuddyguard.jwt.utils.TokenType;
 import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
 import buddyguard.mybuddyguard.login.exception.NotAccessTokenException;
 import buddyguard.mybuddyguard.login.exception.TokenExpiredException;
@@ -61,10 +61,10 @@ public class TokenService {
         }
     }
 
-    public Tokens getTokenType(String token) {
+    public TokenType getTokenType(String token) {
         String stringTokens = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
                 .get("tokenType", String.class);
-        return Tokens.valueOf(stringTokens);
+        return TokenType.valueOf(stringTokens);
     }
 
     /**
@@ -74,7 +74,7 @@ public class TokenService {
      * @param expiredSeconds
      * @return
      */
-    public String createJwt(Long userId, String role, Tokens tokenType, Long expiredSeconds) {
+    public String createJwt(Long userId, String role, TokenType tokenType, Long expiredSeconds) {
         return Jwts.builder()
                 .claim("userId", userId)
                 .claim("role", role)
@@ -99,8 +99,8 @@ public class TokenService {
             throw new TokenExpiredException(HttpStatus.UNAUTHORIZED, "unauthorized token");
         }
         // 리프레시 확인
-        Tokens tokenType = getTokenType(refresh);
-        if (tokenType != Tokens.REFRESH) {
+        TokenType tokenType = getTokenType(refresh);
+        if (tokenType != TokenType.REFRESH) {
             throw new NotAccessTokenException(HttpStatus.UNAUTHORIZED, "unauthorized token");
         }
         // DB와 비교
@@ -111,6 +111,6 @@ public class TokenService {
         Long userId = getUserId(refresh);
         String userRole = getRole(refresh);
 
-        return createJwt(userId, userRole, Tokens.ACCESS, 10 * 60L);
+        return createJwt(userId, userRole, TokenType.ACCESS, 10 * 60L);
     }
 }

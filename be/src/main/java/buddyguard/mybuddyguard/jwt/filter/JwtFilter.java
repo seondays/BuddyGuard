@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.jwt.filter;
 
 import buddyguard.mybuddyguard.exception.FilterException;
+import buddyguard.mybuddyguard.jwt.utils.TokenType;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
 import buddyguard.mybuddyguard.login.dto.UserDto;
@@ -45,8 +46,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 throw new TokenExpiredException(HttpStatus.UNAUTHORIZED, "unauthorized token");
             }
 
-            Tokens type = tokenService.getTokenType(accessToken);
-            if (!type.equals(Tokens.ACCESS)) {
+            TokenType type = tokenService.getTokenType(accessToken);
+            if (!type.equals(TokenType.ACCESS)) {
                 // 엑세스 토큰이 아닌 상황
                 throw new NotAccessTokenException(HttpStatus.UNAUTHORIZED, "unauthorized token");
             }

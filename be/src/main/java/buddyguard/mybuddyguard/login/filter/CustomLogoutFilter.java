@@ -1,7 +1,7 @@
 package buddyguard.mybuddyguard.login.filter;
 
 import buddyguard.mybuddyguard.exception.FilterException;
-import buddyguard.mybuddyguard.jwt.Tokens;
+import buddyguard.mybuddyguard.jwt.utils.TokenType;
 import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
 import buddyguard.mybuddyguard.login.exception.CustomAuthenticationEntryPoint;
@@ -61,7 +61,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
             if (!repository.existsByToken(refreshToken)) {
                 throw new LogoutException(HttpStatus.BAD_REQUEST, "token not exist");
             }
-            if (!service.getTokenType(refreshToken).equals(Tokens.REFRESH)) {
+            if (!service.getTokenType(refreshToken).equals(TokenType.REFRESH)) {
                 throw new LogoutException(HttpStatus.BAD_REQUEST, "not refresh token");
             }
         } catch (FilterException exception) {
