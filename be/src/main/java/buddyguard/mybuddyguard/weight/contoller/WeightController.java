@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,18 +24,20 @@ public class WeightController {
 
     private final WeightService weightService;
 
-    @GetMapping
+    @GetMapping("/{petId}")
     public ResponseEntity<List<WeightResponse>> getAllWeightRecords(
-            @RequestParam("petId") Long petId) {
+            @PathVariable("petId") Long petId) {
 
         List<WeightResponse> responses = weightService.getAllWeightRecords(petId);
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<WeightResponse> getDetailWeightRecord(@PathVariable("id") Long id) {
+    @GetMapping("/{petId}/detail/{id}")
+    public ResponseEntity<WeightResponse> getDetailWeightRecord(
+            @PathVariable("petId") Long petId,
+            @PathVariable("id") Long id) {
 
-        WeightResponse response = weightService.getDetailWeightRecord(id);
+        WeightResponse response = weightService.getDetailWeightRecord(id, petId);
         return ResponseEntity.ok(response);
     }
 
