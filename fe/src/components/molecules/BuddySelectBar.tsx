@@ -8,14 +8,19 @@ import profile03 from '@public/images/profile03.png';
 import Checkbox from '../atoms/Checkbox';
 import Image from '../atoms/Image';
 import Span from '../atoms/Span';
+import { CheckboxChangeHandler } from '../pages/walk/GoWalk';
 
 // TODO(Woody): API 연동
 // TODO(Woody): 대표 버디는 처음부터 체크되어있음
 
 export const BUDDY_SELECTBAR_HEIGHT = '10rem';
 
-export default function BuddySelectBar() {
-  let buddys = [
+interface BuddySelectBarProps {
+  selectedBuddys: string[];
+  handleOnChange: CheckboxChangeHandler;
+}
+export default function BuddySelectBar({ selectedBuddys, handleOnChange }: BuddySelectBarProps) {
+  const buddys = [
     profile01,
     profile02,
     profile03,
@@ -27,10 +32,13 @@ export default function BuddySelectBar() {
     profile01,
     profile02,
   ];
-  buddys = [profile01, profile02];
+  // buddys = [profile01, profile02];
 
   const theme = useTheme();
   const spanColor = theme.currentTheme.textSubtle;
+
+  const isChecked = (id: string) => selectedBuddys.includes(id);
+
   return (
     <StyledSelectBar>
       <section>
@@ -40,7 +48,7 @@ export default function BuddySelectBar() {
       <StyledSlideWrapper $buddyCount={buddys.length}>
         {buddys.map((buddyImg, idx) => (
           <StyledBuddyWrapper key={`duddy-no-${idx}-${buddyImg}`}>
-            <StyledCheckbox checkBoxId={`${idx}`} />
+            <StyledCheckbox checkBoxId={`${idx}`} isChecked={isChecked(`idx`)} handleOnChange={handleOnChange} />
             <Image
               style={{ width: '50%', color: spanColor, marginTop: '1rem' }}
               $borderRadius={'50%'}

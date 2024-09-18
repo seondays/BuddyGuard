@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import CheckIcon from '@/components/icons/CheckIcon';
 
+import { CheckboxChangeHandler } from '../pages/walk/GoWalk';
+
 type CheckboxSizeType = 'small' | 'medium' | 'large';
 
 const checkboxSize: { [key in CheckboxSizeType]: string } = {
@@ -22,6 +24,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   label?: string;
   isChecked?: boolean;
   checkBoxId?: string;
+  handleOnChange?: CheckboxChangeHandler;
 }
 
 export default function Checkbox({
@@ -30,10 +33,15 @@ export default function Checkbox({
   label = '',
   isChecked = false,
   checkBoxId = '',
+  handleOnChange = () => {},
 }: CheckboxProps) {
   const [checked, setChecked] = useState(isChecked);
 
-  const handleCheckboxChange = () => setChecked((prevChecked) => !prevChecked);
+  const handleCheckboxChange = (checkBoxId: string) => {
+    const newCheckedState: boolean = !checked;
+    setChecked((prevChecked) => !prevChecked);
+    handleOnChange(checkBoxId, newCheckedState);
+  };
   const htmlForAttribute = `check${checkBoxId}`;
 
   return (
@@ -41,7 +49,7 @@ export default function Checkbox({
       <StyledCheckboxLabel htmlFor={htmlForAttribute} size={size}>
         {label}
       </StyledCheckboxLabel>
-      <StyledHiddenCheckbox id={htmlForAttribute} checked={checked} onChange={handleCheckboxChange} />
+      <StyledHiddenCheckbox id={htmlForAttribute} checked={checked} onChange={() => handleCheckboxChange(checkBoxId)} />
       <StyledCheckbox htmlFor={htmlForAttribute} checked={checked} size={size}>
         {checked && <CheckIcon size={checkIconSize[size]} />}
       </StyledCheckbox>

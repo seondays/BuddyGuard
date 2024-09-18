@@ -14,19 +14,35 @@ const playIconStyle = {
 
 const PLAY_ICON_GAP = '5rem';
 
+export interface CheckboxChangeHandler {
+  (checkBoxId: string, isChecked: boolean): void;
+}
+
 export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [isStarted, setIsStarted] = useState(false);
+  const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);
 
   useKakaoMap(mapRef);
+
+  const startGoWalk = () => {
+    if (!selectedBuddys.length) {
+      alert('산책할 버디를 선택해주세요! (임시 alert)');
+    }
+    setIsStarted(true);
+  };
+
+  const selectBuddy: CheckboxChangeHandler = (selectId, isSelect) => {
+    setSelectedBuddys((prev) => (isSelect ? [...prev, selectId] : prev.filter((buddyId) => buddyId !== selectId)));
+  };
 
   return (
     <>
       <StyledWalkWrapper>
         <StyledBlockLayer />
-        <StyledPlayIcon customStyle={playIconStyle} onClick={() => setIsStarted(true)} />
+        <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />
         <StyledMap ref={mapRef}></StyledMap>
-        <BuddySelectBar />
+        <BuddySelectBar selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
       </StyledWalkWrapper>
     </>
   );
