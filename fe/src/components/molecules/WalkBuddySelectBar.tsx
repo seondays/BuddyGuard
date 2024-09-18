@@ -8,6 +8,7 @@ import profile03 from '@public/images/profile03.png';
 import Checkbox from '../atoms/Checkbox';
 import Image from '../atoms/Image';
 import Span from '../atoms/Span';
+import { NAV_HEIGHT } from '../organism/Nav';
 import { CheckboxChangeHandler } from '../pages/walk/GoWalk';
 
 // TODO(Woody): API 연동
@@ -93,7 +94,7 @@ const StyledSlideWrapper = styled.div<{ $buddyCount: number }>`
 const StyledSelectBar = styled.div`
   z-index: 999;
   position: absolute;
-  bottom: 4rem;
+  bottom: ${NAV_HEIGHT};
   width: 100%;
   height: ${BUDDY_SELECTBAR_HEIGHT};
   border: 0.15rem solid ${({ theme }) => theme.currentTheme.modalBackground};
