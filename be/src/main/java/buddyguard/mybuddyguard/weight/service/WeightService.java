@@ -47,10 +47,12 @@ public class WeightService {
     }
 
     @Transactional
-    public void updateWeightRecord(Long id, WeightUpdateRequest request) {
+    public void updateWeightRecord(Long id, Long petId, WeightUpdateRequest request) {
 
         Weight weight = weightRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
+
+        weight.validateOwnership(petId);
 
         weight.update( // 변경 포인트를 해당 메서드에 모아서 하나로 통일한다.
                 request.recordedAt(),
@@ -64,7 +66,7 @@ public class WeightService {
     public void deleteWeightRecord(Long id) {
 
         Weight weight = weightRepository.findById(id)
-                .orElseThrow(RecordNotFoundException::new); // 적절한 예외 적용하기
+                .orElseThrow(RecordNotFoundException::new);
 
         weightRepository.delete(weight);
     }
