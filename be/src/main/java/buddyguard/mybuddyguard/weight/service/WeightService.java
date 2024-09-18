@@ -2,7 +2,7 @@ package buddyguard.mybuddyguard.weight.service;
 
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.weight.entity.Weight;
-import buddyguard.mybuddyguard.mapper.WeightMapper;
+import buddyguard.mybuddyguard.weight.mapper.WeightMapper;
 import buddyguard.mybuddyguard.weight.contoller.request.WeightCreateRequest;
 import buddyguard.mybuddyguard.weight.contoller.response.WeightResponse;
 import buddyguard.mybuddyguard.weight.contoller.request.WeightUpdateRequest;

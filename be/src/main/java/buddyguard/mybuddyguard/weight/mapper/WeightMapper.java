@@ -1,4 +1,4 @@
-package buddyguard.mybuddyguard.mapper;
+package buddyguard.mybuddyguard.weight.mapper;
 
 import buddyguard.mybuddyguard.weight.entity.Weight;
 import buddyguard.mybuddyguard.weight.contoller.request.WeightCreateRequest;
