@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export interface ImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, '$$borderRadius'> {
+export interface ImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, '$borderRadius'> {
   $borderRadius?: string;
   $boxShadow?: boolean;
   $isClicked?: boolean;
