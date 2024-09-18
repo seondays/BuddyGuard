@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import PlayIcon from '@/components/icons/PlayIcon';
@@ -16,6 +16,7 @@ const PLAY_ICON_GAP = '5rem';
 
 export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const [isStarted, setIsStarted] = useState(false);
 
   useKakaoMap(mapRef);
 
@@ -23,7 +24,7 @@ export default function GoWalk() {
     <>
       <StyledWalkWrapper>
         <StyledBlockLayer />
-        <StyledPlayIcon customStyle={playIconStyle} />
+        <StyledPlayIcon customStyle={playIconStyle} onClick={() => setIsStarted(true)} />
         <StyledMap ref={mapRef}></StyledMap>
         <BuddySelectBar />
       </StyledWalkWrapper>

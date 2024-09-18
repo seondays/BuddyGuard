@@ -11,12 +11,20 @@ interface PlayIconProps extends React.SVGProps<SVGSVGElement> {
     $stroke?: string;
     $shadow?: string;
     $isCursor?: boolean;
+    onClick?: () => void;
   };
 }
 
 export default function PlayIcon({
   className,
-  customStyle: { $size = 119, $color = '', $stroke = 'none', $shadow = 'none', $isCursor = false } = {},
+  customStyle: {
+    $size = 119,
+    $color = '',
+    $stroke = 'none',
+    $shadow = 'none',
+    $isCursor = false,
+    onClick = () => {},
+  } = {},
   ...props
 }: PlayIconProps) {
   const theme = useTheme();
@@ -33,6 +41,7 @@ export default function PlayIcon({
       $stroke={$stroke}
       $shadow={$shadow}
       $isCursor={$isCursor}
+      onClick={onClick}
       {...props}
     >
       <path
