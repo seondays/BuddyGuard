@@ -20,7 +20,7 @@ export default function useStopWatch(status: StatusOfTime) {
   }, []);
 
   useEffect(() => {
-    if (status === 'start') {
+    if (status === 'start' && !timeoutRef.current) {
       startTimer();
       return;
     }
