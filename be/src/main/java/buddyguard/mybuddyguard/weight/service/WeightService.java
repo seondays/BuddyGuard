@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.weight.service;
 
+import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.weight.entity.Weight;
 import buddyguard.mybuddyguard.mapper.WeightMapper;
 import buddyguard.mybuddyguard.weight.contoller.request.WeightCreateRequest;
@@ -38,7 +39,7 @@ public class WeightService {
     public WeightResponse getDetailWeightRecord(Long id, Long petId) {
 
         Weight weight = weightRepository.findById(id)
-                .orElseThrow(RuntimeException::new); // 적절한 예외 적용하기
+                .orElseThrow(RecordNotFoundException::new);
 
         weight.validateOwnership(petId);
 
@@ -63,7 +64,7 @@ public class WeightService {
     public void deleteWeightRecord(Long id) {
 
         Weight weight = weightRepository.findById(id)
-                .orElseThrow(RuntimeException::new); // 적절한 예외 적용하기
+                .orElseThrow(RecordNotFoundException::new); // 적절한 예외 적용하기
 
         weightRepository.delete(weight);
     }

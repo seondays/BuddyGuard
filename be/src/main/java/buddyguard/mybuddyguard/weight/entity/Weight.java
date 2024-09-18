@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.weight.entity;
 
+import buddyguard.mybuddyguard.exception.InvalidRequestException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -47,7 +48,7 @@ public class Weight {
 
     public void validateOwnership(Long petId) {
         if (!this.petId.equals(petId)) {
-            throw new RuntimeException(); // 적절한 예외 적용하기
+            throw new InvalidRequestException();
         }
     }
 }
