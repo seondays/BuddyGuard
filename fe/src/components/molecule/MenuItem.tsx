@@ -2,11 +2,17 @@ import React from 'react';
 import Span from '../atoms/Span';
 import Image from '../atoms/Image';
 
-export default function MenuItem() {
+export interface MenuItemProps {
+  backgroundColor?: string;
+}
+
+export default function MenuItem({ backgroundColor }: MenuItemProps) {
   return (
-    <div>
+    <div style={{ backgroundColor, padding: '1rem', borderRadius: '0.5rem' }}>
       <Image src="/assets/icons/calendarIcon.png" />
-      <Span>일정</Span>
+      <Span $color="white" style={{ fontWeight: 'bold' }}>
+        일정
+      </Span>
     </div>
   );
 }
