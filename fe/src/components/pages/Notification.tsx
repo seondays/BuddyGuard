@@ -6,7 +6,7 @@ import NotificationList from '../organism/NotificationList';
 export default function Notification() {
   return (
     <div style={{ padding: '1rem', height: '100vh', overflow: 'hidden' }}>
-      <PageTitleBar />
+      <PageTitleBar title="알림" />
       <BuddyInfoBar />
       <div style={{ height: '70vh', overflowY: 'scroll', scrollbarWidth: 'none' }}>
         <NotificationList />

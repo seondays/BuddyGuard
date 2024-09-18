@@ -1,5 +1,12 @@
 import React from 'react';
+import UserInfoBar from '../organism/UserInfoBar';
+import PageTitleBar from '../molecule/PageTitleBar';
 
 export default function MyPage() {
-  return <div>MyPage</div>;
+  return (
+    <div style={{ padding: '1rem' }}>
+      <PageTitleBar title="내 정보" />
+      <UserInfoBar />
+    </div>
+  );
 }
