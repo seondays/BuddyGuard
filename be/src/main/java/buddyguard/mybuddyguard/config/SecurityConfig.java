@@ -1,10 +1,12 @@
 package buddyguard.mybuddyguard.config;
 
 import buddyguard.mybuddyguard.jwt.JwtFilter;
-import buddyguard.mybuddyguard.jwt.JwtUtil;
+import buddyguard.mybuddyguard.jwt.service.TokenService;
 import buddyguard.mybuddyguard.login.exception.CustomAuthenticationEntryPoint;
 import buddyguard.mybuddyguard.login.handler.CustomSuccessHandler;
 import buddyguard.mybuddyguard.login.service.OAuth2UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -23,15 +25,15 @@ public class SecurityConfig {
     private final OAuth2UserService oAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final CustomAuthenticationEntryPoint entryPoint;
-    private final JwtUtil jwtUtil;
+    private final TokenService tokenService;
 
     public SecurityConfig(OAuth2UserService oAuth2UserService,
-            CustomSuccessHandler customSuccessHandler, JwtUtil jwtUtil,
+            CustomSuccessHandler customSuccessHandler, TokenService tokenService,
             CustomAuthenticationEntryPoint entryPoint) {
         this.oAuth2UserService = oAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.entryPoint = entryPoint;
-        this.jwtUtil = jwtUtil;
+        this.tokenService = tokenService;
     }
 
     @Bean
@@ -57,8 +59,24 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http
-                .addFilterBefore(new JwtFilter(jwtUtil, entryPoint),
+                .addFilterBefore(new JwtFilter(tokenService, entryPoint),
                         UsernamePasswordAuthenticationFilter.class);
+
+        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
+                new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration config = new CorsConfiguration();
+
+                        config.setAllowedOrigins(Collections.singletonList("*"));
+                        config.setAllowedMethods(Collections.singletonList("*"));
+                        config.setAllowCredentials(true);
+                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setExposedHeaders(Collections.singletonList("Authorization"));
+                        config.setMaxAge(60 * 60L);
+                        return config;
+                    }
+                }));
         return http.build();
     }
 }
