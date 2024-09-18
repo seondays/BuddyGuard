@@ -48,10 +48,13 @@ public class WeightController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateWeightRecord(@PathVariable("id") Long id, @RequestBody WeightUpdateRequest request) {
+    @PatchMapping("/{petId}/detail/{id}")
+    public ResponseEntity<Void> updateWeightRecord(
+            @PathVariable("petId") Long petId,
+            @PathVariable("id") Long id,
+            @RequestBody WeightUpdateRequest request) {
 
-        weightService.updateWeightRecord(id, request);
+        weightService.updateWeightRecord(id, petId, request);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
