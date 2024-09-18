@@ -1,9 +1,9 @@
 package buddyguard.mybuddyguard.config;
 
-import buddyguard.mybuddyguard.jwt.JwtFilter;
+import buddyguard.mybuddyguard.jwt.filter.JwtFilter;
 import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
-import buddyguard.mybuddyguard.login.CustomLogoutFilter;
+import buddyguard.mybuddyguard.login.filter.CustomLogoutFilter;
 import buddyguard.mybuddyguard.login.exception.CustomAuthenticationEntryPoint;
 import buddyguard.mybuddyguard.login.handler.CustomSuccessHandler;
 import buddyguard.mybuddyguard.login.service.OAuth2UserService;

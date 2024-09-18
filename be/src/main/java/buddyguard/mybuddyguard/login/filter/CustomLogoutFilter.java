@@ -1,4 +1,4 @@
-package buddyguard.mybuddyguard.login;
+package buddyguard.mybuddyguard.login.filter;
 
 import buddyguard.mybuddyguard.exception.FilterException;
 import buddyguard.mybuddyguard.jwt.Tokens;
