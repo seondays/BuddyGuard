@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import PlayIcon from '@/components/icons/PlayIcon';
-import BuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecules/BuddySelectBar';
+import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecules/WalkBuddySelectBar';
 import { NAV_HEIGHT } from '@/components/organism/Nav';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 
@@ -28,6 +28,7 @@ export default function GoWalk() {
   const startGoWalk = () => {
     if (!selectedBuddys.length) {
       alert('산책할 버디를 선택해주세요! (임시 alert)');
+      return;
     }
     setIsStarted(true);
   };
@@ -36,13 +37,15 @@ export default function GoWalk() {
     setSelectedBuddys((prev) => (isSelect ? [...prev, selectId] : prev.filter((buddyId) => buddyId !== selectId)));
   };
 
+  useEffect(() => {}, [isStarted]);
+
   return (
     <>
       <StyledWalkWrapper>
-        <StyledBlockLayer />
-        <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />
+        {!isStarted && <StyledBlockLayer />}
+        {!isStarted && <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />}
         <StyledMap ref={mapRef}></StyledMap>
-        <BuddySelectBar selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
+        {!isStarted && <WalkBuddySelectBar selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />}
       </StyledWalkWrapper>
     </>
   );
