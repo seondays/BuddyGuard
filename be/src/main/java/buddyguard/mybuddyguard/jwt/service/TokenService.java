@@ -4,7 +4,7 @@ import buddyguard.mybuddyguard.jwt.Tokens;
 import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
 import buddyguard.mybuddyguard.login.exception.NotAccessTokenException;
 import buddyguard.mybuddyguard.login.exception.TokenExpiredException;
-import buddyguard.mybuddyguard.login.exception.TokenNotFountException;
+import buddyguard.mybuddyguard.login.exception.TokenNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
@@ -92,7 +92,7 @@ public class TokenService {
      */
     public String reissueAccessToken(String refresh) {
         if (refresh == null) {
-            throw new TokenNotFountException(HttpStatus.UNAUTHORIZED, "unauthorized token");
+            throw new TokenNotFoundException(HttpStatus.UNAUTHORIZED, "unauthorized token");
         }
         // 만료 확인
         if (isExpired(refresh)) {
@@ -105,7 +105,7 @@ public class TokenService {
         }
         // DB와 비교
         if (!repository.existsByToken(refresh)) {
-            throw new TokenNotFountException(HttpStatus.UNAUTHORIZED, "unauthorized token");
+            throw new TokenNotFoundException(HttpStatus.UNAUTHORIZED, "unauthorized token");
         }
 
         Long userId = getUserId(refresh);
