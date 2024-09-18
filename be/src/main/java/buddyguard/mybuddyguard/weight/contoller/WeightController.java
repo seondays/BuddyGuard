@@ -4,6 +4,7 @@ import buddyguard.mybuddyguard.weight.contoller.request.WeightCreateRequest;
 import buddyguard.mybuddyguard.weight.contoller.response.WeightResponse;
 import buddyguard.mybuddyguard.weight.contoller.request.WeightUpdateRequest;
 import buddyguard.mybuddyguard.weight.service.WeightService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,7 @@ public class WeightController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createNewWeightRecord(@RequestBody WeightCreateRequest request) {
+    public ResponseEntity<Void> createNewWeightRecord(@RequestBody @Valid WeightCreateRequest request) {
 
         weightService.createNewWeightRecord(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -52,7 +53,7 @@ public class WeightController {
     public ResponseEntity<Void> updateWeightRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id,
-            @RequestBody WeightUpdateRequest request) {
+            @RequestBody @Valid WeightUpdateRequest request) {
 
         weightService.updateWeightRecord(id, petId, request);
 
