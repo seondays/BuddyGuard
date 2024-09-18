@@ -11,6 +11,9 @@ import Span from '../atoms/Span';
 
 // TODO(Woody): API 연동
 // TODO(Woody): 대표 버디는 처음부터 체크되어있음
+
+export const BUDDY_SELECTBAR_HEIGHT = '10rem';
+
 export default function BuddySelectBar() {
   let buddys = [
     profile01,
@@ -84,7 +87,7 @@ const StyledSelectBar = styled.div`
   position: absolute;
   bottom: 4rem;
   width: 100%;
-  height: 10rem;
+  height: ${BUDDY_SELECTBAR_HEIGHT};
   border: 0.15rem solid ${({ theme }) => theme.currentTheme.modalBackground};
   border-radius: 2rem 2rem 0 0;
   background-color: ${({ theme }) => theme.currentTheme.modalBackground2};

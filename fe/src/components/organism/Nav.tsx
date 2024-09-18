@@ -4,6 +4,8 @@ import { useTheme } from 'styled-components';
 import Div from '../atoms/Div';
 import Image from '../atoms/Image';
 
+export const NAV_HEIGHT = '4rem';
+
 export default function Nav() {
   const theme = useTheme();
   const { backgroundPrimary: navBgColor, textPrimary: navTextColor } = theme.currentTheme;
@@ -14,7 +16,7 @@ export default function Nav() {
       style={{
         display: 'flex',
         width: '100%',
-        height: '4rem',
+        height: NAV_HEIGHT,
         justifyContent: 'space-around',
         alignItems: 'center',
         borderTop: '0.1rem solid black',
