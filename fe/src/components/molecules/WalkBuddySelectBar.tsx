@@ -50,19 +50,35 @@ export default function BuddySelectBar({ selectedBuddys, handleOnChange }: Buddy
         {buddys.map((buddyImg, idx) => (
           <StyledBuddyWrapper key={`duddy-no-${idx}-${buddyImg}`}>
             <StyledCheckbox checkBoxId={`${idx}`} isChecked={isChecked(`idx`)} handleOnChange={handleOnChange} />
-            <Image
-              style={{ width: '50%', color: spanColor, marginTop: '1rem' }}
-              $borderRadius={'50%'}
-              src={buddyImg}
-              text={`버디이름sfsfsd${idx}`}
-              textPosition={'bottom'}
-            ></Image>
+            <StyledImgWrapper>
+              <Image
+                style={{ width: '50%', color: spanColor, marginTop: '1rem' }}
+                $borderRadius={'50%'}
+                src={buddyImg}
+              ></Image>
+              <StyledText style={{ color: spanColor }}>{`버디이름sfsfsd${idx}`}</StyledText>
+            </StyledImgWrapper>
           </StyledBuddyWrapper>
         ))}
       </StyledSlideWrapper>
     </StyledSelectBar>
   );
 }
+
+const StyledText = styled(Span)`
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const StyledImgWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
 
 const StyledCheckbox = styled(Checkbox)`
   z-index: 1;
