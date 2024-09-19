@@ -26,7 +26,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   checkBoxId?: string;
   handleOnChange?: CheckboxChangeHandler;
   position?: 'left' | 'right';
-  justifyContent?: 'flex-start' | 'center' | 'flex-end';
+  $justifyContent?: 'flex-start' | 'center' | 'flex-end';
   style?: React.CSSProperties;
 }
 
@@ -38,7 +38,7 @@ export default function Checkbox({
   checkBoxId = '',
   handleOnChange = () => {},
   position = 'left',
-  justifyContent = 'flex-start',
+  $justifyContent = 'flex-start',
   style,
 }: CheckboxProps) {
   const [checked, setChecked] = useState(isChecked);
@@ -51,7 +51,7 @@ export default function Checkbox({
   const htmlForAttribute = `check${checkBoxId}`;
 
   return (
-    <StyledCheckboxContainer className={className} justifyContent={justifyContent} style={style}>
+    <StyledCheckboxContainer className={className} $justifyContent={$justifyContent} style={style}>
       {position === 'left' && (
         <StyledCheckbox htmlFor={htmlForAttribute} checked={checked} size={size}>
           {checked && <CheckIcon size={checkIconSize[size]} />}
@@ -70,11 +70,11 @@ export default function Checkbox({
   );
 }
 
-const StyledCheckboxContainer = styled.div<{ justifyContent: string }>`
+const StyledCheckboxContainer = styled.div<{ $justifyContent: string }>`
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
-  justify-content: ${({ justifyContent }) => justifyContent};
+  justify-content: ${({ $justifyContent }) => $justifyContent};
 `;
 
 const StyledCheckboxLabel = styled.label<{ size: CheckboxSizeType }>`
