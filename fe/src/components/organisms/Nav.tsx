@@ -44,7 +44,7 @@ export default function Nav() {
           }}
         >
           <Image src={item.src} style={{ fontSize: '0.8rem', width: '1.5rem' }} />
-          <Span>{item.label}</Span>
+          <Span $color={navTextColor}>{item.label}</Span>
         </Link>
       ))}
     </div>
