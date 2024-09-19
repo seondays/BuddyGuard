@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { StatusOfTime } from '@/components/molecules/WalkSatusBar';
+import { StatusOfTime } from '@/components/molecules/walk/WalkSatusBar';
 
 export default function useStopWatch(status: StatusOfTime) {
   const [time, setTime] = useState(0);

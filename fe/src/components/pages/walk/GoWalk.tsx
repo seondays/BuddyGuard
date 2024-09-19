@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import PlayIcon from '@/components/icons/PlayIcon';
-import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecules/WalkBuddySelectBar';
-import WalkSatusBar from '@/components/molecules/WalkSatusBar';
+import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecules/walk/WalkBuddySelectBar';
+import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
 import { NAV_HEIGHT } from '@/components/organism/Nav';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 
