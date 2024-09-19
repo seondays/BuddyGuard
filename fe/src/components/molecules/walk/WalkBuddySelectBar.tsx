@@ -1,15 +1,14 @@
 import styled, { useTheme } from 'styled-components';
 
+import Checkbox from '@/components/atoms/Checkbox';
+import Image from '@/components/atoms/Image';
+import Span from '@/components/atoms/Span';
+import { NAV_HEIGHT } from '@/components/organism/Nav';
+import { CheckboxChangeHandler } from '@/components/pages/walk/GoWalk';
 // NOTE: 임시 이미지
 import profile01 from '@public/images/profile01.png';
 import profile02 from '@public/images/profile02.png';
 import profile03 from '@public/images/profile03.png';
-
-import Checkbox from '../atoms/Checkbox';
-import Image from '../atoms/Image';
-import Span from '../atoms/Span';
-import { NAV_HEIGHT } from '../organism/Nav';
-import { CheckboxChangeHandler } from '../pages/walk/GoWalk';
 
 // TODO(Woody): API 연동
 // TODO(Woody): 대표 버디는 처음부터 체크되어있음
