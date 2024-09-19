@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import Checkbox from '@/components/atoms/Checkbox';
 import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
-import { NAV_HEIGHT } from '@/components/organism/Nav';
+import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { CheckboxChangeHandler } from '@/components/pages/walk/GoWalk';
 // NOTE: 임시 이미지
 import profile01 from '@public/images/profile01.png';

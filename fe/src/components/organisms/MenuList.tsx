@@ -1,5 +1,4 @@
-import React from 'react';
-import MenuItem from '../molecule/MenuItem';
+import MenuItem from '@/components/molecules/MenuItem';
 
 export default function MenuList() {
   // api 완성되면 배열 갯수대로 MenuItem map 돌릴 예정

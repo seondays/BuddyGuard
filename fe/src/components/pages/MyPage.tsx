@@ -1,7 +1,6 @@
-import React from 'react';
-import UserInfoBar from '../organism/UserInfoBar';
-import PageTitleBar from '../molecule/PageTitleBar';
-import MyPageList from '../organism/MyPageList';
+import PageTitleBar from '@/components/molecules/PageTitleBar';
+import MyPageList from '@/components/organisms/MyPageList';
+import UserInfoBar from '@/components/organisms/UserInfoBar';
 
 export default function MyPage() {
   return (

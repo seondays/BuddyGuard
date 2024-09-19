@@ -1,7 +1,6 @@
-import React from 'react';
-import BuddyInfoBar from '../organism/BuddyInfoBar';
-import PageTitleBar from '../molecule/PageTitleBar';
-import NotificationList from '../organism/NotificationList';
+import PageTitleBar from '../molecules/PageTitleBar';
+import BuddyInfoBar from '../organisms/BuddyInfoBar';
+import NotificationList from '../organisms/NotificationList';
 
 export default function Notification() {
   return (

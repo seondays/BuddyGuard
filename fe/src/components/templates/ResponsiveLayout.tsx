@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import Nav from '@/components/organism/Nav';
+import Nav from '@/components/organisms/Nav';
 import { HOME_DESCRIPTION_TEXT1, HOME_DESCRIPTION_TEXT2 } from '@/constants/textConstants';
 
 interface ResponsiveLayoutProps {

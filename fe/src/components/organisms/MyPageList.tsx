@@ -1,5 +1,5 @@
 import React from 'react';
-import MyPageItem from '../molecule/MypageItem';
+import MyPageItem from '../molecules/MyPageItem';
 
 export default function MyPageList() {
   return (

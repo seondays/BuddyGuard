@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
-import Image from '../atoms/Image';
-import Span from '../atoms/Span';
+import Image from '@/components/atoms/Image';
+import Span from '@/components/atoms/Span';
 
 export const NAV_HEIGHT = '4rem';
 

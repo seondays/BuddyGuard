@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import PlayIcon from '@/components/icons/PlayIcon';
-import { NAV_HEIGHT } from '@/components/organism/Nav';
+import { NAV_HEIGHT } from '@/components/organisms/Nav';
 
 import StopWatch from './StopWatch';
 
