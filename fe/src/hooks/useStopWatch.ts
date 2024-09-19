@@ -27,12 +27,14 @@ export default function useStopWatch(status: StatusOfTime) {
 
     if (status === 'pause') {
       stopTimer();
+      timeoutRef.current = null;
       return;
     }
 
     if (status === 'stop') {
       stopTimer();
       setTime(0);
+      timeoutRef.current = null;
     }
 
     return () => stopTimer();
