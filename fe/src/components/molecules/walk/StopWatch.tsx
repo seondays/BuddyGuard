@@ -16,16 +16,27 @@ export default function StopWatch({ className, children, status }: StopWatchProp
 
   return (
     <StyledStopWatchWrapper className={className}>
-      {children}
-      <div>{getTimeFormatString(time)}</div>
+      <StyledTime>{children}</StyledTime>
+      <StyledTime className="time">{getTimeFormatString(time)}</StyledTime>
     </StyledStopWatchWrapper>
   );
 }
 
+const StyledTime = styled.span`
+  margin-left: 1rem;
+  align-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const StyledStopWatchWrapper = styled.div`
   display: flex;
+  align-items: center;
 
   & * {
     color: white;
+  }
+  & .time {
+    font-size: 1.5rem;
   }
 `;

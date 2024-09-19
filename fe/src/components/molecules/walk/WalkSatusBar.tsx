@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
+import PauseIcon from '@/components/icons/PauseIcon';
 import PlayIcon from '@/components/icons/PlayIcon';
+import StopIcon from '@/components/icons/StopIcon';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 
 import StopWatch from './StopWatch';
@@ -13,12 +15,17 @@ const WALK_STATUS_BAR_HEIGHT = '8rem';
 export default function WalkSatusBar() {
   const [status, setStatus] = useState<StatusOfTime>('start');
 
+  const pauseHandler = () => setStatus('pause');
+  const stopHandler = () => setStatus('stop');
+  const playHandler = () => setStatus('start');
+
   return (
     <StyledStatusBar>
       <StyledStopWatch status={status}>시간</StyledStopWatch>
       <StyledIconWrapper>
-        <PlayIcon />
-        <PlayIcon />
+        {status === 'start' && <PauseIcon onClick={pauseHandler} />}
+        {(status === 'stop' || status === 'pause') && <PlayIcon onClick={playHandler} />}
+        <StopIcon onClick={stopHandler} />
       </StyledIconWrapper>
     </StyledStatusBar>
   );
@@ -32,14 +39,15 @@ const StyledIconWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  height: 70%;
+  gap: 1rem;
+  height: 100%;
 `;
 
 const StyledStatusBar = styled.div`
   position: absolute;
   bottom: ${NAV_HEIGHT};
   z-index: 1;
-  gap: 1rem;
+  gap: 0.5rem;
 
   display: flex;
   flex-direction: column;
