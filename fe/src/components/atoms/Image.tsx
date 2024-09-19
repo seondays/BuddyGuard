@@ -16,68 +16,11 @@ export default function Image({
   $boxShadow = false,
   $isClicked = false,
   src,
-  text,
-  textPosition,
-  $isTextHidden = true,
   style,
   ...rest
 }: ImageProps) {
-  const commonStyle = { fontSize: style?.fontSize, fontWeight: style?.fontWeight, color: style?.color };
-  return (
-    <StyledImageContainer className={className}>
-      {text && textPosition === 'top' && (
-        <StyledText style={commonStyle} $isTextHidden={$isTextHidden}>
-          {text}
-        </StyledText>
-      )}
-
-      <StyledImage {...{ $borderRadius, $boxShadow, $isClicked, src, style, ...rest }} />
-
-      {text && textPosition === 'bottom' && (
-        <StyledText $isTextHidden={$isTextHidden} style={commonStyle}>
-          {text}
-        </StyledText>
-      )}
-      {text && textPosition === 'left' && (
-        <StyledText style={commonStyle} position={textPosition} $isTextHidden={$isTextHidden}>
-          {text}
-        </StyledText>
-      )}
-      {text && textPosition === 'right' && (
-        <StyledText style={commonStyle} position={textPosition} $isTextHidden={$isTextHidden}>
-          {text}
-        </StyledText>
-      )}
-    </StyledImageContainer>
-  );
+  return <StyledImage {...{ className, $borderRadius, $boxShadow, $isClicked, src, style, ...rest }} />;
 }
-
-const StyledImageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-`;
-
-const StyledText = styled.span<{ position?: 'left' | 'right'; $isTextHidden: boolean }>`
-  margin-top: ${({ position }) => (position ? '0' : '0.5rem')};
-  margin-left: ${({ position }) => (position === 'left' ? '0.5rem' : '0')};
-  margin-right: ${({ position }) => (position === 'right' ? '0.5rem' : '0')};
-  position: ${({ position }) => (position ? 'absolute' : 'static')};
-  left: ${({ position }) => (position === 'left' ? '-1.5rem' : 'auto')};
-  right: ${({ position }) => (position === 'right' ? '-1.5rem' : 'auto')};
-  top: ${({ position }) => (position ? '50%' : 'auto')};
-  transform: ${({ position }) => (position ? 'translateY(-50%)' : 'none')};
-  color: ${({ style }) => style?.color || 'red'};
-  white-space: nowrap;
-
-  ${({ $isTextHidden }) =>
-    $isTextHidden &&
-    `width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;`};
-`;
 
 const StyledImage = styled.img<ImageProps & { $isClicked: boolean }>`
   ${({ style }) => {

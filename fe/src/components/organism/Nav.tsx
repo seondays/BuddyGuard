@@ -1,18 +1,25 @@
 import { Link } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
-import Div from '../atoms/Div';
 import Image from '../atoms/Image';
+import Span from '../atoms/Span';
 
 export const NAV_HEIGHT = '4rem';
+
+const navItems = [
+  { to: '/', src: '/assets/icons/home.png', label: '홈' },
+  { to: '/menu/walk/go', src: '/assets/icons/walk.png', label: '산책' },
+  { to: '/menu', src: '/assets/icons/menu.png', label: '메뉴' },
+  { to: '/notification', src: '/assets/icons/notification.png', label: '알림' },
+  { to: '/MyPage', src: '/assets/icons/myPage.png', label: '내 정보' },
+];
 
 export default function Nav() {
   const theme = useTheme();
   const { backgroundPrimary: navBgColor, textPrimary: navTextColor } = theme.currentTheme;
-  const commonStyle = { fontSize: '0.8rem', width: '1.5rem', color: navTextColor };
 
   return (
-    <Div
+    <div
       style={{
         display: 'flex',
         width: '100%',
@@ -21,23 +28,25 @@ export default function Nav() {
         alignItems: 'center',
         borderTop: '0.1rem solid black',
         backgroundColor: navBgColor,
+        color: navTextColor,
       }}
     >
-      <Link to="/">
-        <Image src="/assets/icons/home.png" text="홈" textPosition="bottom" style={commonStyle} />
-      </Link>
-      <Link to="/menu/walk/go">
-        <Image src="/assets/icons/walk.png" text="산책" textPosition="bottom" style={commonStyle} />
-      </Link>
-      <Link to="/menu">
-        <Image src="/assets/icons/menu.png" text="메뉴" textPosition="bottom" style={commonStyle} />
-      </Link>
-      <Link to="/notification">
-        <Image src="/assets/icons/notification.png" text="알림" textPosition="bottom" style={commonStyle} />
-      </Link>
-      <Link to="/MyPage">
-        <Image src="/assets/icons/myPage.png" text="마이페이지" textPosition="bottom" style={commonStyle} />
-      </Link>
-    </Div>
+      {navItems.map((item) => (
+        <Link
+          key={item.to}
+          to={item.to}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '0.5rem',
+            flexBasis: '20%',
+          }}
+        >
+          <Image src={item.src} style={{ fontSize: '0.8rem', width: '1.5rem' }} />
+          <Span>{item.label}</Span>
+        </Link>
+      ))}
+    </div>
   );
 }
