@@ -10,8 +10,14 @@ export const loadKakaoMapScript = (): Promise<void> => {
     const script = document.createElement('script');
     script.id = 'kakao-map-script';
     script.src = KAKAOMAP_API_SRC;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Kakao Map script load failed'));
+    script.onload = () => {
+      console.log('Kakao Map script loaded successfully');
+      resolve();
+    };
+    script.onerror = (error) => {
+      console.error('Kakao Map script load failed', error);
+      reject(new Error(`Kakao Map script load failed: ${error}`));
+    };
     document.head.appendChild(script);
   });
 };
