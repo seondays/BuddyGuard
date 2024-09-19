@@ -3,7 +3,7 @@ import { useTheme } from 'styled-components';
 
 import { StyledSVG } from '@/styles/styledSVG';
 
-interface PlayIconProps extends React.SVGProps<SVGSVGElement> {
+export interface WalkIconProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
   customStyle?: {
     $size?: number;
@@ -18,25 +18,26 @@ interface PlayIconProps extends React.SVGProps<SVGSVGElement> {
 export default function PlayIcon({
   className,
   customStyle: {
-    $size = 119,
+    $size = 53,
     $color = '',
     $stroke = 'none',
     $shadow = 'none',
-    $isCursor = false,
+    $isCursor = true,
     onClick = () => {},
   } = {},
   ...props
-}: PlayIconProps) {
+}: WalkIconProps) {
   const theme = useTheme();
   const defaultColor = theme.themeValues.colorValues.special.textForce02;
 
   return (
     <StyledSVG
       className={className}
-      viewBox="0 0 119 119"
+      viewBox="-2 -2 57 57"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      width={$size}
+      width={$size + 20}
+      height={$size + 20}
       $color={$color || defaultColor}
       $stroke={$stroke}
       $shadow={$shadow}
@@ -47,7 +48,7 @@ export default function PlayIcon({
       <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M59.5 118.25C91.9464 118.25 118.25 91.9464 118.25 59.5C118.25 27.0533 91.9464 0.75 59.5 0.75C27.0533 0.75 0.75 27.0533 0.75 59.5C0.75 91.9464 27.0533 118.25 59.5 118.25ZM51.8243 82.0941L79.5555 65.7216C84.148 63.0097 84.148 55.9903 79.5555 53.2784L51.8243 36.9059C47.3605 34.2705 41.875 37.7006 41.875 43.1273V75.8725C41.875 81.2992 47.3605 84.7296 51.8243 82.0941Z"
+        d="M26.5 53C41.1354 53 53 41.1354 53 26.5C53 11.8644 41.1354 0 26.5 0C11.8644 0 0 11.8644 0 26.5C0 41.1354 11.8644 53 26.5 53ZM23.0378 36.6914L35.5463 29.3064C37.6178 28.0831 37.6178 24.9169 35.5463 23.6937L23.0378 16.3086C21.0243 15.1199 18.55 16.6671 18.55 19.1149V33.885C18.55 36.3328 21.0243 37.8802 23.0378 36.6914Z"
       />
     </StyledSVG>
   );
