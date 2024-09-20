@@ -1,19 +1,19 @@
 package buddyguard.mybuddyguard.hospital.controller.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record HospitalRecordCreateRequest(
 
-        @NotBlank
+        @NotNull
         Long userId,
-        @NotBlank
+        @NotNull
         Long petId,
-        @NotBlank
+        @NotNull
         LocalDateTime visitDate,
-        @NotBlank
+        @NotNull
         String hospitalName,
-        @NotBlank
+        @NotNull
         String description
 ) {
 
