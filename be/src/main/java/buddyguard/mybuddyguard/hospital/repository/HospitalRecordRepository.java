@@ -11,6 +11,4 @@ public interface HospitalRecordRepository extends JpaRepository<HospitalRecord, 
 
     Optional<HospitalRecord> findByIdAndUserIdAndPetId(Long id, Long userId, Long petId);
 
-    void deleteByIdAndUserIdAndPetId(Long id, Long userId, Long petId);
-
 }
