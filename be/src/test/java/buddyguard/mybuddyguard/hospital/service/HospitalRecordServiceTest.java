@@ -1,7 +1,8 @@
 package buddyguard.mybuddyguard.hospital.service;
 
 import buddyguard.mybuddyguard.hospital.controller.reponse.HospitalRecordResponse;
-import buddyguard.mybuddyguard.hospital.controller.reponse.HospitalRecordResponse;
+import buddyguard.mybuddyguard.hospital.controller.request.HospitalRecordCreateRequest;
+import buddyguard.mybuddyguard.hospital.controller.request.HospitalRecordUpdateRequest;
 import buddyguard.mybuddyguard.hospital.entity.HospitalRecord;
 import buddyguard.mybuddyguard.hospital.mapper.HospitalRecordMapper;
 import buddyguard.mybuddyguard.hospital.repository.HospitalRecordRepository;
@@ -48,7 +49,8 @@ class HospitalRecordServiceTest {
                 expectedRecords);
 
         // When
-        List<HospitalRecordResponse> actualRecords = hospitalRecordService.getAllHospitalRecords(userId,
+        List<HospitalRecordResponse> actualRecords = hospitalRecordService.getAllHospitalRecords(
+                userId,
                 petId);
 
         // Then
@@ -71,7 +73,8 @@ class HospitalRecordServiceTest {
                 Optional.of(sampleHospitalRecord));
 
         // When
-        HospitalRecordResponse result = hospitalRecordService.getHospitalRecord(hospitalRecordId, userId,
+        HospitalRecordResponse result = hospitalRecordService.getHospitalRecord(hospitalRecordId,
+                userId,
                 petId);
 
         // Then
@@ -83,21 +86,23 @@ class HospitalRecordServiceTest {
     }
 
     @Test
-    void 병원기록_생성_시_생성된_목록_반환() {
+    void 병원기록_생성_시_생성된_레포지토리_호출() {
         // Given
+        Long hospitalRecordId = 1L;
         Long userId = 1L;
         Long petId = 1L;
-        when(hospitalRecordRepository.save(any(HospitalRecord.class))).thenReturn(
-                sampleHospitalRecord);
+
+        HospitalRecordCreateRequest request = new HospitalRecordCreateRequest(
+                userId, petId,
+                LocalDateTime.now(), "병원", "정기 검진");
+        HospitalRecord hospitalRecord = HospitalRecordMapper.toEntity(userId,
+                petId, request);
+        when(hospitalRecordRepository.save(any(HospitalRecord.class))).thenReturn(hospitalRecord);
 
         // When
-        HospitalRecordResponse createdRecord = hospitalRecordService.createHospitalRecord(userId, petId,
-                sampleHospitalRecord);
+        hospitalRecordService.createHospitalRecord(request);
+
         // Then
-        assertThat(createdRecord)
-                .isNotNull()
-                .usingRecursiveComparison()
-                .isEqualTo(sampleHospitalRecord);
         verify(hospitalRecordRepository).save(any(HospitalRecord.class));
     }
 
@@ -107,25 +112,22 @@ class HospitalRecordServiceTest {
         Long hospitalRecordId = 1L;
         Long userId = 1L;
         Long petId = 1L;
+
+        HospitalRecordUpdateRequest updateRequest = new HospitalRecordUpdateRequest(
+                LocalDateTime.now(), "업데이트된 병원", "후속 진료");
         HospitalRecord updatedRecord = new HospitalRecord(hospitalRecordId, userId, petId,
-                LocalDateTime.now(),
-                "업데이트된 병원", "후속 진료");
+                updateRequest.visitDate(),
+                updateRequest.hospitalName(), updateRequest.description());
+
         when(hospitalRecordRepository.findByIdAndUserIdAndPetId(hospitalRecordId, userId,
                 petId)).thenReturn(
                 Optional.of(sampleHospitalRecord));
         when(hospitalRecordRepository.save(any(HospitalRecord.class))).thenReturn(updatedRecord);
 
         // When
-        HospitalRecordResponse result = hospitalRecordService.updateHospitalRecord(hospitalRecordId,
-                userId,
-                petId, updatedRecord.getVisitDate(), updatedRecord.getHospitalName(),
-                updatedRecord.getDescription());
+        hospitalRecordService.updateHospitalRecord(hospitalRecordId, userId, petId, updateRequest);
 
         // Then
-        assertThat(result)
-                .isNotNull()
-                .usingRecursiveComparison()
-                .isEqualTo(HospitalRecordMapper.toResponse(updatedRecord));
         verify(hospitalRecordRepository).findByIdAndUserIdAndPetId(hospitalRecordId, userId, petId);
         verify(hospitalRecordRepository).save(any(HospitalRecord.class));
     }
