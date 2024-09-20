@@ -25,8 +25,8 @@ public class HospitalRecordController {
 
     @GetMapping
     public ResponseEntity<List<HospitalRecordResponse>> getAllHospitalRecords(
-            @PathVariable Long userId,
-            @PathVariable Long petId) {
+            @PathVariable("userId") Long userId,
+            @PathVariable("petId") Long petId) {
         List<HospitalRecordResponse> records = hospitalRecordService.getAllHospitalRecords(userId,
                 petId);
         return ResponseEntity.ok(records);
@@ -34,9 +34,9 @@ public class HospitalRecordController {
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<HospitalRecordResponse> getHospitalRecord(
-            @PathVariable Long userId,
-            @PathVariable Long petId,
-            @PathVariable Long id) {
+            @PathVariable("userId") Long userId,
+            @PathVariable("petId") Long petId,
+            @PathVariable("id") Long id) {
         HospitalRecordResponse record = hospitalRecordService.getHospitalRecord(id, userId, petId);
         return ResponseEntity.ok(record);
     }
