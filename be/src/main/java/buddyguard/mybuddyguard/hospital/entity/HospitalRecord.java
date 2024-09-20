@@ -34,4 +34,10 @@ public class HospitalRecord {
 
     @Column(name = "description", nullable = false)
     private String description;
+
+    public void update(String description, String hospitalName, LocalDateTime visitDate) {
+        this.description = description;
+        this.hospitalName = hospitalName;
+        this.visitDate = visitDate;
+    }
 }
