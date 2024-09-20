@@ -3,6 +3,10 @@ package buddyguard.mybuddyguard.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
+import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,16 +15,36 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
+
+        Info info = new Info()
+                .version("v1.0.0")
+                .title("BuddyGuard")
+                .description("버디가드의 api들을 정리합니다");
+
+        // SecuritySecheme명
+        String jwtSchemeName = "jwtAccess";
+        String jwtRefreshSchemeName = "jwtRefresh";
+
+        // API 요청헤더에 인증정보 포함
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
+        SecurityRequirement securityRefreshRequirement = new SecurityRequirement().addList(jwtRefreshSchemeName);
+        // SecuritySchemes 등록
+        Components components = new Components()
+                .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
+                        .name(jwtSchemeName)
+                        .type(SecurityScheme.Type.APIKEY)
+                        .in(In.HEADER)
+                        .name("access"))
+                .addSecuritySchemes(jwtRefreshSchemeName, new SecurityScheme()
+                        .name(jwtRefreshSchemeName)
+                        .type(Type.APIKEY)
+                        .in(In.HEADER)
+                        .name("refresh"));
+
         return new OpenAPI()
-                .components(new Components())
-                .info(apiInfo());
+                .info(info)
+                .addSecurityItem(securityRequirement)
+                .addSecurityItem(securityRefreshRequirement)
+                .components(components);
     }
-
-    private Info apiInfo() {
-        return new Info()
-                .title("buddyGuard") // API의 제목
-                .description("Springdoc을 사용한 buddyGuard Swagger UI") // API에 대한 설명
-                .version("1.0.0"); // API의 버전
-    }
-
 }
