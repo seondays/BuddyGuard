@@ -46,10 +46,10 @@ const StyledToggleTheme = styled.button`
   background-color: #fff;
   border-radius: 50%;
   border: 0.1rem solid black;
-  width: 50px;
-  height: 50px;
+  width: 3rem;
+  height: 3rem;
 
-  @media (max-width: 600px) {
+  @media (max-width: 37.5rem) {
     display: none;
   }
 `;
@@ -67,23 +67,30 @@ const StyledDescriptionArea = styled.article`
     color: ${({ theme }) => theme.currentTheme.textPrimary};
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 37.5rem) {
     display: none;
   }
 `;
 
 const StyledMobileFrame = styled.div`
   position: relative;
-  width: 390px; // iPhone 12 기준
-  height: 844px;
-  max-width: 440px; // iPhone 16 Pro Max 기준
-  max-height: 956px;
+  width: 90vw;
+  height: 90vh;
+  max-width: 27.5rem;
+  max-height: 59.75rem;
   margin: 0 auto;
   overflow: hidden;
 
-  @media (min-width: 440px) {
+  @media (min-width: 27.5rem) {
     border: 0.3rem solid ${({ theme }) => theme.themeValues.colorValues.grayscale[600]};
     border-radius: 1rem;
+  }
+
+  @media (max-width: 37.5rem) {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
   }
 `;
 
