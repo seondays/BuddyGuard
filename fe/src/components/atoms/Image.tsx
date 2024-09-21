@@ -5,9 +5,6 @@ export interface ImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElemen
   $boxShadow?: boolean;
   $isClicked?: boolean;
   src: string;
-  text?: string;
-  textPosition?: 'top' | 'bottom' | 'left' | 'right';
-  $isTextHidden?: boolean;
 }
 
 export default function Image({
