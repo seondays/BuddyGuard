@@ -91,6 +91,8 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>) => {
             content: customContents,
             map: mapInstance,
             position: newMarker.getPosition(),
+            xAnchor: 0,
+            yAnchor: 2,
           });
 
           // 닫기 버튼에 클릭 이벤트를 추가
