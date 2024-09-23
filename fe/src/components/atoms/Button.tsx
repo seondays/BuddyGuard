@@ -15,12 +15,13 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   onClick?: () => void;
   children: React.ReactNode;
 }
+export const defaultShadow = '0px 4px 12px rgba(0, 0, 0, 0.2)';
 
 export default function Button({
   children,
   $bgColor = 'white',
   $isClicked = false,
-  $boxShadow = '0px 4px 12px rgba(0, 0, 0, 0.2)',
+  $boxShadow = defaultShadow,
   onClick,
   style,
   ...rest
