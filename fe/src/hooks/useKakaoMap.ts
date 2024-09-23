@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import { getcurrentLocation, loadKakaoMapScript } from '@/helper/kakaoMapHelpers';
+import closeIcon from '@public/assets/icons/closeIcon.png';
+import mapMarkerImage from '@public/images/mapMarker.png';
 import profile01 from '@public/images/profile01.png';
+import profile02 from '@public/images/profile02.png';
 
 export type PositionType = [number, number];
 
@@ -10,7 +13,6 @@ export const defaultPosition: PositionType = [33.450701, 126.570667];
 export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [currentPosition, setCurrentPosition] = useState<PositionType>(defaultPosition);
-  const [marker, setMarker] = useState<kakao.maps.Marker | null>(null);
 
   useEffect(() => {
     const loadScript = async () => {
@@ -34,33 +36,71 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>) => {
         // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
         window.kakao.maps.load(() => {
-          //지도를 생성할 때 필요한 기본 옵션(지도의 중심좌표,지도의 레벨(확대, 축소 정도))
+          // 지도의 중심좌표, 지도의 레벨(확대, 축소 정도)
           const mapOptions = {
-            center: new window.kakao.maps.LatLng(currentPosition[0], currentPosition[1]), //지도의 중심좌표
+            center: new window.kakao.maps.LatLng(currentPosition[0], currentPosition[1]),
             level: 3,
           };
+
           if (!mapRef.current) return;
-          const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions); //지도 생성 및 객체 리턴
+          const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
           setMap(mapInstance);
 
-          // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-          const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png'; // 마커이미지의 주소입니다
-          const imageSize = new kakao.maps.Size(64, 69); // 마커이미지의 크기입니다
-          const imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-          // const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
-          const markerImage = new kakao.maps.MarkerImage(profile01, imageSize, imageOption);
+          // 마커이미지 생성
+          const imageSize = new kakao.maps.Size(65, 65);
+          const imageOption = { offset: new kakao.maps.Point(27, 69) };
+          const markerImage = new kakao.maps.MarkerImage(mapMarkerImage, imageSize, imageOption);
 
-          // 마커가 표시될 위치
           const markerPosition = new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]);
 
           const newMarker = new kakao.maps.Marker({
             position: markerPosition,
-            image: markerImage, // 마커이미지 설정
+            image: markerImage,
+            map: mapInstance,
           });
-          newMarker.setMap(mapInstance);
-          setMarker(newMarker);
-          // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
-          // newMarker.setMap(null);
+
+          // 커스텀 오버레이 생성
+          const customContents = document.createElement('div');
+          customContents.className = 'wrap';
+          customContents.style.cssText = `
+            background-color: #1B1D1F;
+            display: flex;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            border-radius: 3rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+          `;
+
+          const profileImage1 = document.createElement('img');
+          profileImage1.src = profile01;
+          profileImage1.style.cssText = 'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white;';
+
+          const profileImage2 = document.createElement('img');
+          profileImage2.src = profile02;
+          profileImage2.style.cssText = 'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white;';
+
+          const closeButton = document.createElement('img');
+          closeButton.src = closeIcon;
+          closeButton.style.cssText = 'width: 0.8rem; height: 0.8rem; margin-left: 0.2rem; cursor: pointer;';
+
+          customContents.appendChild(profileImage1);
+          customContents.appendChild(profileImage2);
+          customContents.appendChild(closeButton);
+
+          const overlay = new kakao.maps.CustomOverlay({
+            content: customContents,
+            map: mapInstance,
+            position: newMarker.getPosition(),
+          });
+
+          // 닫기 버튼에 클릭 이벤트를 추가
+          closeButton.addEventListener('click', () => {
+            overlay.setMap(null);
+          });
+
+          kakao.maps.event.addListener(newMarker, 'click', function () {
+            overlay.setMap(mapInstance);
+          });
         });
       } catch (error) {
         console.error('Map initialization error', error);
