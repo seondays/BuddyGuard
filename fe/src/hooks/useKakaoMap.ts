@@ -1,18 +1,68 @@
 import { useEffect, useState } from 'react';
 
+import { defaultShadow } from '@/components/atoms/Button';
+import { SelctedBuddy } from '@/components/pages/walk/GoWalk';
 import { getcurrentLocation, loadKakaoMapScript } from '@/helper/kakaoMapHelpers';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
-import profile01 from '@public/images/profile01.png';
-import profile02 from '@public/images/profile02.png';
 
 export type PositionType = [number, number];
 
 export const defaultPosition: PositionType = [33.450701, 126.570667];
 
-export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>) => {
+export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: SelctedBuddy[]) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [currentPosition, setCurrentPosition] = useState<PositionType>(defaultPosition);
+
+  const createOverLayElement = (buddys: SelctedBuddy[]) => {
+    // 커스텀 오버레이 생성
+    const customContents = document.createElement('div');
+    customContents.className = 'wrap';
+    customContents.style.cssText = `
+            background-color: #1B1D1F;
+            display: flex;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            border-radius: 3rem;
+            box-shadow: ${defaultShadow};
+            align-items: center;
+          `;
+
+    const ImageCssText = 'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white;';
+    buddys.forEach(({ img }) => {
+      const profileImage = document.createElement('img');
+      profileImage.src = img;
+      profileImage.style.cssText = ImageCssText;
+      customContents.appendChild(profileImage);
+    });
+
+    const closeButton = document.createElement('img');
+    closeButton.src = closeIcon;
+    closeButton.style.cssText = 'width: 0.8rem; height: 0.8rem; margin-left: 0.5rem; cursor: pointer;';
+    customContents.appendChild(closeButton);
+
+    return { customContents, closeButton };
+  };
+
+  const createCustomOverLay = (newMarker: kakao.maps.Marker, mapInstance: kakao.maps.Map, buddys: SelctedBuddy[]) => {
+    const { customContents, closeButton } = createOverLayElement(buddys);
+    const overlay = new kakao.maps.CustomOverlay({
+      content: customContents,
+      map: mapInstance,
+      position: newMarker.getPosition(),
+      xAnchor: 0,
+      yAnchor: 2,
+    });
+
+    // 닫기 버튼에 클릭 이벤트를 추가
+    closeButton.addEventListener('click', () => {
+      overlay.setMap(null);
+    });
+
+    kakao.maps.event.addListener(newMarker, 'click', function () {
+      overlay.setMap(mapInstance);
+    });
+  };
 
   useEffect(() => {
     const loadScript = async () => {
@@ -59,50 +109,7 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>) => {
             map: mapInstance,
           });
 
-          // 커스텀 오버레이 생성
-          const customContents = document.createElement('div');
-          customContents.className = 'wrap';
-          customContents.style.cssText = `
-            background-color: #1B1D1F;
-            display: flex;
-            gap: 0.3rem;
-            padding: 0.5rem 1rem;
-            border-radius: 3rem;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-          `;
-
-          const profileImage1 = document.createElement('img');
-          profileImage1.src = profile01;
-          profileImage1.style.cssText = 'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white;';
-
-          const profileImage2 = document.createElement('img');
-          profileImage2.src = profile02;
-          profileImage2.style.cssText = 'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white;';
-
-          const closeButton = document.createElement('img');
-          closeButton.src = closeIcon;
-          closeButton.style.cssText = 'width: 0.8rem; height: 0.8rem; margin-left: 0.2rem; cursor: pointer;';
-
-          customContents.appendChild(profileImage1);
-          customContents.appendChild(profileImage2);
-          customContents.appendChild(closeButton);
-
-          const overlay = new kakao.maps.CustomOverlay({
-            content: customContents,
-            map: mapInstance,
-            position: newMarker.getPosition(),
-            xAnchor: 0,
-            yAnchor: 2,
-          });
-
-          // 닫기 버튼에 클릭 이벤트를 추가
-          closeButton.addEventListener('click', () => {
-            overlay.setMap(null);
-          });
-
-          kakao.maps.event.addListener(newMarker, 'click', function () {
-            overlay.setMap(mapInstance);
-          });
+          createCustomOverLay(newMarker, mapInstance, buddys);
         });
       } catch (error) {
         console.error('Map initialization error', error);

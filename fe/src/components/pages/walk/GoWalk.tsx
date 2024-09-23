@@ -6,6 +6,9 @@ import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecul
 import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
+import profile01 from '@public/images/profile01.png';
+import profile02 from '@public/images/profile02.png';
+import profile03 from '@public/images/profile03.png';
 
 const playIconStyle = {
   $stroke: 'white',
@@ -20,12 +23,19 @@ export interface CheckboxChangeHandler {
   (checkBoxId: string, isChecked: boolean): void;
 }
 
+export interface SelctedBuddy {
+  img: string;
+}
+
 export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [isStarted, setIsStarted] = useState(false);
   const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);
 
-  useKakaoMap(mapRef);
+  // TODO(Woody): API 연결
+  const buddys: SelctedBuddy[] = [{ img: profile01 }, { img: profile02 }, { img: profile03 }];
+
+  useKakaoMap(mapRef, buddys);
 
   const startGoWalk = () => {
     if (!selectedBuddys.length) {
