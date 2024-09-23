@@ -3,6 +3,8 @@ package buddyguard.mybuddyguard.pet.entity;
 import buddyguard.mybuddyguard.pet.utils.PetType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,6 +29,7 @@ public class Pet {
     private String name;
     @Column(name = "profile_image")
     private String profileImage;
+    @Enumerated(EnumType.STRING)
     private PetType type;
     private LocalDate birth;
 }
