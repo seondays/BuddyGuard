@@ -3,9 +3,11 @@ package buddyguard.mybuddyguard.pet.service;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.contoller.request.PetRegisterRequest;
+import buddyguard.mybuddyguard.pet.contoller.response.PetWithUserListResponse;
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.pet.entity.UserPet;
 import buddyguard.mybuddyguard.pet.mapper.PetMapper;
+import buddyguard.mybuddyguard.pet.mapper.UserPetMapper;
 import buddyguard.mybuddyguard.pet.repository.PetRepository;
 import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
@@ -54,7 +56,21 @@ public class PetService {
         userPetRepository.save(userPet);
 
         log.info("REGISTER PET : {}번 {} 등록", pet.getId(), pet.getName());
-        log.info("REGISTER USER_PET : 유저 {}에게 {}번 펫 등록", userId, pet.getId());
+        log.info("REGISTER USER_PET : 유저 {}에게 {}번 펫 등록", user.getId(), pet.getId());
+    }
+
+    /**
+     * 유저에게 등록되어 있는 펫들을 조회
+     */
+    public List<PetWithUserListResponse> getPetWithUser(Long userId) {
+        List<UserPet> petWithUsers = userPetRepository.findByUserId(userId);
+        List<PetWithUserListResponse> response = new ArrayList<>();
+        for (UserPet userPet : petWithUsers) {
+            Pet pet = userPet.getPet();
+            Users user = userPet.getUser();
+            response.add(UserPetMapper.toResponse(user, pet));
+        }
+        return response;
     }
 
     /**
