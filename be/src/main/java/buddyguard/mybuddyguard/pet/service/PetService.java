@@ -50,11 +50,11 @@ public class PetService {
         userPetRepository.save(userPet);
 
         log.info("REGISTER PET : {}번 {} 등록", pet.getId(), pet.getName());
-        log.info("REGISTER USER_PET : 사용자 {}에게 {}번 펫 등록", userId, pet.getId());
+        log.info("REGISTER USER_PET : 유저 {}에게 {}번 펫 등록", userId, pet.getId());
     }
 
     /**
-     * 사용자에게 펫 등록이 가능한지 검증한다.
+     * 유저에게 펫 등록이 가능한지 검증한다.
      * @param userId
      * @return
      */
