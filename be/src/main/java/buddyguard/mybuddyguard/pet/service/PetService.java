@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.pet.service;
 
+import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.contoller.request.PetRegisterRequest;
 import buddyguard.mybuddyguard.pet.entity.Pet;
@@ -8,6 +9,8 @@ import buddyguard.mybuddyguard.pet.mapper.PetMapper;
 import buddyguard.mybuddyguard.pet.repository.PetRepository;
 import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,12 +33,13 @@ public class PetService {
 
     /**
      * 펫을 등록한다.
+     *
      * @param petRegisterRequest
      */
     @Transactional
     public void register(PetRegisterRequest petRegisterRequest) {
-        Long userId = petRegisterRequest.userId();
-        if (!validateUser(userId)) {
+        Users user = userRepository.findById(petRegisterRequest.userId()).orElseThrow();
+        if (!validateUser(user)) {
             throw new NoSuchElementException();
         }
 
@@ -44,8 +48,8 @@ public class PetService {
 
         // todo : 유저가 게스트인지 호스트인지에 따라 값이 달라져야 함
         UserPet userPet = UserPet.builder()
-                .userId(userId)
-                .petId(pet.getId())
+                .user(user)
+                .pet(pet)
                 .role(UserPetRole.GUEST).build();
         userPetRepository.save(userPet);
 
@@ -55,14 +59,12 @@ public class PetService {
 
     /**
      * 유저에게 펫 등록이 가능한지 검증한다.
-     * @param userId
+     *
+     * @param user
      * @return
      */
-    private boolean validateUser(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            return false;
-        }
-        if (userPetRepository.existsByUserExceedPetCount(userId)) {
+    private boolean validateUser(Users user) {
+        if (userPetRepository.existsByUserExceedPetCount(user.getId())) {
             return false;
         }
         return true;
