@@ -19,7 +19,7 @@ interface UseKakaoMapProps {
 
 export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked }: UseKakaoMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [currentPosition, setCurrentPosition] = useState<PositionType>(defaultPosition);
+  const [currentPositions, setCurrentPositions] = useState<PositionType[]>([defaultPosition]);
   const [changedPosition, setchangedPosition] = useState<PositionType>(defaultPosition);
 
   const createOverLayElement = (buddys: SelctedBuddy[]) => {
@@ -88,21 +88,22 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     });
   };
 
-  const moveMapToPosition = (map: kakao.maps.Map, position: PositionType) => {
+  const moveMapToPosition = (map: kakao.maps.Map, positions: PositionType[]) => {
     // 이동할 위도 경도 위치를 생성합니다
-    const moveLatLon = new kakao.maps.LatLng(position[0], position[1]);
+    const currentPosition = positions[positions.length - 1];
+    const moveLatLon = new kakao.maps.LatLng(currentPosition[0], currentPosition[1]);
     // 지도 중심을 부드럽게 이동시킵니다
     // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
     map.setLevel(2);
     map.panTo(moveLatLon);
   };
 
-  const isPositionsDifferent = (currentPosition: PositionType, changedPosition: PositionType) =>
-    !currentPosition.every((value, index) => value === changedPosition[index]);
+  const isPositionsDifferent = (currentPositions: PositionType[], changedPosition: PositionType) =>
+    !currentPositions[currentPositions.length - 1].every((value, index) => value === changedPosition[index]);
 
   useEffect(() => {
-    if (isTargetClicked && isPositionsDifferent(currentPosition, changedPosition) && map) {
-      moveMapToPosition(map, currentPosition);
+    if (isTargetClicked && isPositionsDifferent(currentPositions, changedPosition) && map) {
+      moveMapToPosition(map, currentPositions);
 
       setIsTargetClicked(false);
     }
@@ -125,14 +126,15 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
       try {
         // 위치 가져오기
         const currentLocation = await getcurrentLocation();
-        setCurrentPosition(currentLocation);
+
+        setCurrentPositions([currentLocation]);
 
         // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
         window.kakao.maps.load(() => {
           // 지도의 중심좌표, 지도의 레벨(확대, 축소 정도)
           const mapOptions = {
-            center: new window.kakao.maps.LatLng(currentPosition[0], currentPosition[1]),
+            center: new window.kakao.maps.LatLng(currentPositions[0][0], currentPositions[0][1]),
             level: 3,
           };
 
@@ -161,7 +163,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     };
 
     initMap();
-  }, [mapRef, currentPosition]);
+  }, [mapRef, currentPositions]);
 
   useEffect(() => {
     const handleResize = () => {
