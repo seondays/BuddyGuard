@@ -72,10 +72,16 @@ const StyledMobileWrapper = styled.div`
   margin: 0 auto;
   position: relative;
   overflow: hidden;
+
+  @media (min-width: 481px) {
+    margin: 1rem 4rem;
+    border: 0.2rem solid black;
+  }
 `;
 
 const StyledNavWrapper = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
+  background: white;
 `;
