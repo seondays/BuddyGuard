@@ -13,6 +13,7 @@ export const defaultPosition: PositionType = [33.450701, 126.570667];
 export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: SelctedBuddy[]) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [currentPosition, setCurrentPosition] = useState<PositionType>(defaultPosition);
+  const [changedPosition, setchangedPosition] = useState<PositionType>(defaultPosition);
 
   const createOverLayElement = (buddys: SelctedBuddy[]) => {
     // 커스텀 오버레이 생성
@@ -109,7 +110,18 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: Sel
           };
 
           if (!mapRef.current) return;
+
           const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
+
+          // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+          kakao.maps.event.addListener(mapInstance, 'center_changed', function () {
+            //const level = mapInstance.getLevel(); // 지도의  레벨을 얻어옵니다
+            const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
+            const lat = center.getLat(); // 위도
+            const lng = center.getLng(); // 경도
+            setchangedPosition([lat, lng]);
+          });
+
           setMap(mapInstance);
 
           // 마커이미지, 오버레이 생성
