@@ -37,7 +37,7 @@ export default function GoWalk() {
   // TODO(Woody): API 연결
   const buddys: SelctedBuddy[] = [{ img: profile01 }, { img: profile02 }, { img: profile03 }];
 
-  useKakaoMap(mapRef, buddys, isTargetClicked, setIsTargetClicked);
+  useKakaoMap({ mapRef, buddys, isTargetClicked, setIsTargetClicked });
 
   const startGoWalk = () => {
     if (!selectedBuddys.length) {

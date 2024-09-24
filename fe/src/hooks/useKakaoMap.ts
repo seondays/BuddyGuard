@@ -10,9 +10,17 @@ export type PositionType = [number, number];
 
 export const defaultPosition: PositionType = [33.450701, 126.570667];
 
-export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: SelctedBuddy[]) => {
+interface UseKakaoMapProps {
+  mapRef: React.RefObject<HTMLDivElement>;
+  buddys: SelctedBuddy[];
+  isTargetClicked: boolean;
+  setIsTargetClicked: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked }: UseKakaoMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [currentPosition, setCurrentPosition] = useState<PositionType>(defaultPosition);
+  const [changedPosition, setchangedPosition] = useState<PositionType>(defaultPosition);
 
   const createOverLayElement = (buddys: SelctedBuddy[]) => {
     // 커스텀 오버레이 생성
@@ -44,6 +52,22 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: Sel
     return { customContents, closeButton };
   };
 
+  const createMarker = (currentLocation: PositionType, mapInstance: kakao.maps.Map) => {
+    const imageSize = new kakao.maps.Size(65, 65);
+    const imageOption = { offset: new kakao.maps.Point(27, 69) };
+    const markerImage = new kakao.maps.MarkerImage(mapMarkerImage, imageSize, imageOption);
+
+    const markerPosition = new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]);
+
+    const newMarker = new kakao.maps.Marker({
+      position: markerPosition,
+      image: markerImage,
+      map: mapInstance,
+    });
+
+    return newMarker;
+  };
+
   const createCustomOverLay = (newMarker: kakao.maps.Marker, mapInstance: kakao.maps.Map, buddys: SelctedBuddy[]) => {
     const { customContents, closeButton } = createOverLayElement(buddys);
     const overlay = new kakao.maps.CustomOverlay({
@@ -63,6 +87,26 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: Sel
       overlay.setMap(mapInstance);
     });
   };
+
+  const moveMapToPosition = (map: kakao.maps.Map, position: PositionType) => {
+    // 이동할 위도 경도 위치를 생성합니다
+    const moveLatLon = new kakao.maps.LatLng(position[0], position[1]);
+    // 지도 중심을 부드럽게 이동시킵니다
+    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+    map.setLevel(2);
+    map.panTo(moveLatLon);
+  };
+
+  const isPositionsDifferent = (currentPosition: PositionType, changedPosition: PositionType) =>
+    !currentPosition.every((value, index) => value === changedPosition[index]);
+
+  useEffect(() => {
+    if (isTargetClicked && isPositionsDifferent(currentPosition, changedPosition) && map) {
+      moveMapToPosition(map, currentPosition);
+
+      setIsTargetClicked(false);
+    }
+  }, [isTargetClicked]);
 
   useEffect(() => {
     const loadScript = async () => {
@@ -93,22 +137,22 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: Sel
           };
 
           if (!mapRef.current) return;
+
           const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
-          setMap(mapInstance);
 
-          // 마커이미지 생성
-          const imageSize = new kakao.maps.Size(65, 65);
-          const imageOption = { offset: new kakao.maps.Point(27, 69) };
-          const markerImage = new kakao.maps.MarkerImage(mapMarkerImage, imageSize, imageOption);
-
-          const markerPosition = new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]);
-
-          const newMarker = new kakao.maps.Marker({
-            position: markerPosition,
-            image: markerImage,
-            map: mapInstance,
+          // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+          kakao.maps.event.addListener(mapInstance, 'center_changed', function () {
+            //const level = mapInstance.getLevel(); // 지도의  레벨을 얻어옵니다
+            const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
+            const lat = center.getLat(); // 위도
+            const lng = center.getLng(); // 경도
+            setchangedPosition([lat, lng]);
           });
 
+          setMap(mapInstance);
+
+          // 마커이미지, 오버레이 생성
+          const newMarker = createMarker(currentLocation, mapInstance);
           createCustomOverLay(newMarker, mapInstance, buddys);
         });
       } catch (error) {
