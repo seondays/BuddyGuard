@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,5 +37,13 @@ public class PetController {
         List<PetWithUserListResponse> response = service.getPetWithUser(userId);
 
         return ResponseEntity.ok(response);
+    }
+
+    // 반려동물 삭제
+    @DeleteMapping("/pet/{userId}/{petId}")
+    public ResponseEntity<?> deletePet(@PathVariable("userId") Long userId,
+            @PathVariable("petId") Long petId) {
+        service.delete(userId, petId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

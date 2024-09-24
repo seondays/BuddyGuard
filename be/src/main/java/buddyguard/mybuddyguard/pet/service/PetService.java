@@ -74,6 +74,27 @@ public class PetService {
     }
 
     /**
+     * 유저에게 등록된 펫을 삭제한다. 호스트 권한의 유저가 펫을 삭제하는 경우, 게스트 유저들과 해당 펫의 연결도 모두 삭제된다.
+     *
+     * @param userId
+     * @param petId
+     */
+    @Transactional
+    public void delete(Long userId, Long petId) {
+        UserPet userPetInfo = userPetRepository.findByUserIdAndPetId(userId, petId).orElseThrow();
+        UserPetRole role = userPetInfo.getRole();
+
+        userPetRepository.delete(userPetInfo);
+
+        if (role.equals(UserPetRole.HOST)) {
+            List<UserPet> guests = userPetRepository.getAllByPetId(petId);
+            if (!guests.isEmpty()) {
+                userPetRepository.deleteAll(guests);
+            }
+        }
+    }
+
+    /**
      * 유저에게 펫 등록이 가능한지 검증한다.
      *
      * @param user
