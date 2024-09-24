@@ -77,6 +77,13 @@ public class PetService {
         return response;
     }
 
+    public PetWithUserListResponse getOnePetWithUser(Long userId, Long petId) {
+        UserPet userPetInfo = userPetRepository.findByUserIdAndPetId(userId, petId)
+                .orElseThrow(UserInformationNotFoundException::new);
+
+        return UserPetMapper.toResponse(userPetInfo.getUser(), userPetInfo.getPet());
+    }
+
     /**
      * 유저에게 등록된 펫을 삭제한다. 호스트 권한의 유저가 펫을 삭제하는 경우, 게스트 유저들과 해당 펫의 연결도 모두 삭제된다.
      *

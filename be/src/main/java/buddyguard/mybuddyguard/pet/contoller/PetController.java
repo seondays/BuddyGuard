@@ -41,6 +41,15 @@ public class PetController {
         return ResponseEntity.ok(response);
     }
 
+    // 회원과 연관된 특정 반려동물 조회
+    @GetMapping("/{userId}/{petId}")
+    public ResponseEntity<?> getOnePetWithUser(@PathVariable("userId") Long userId,
+            @PathVariable("petId") Long petId) {
+        PetWithUserListResponse response = service.getOnePetWithUser(userId, petId);
+
+        return ResponseEntity.ok(response);
+    }
+
     // 반려동물 삭제
     @DeleteMapping("/{userId}/{petId}")
     public ResponseEntity<?> deletePet(@PathVariable("userId") Long userId,
