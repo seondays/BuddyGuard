@@ -10,7 +10,14 @@ export type PositionType = [number, number];
 
 export const defaultPosition: PositionType = [33.450701, 126.570667];
 
-export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: SelctedBuddy[]) => {
+interface UseKakaoMapProps {
+  mapRef: React.RefObject<HTMLDivElement>;
+  buddys: SelctedBuddy[];
+  isTargetClicked: boolean;
+  setIsTargetClicked: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked }: UseKakaoMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [currentPosition, setCurrentPosition] = useState<PositionType>(defaultPosition);
   const [changedPosition, setchangedPosition] = useState<PositionType>(defaultPosition);
@@ -80,6 +87,24 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: Sel
       overlay.setMap(mapInstance);
     });
   };
+
+  const moveMapToPosition = (map: kakao.maps.Map, position: PositionType) => {
+    // 이동할 위도 경도 위치를 생성합니다
+    const moveLatLon = new kakao.maps.LatLng(position[0], position[1]);
+    // 지도 중심을 부드럽게 이동시킵니다
+    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+    map.panTo(moveLatLon);
+  };
+
+  const isPositionsDifferent = (currentPosition: PositionType, changedPosition: PositionType) =>
+    !currentPosition.every((value, index) => value === changedPosition[index]);
+
+  useEffect(() => {
+    if (isTargetClicked && isPositionsDifferent(currentPosition, changedPosition) && map) {
+      moveMapToPosition(map, currentPosition);
+      setIsTargetClicked(false);
+    }
+  }, [isTargetClicked]);
 
   useEffect(() => {
     const loadScript = async () => {
