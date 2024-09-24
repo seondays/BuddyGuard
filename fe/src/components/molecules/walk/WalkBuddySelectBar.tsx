@@ -96,11 +96,15 @@ const StyledBuddyWrapper = styled.div`
 const StyledSlideWrapper = styled.div<{ $buddyCount: number }>`
   margin-top: 1rem;
   display: flex;
-  overflow-x: auto;
   width: 100%;
   height: 80%;
   align-items: center;
   justify-content: ${({ $buddyCount }) => ($buddyCount < 4 ? `center` : `flex-start`)};
+
+  overflow: overlay;
+  -ms-overflow-style: none;
+  scrollbar-width: thin;
+
   //TODO(Woody): 차이가 있는지 체감
   /* scroll-snap-type: x mandatory; */
   /* -webkit-overflow-scrolling: touch; */
