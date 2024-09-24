@@ -6,6 +6,7 @@ import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecul
 import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
+import targetIcon from '@public/assets/icons/targetIcon.png';
 import profile01 from '@public/images/profile01.png';
 import profile02 from '@public/images/profile02.png';
 import profile03 from '@public/images/profile03.png';
@@ -31,11 +32,12 @@ export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [isStarted, setIsStarted] = useState(false);
   const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);
+  const [isTargetClicked, setIsTargetClicked] = useState(false);
 
   // TODO(Woody): API 연결
   const buddys: SelctedBuddy[] = [{ img: profile01 }, { img: profile02 }, { img: profile03 }];
 
-  useKakaoMap(mapRef, buddys);
+  useKakaoMap(mapRef, buddys, isTargetClicked, setIsTargetClicked);
 
   const startGoWalk = () => {
     if (!selectedBuddys.length) {
@@ -56,7 +58,12 @@ export default function GoWalk() {
       <StyledWalkWrapper>
         {!isStarted && <StyledBlockLayer />}
         {!isStarted && <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />}
-        <StyledMap ref={mapRef}></StyledMap>
+        {isStarted && (
+          <StyledTargetIcon onClick={() => setIsTargetClicked((prev) => !prev)}>
+            <img src={targetIcon} />
+          </StyledTargetIcon>
+        )}
+        <StyledMap ref={mapRef} />
         {isStarted ? (
           <WalkSatusBar />
         ) : (
@@ -66,6 +73,27 @@ export default function GoWalk() {
     </>
   );
 }
+
+const StyledTargetIcon = styled.div`
+  position: absolute;
+  z-index: 999;
+  left: 1rem;
+  bottom: calc(${NAV_HEIGHT} + ${BUDDY_SELECTBAR_HEIGHT});
+  background-color: white;
+  border: 0.2rem solid grey;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1rem;
+  cursor: pointer;
+
+  & img {
+    width: 80%;
+    height: 80%;
+  }
+`;
 
 const StyledBlockLayer = styled.div`
   position: absolute;
