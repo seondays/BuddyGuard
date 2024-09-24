@@ -3,6 +3,7 @@ package buddyguard.mybuddyguard.pet.service;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.contoller.request.PetRegisterRequest;
+import buddyguard.mybuddyguard.pet.contoller.request.PetUpdateInformationRequest;
 import buddyguard.mybuddyguard.pet.contoller.response.PetWithUserListResponse;
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.pet.entity.UserPet;
@@ -16,7 +17,6 @@ import buddyguard.mybuddyguard.weight.exception.PetNotFoundException;
 import buddyguard.mybuddyguard.weight.exception.UserInformationNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,6 +97,21 @@ public class PetService {
                 userPetRepository.deleteAll(guests);
             }
         }
+    }
+
+    @Transactional
+    public void update(Long userId, Long petId,
+            PetUpdateInformationRequest petUpdateInformationRequest) {
+        if (!userPetRepository.existsByUserIdAndPetId(userId, petId)) {
+            throw new UserInformationNotFoundException();
+        }
+        Pet pet = repository.findById(petId).orElseThrow(PetNotFoundException::new);
+
+        pet.update(petUpdateInformationRequest.name(),
+                petUpdateInformationRequest.profileImage(),
+                petUpdateInformationRequest.birth());
+
+        log.info("UPDATE PET : {}번 펫 정보 수정 완료", petId);
     }
 
     /**

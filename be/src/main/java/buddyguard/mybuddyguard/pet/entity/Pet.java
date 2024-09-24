@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class Pet {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,4 +33,16 @@ public class Pet {
     @Enumerated(EnumType.STRING)
     private PetType type;
     private LocalDate birth;
+
+    public void update(String name, String profileImage, LocalDate birth) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (profileImage != null) {
+            this.profileImage = profileImage;
+        }
+        if (birth != null) {
+            this.birth = birth;
+        }
+    }
 }
