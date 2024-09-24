@@ -93,6 +93,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     const moveLatLon = new kakao.maps.LatLng(position[0], position[1]);
     // 지도 중심을 부드럽게 이동시킵니다
     // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+    map.setLevel(2);
     map.panTo(moveLatLon);
   };
 
@@ -102,6 +103,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
   useEffect(() => {
     if (isTargetClicked && isPositionsDifferent(currentPosition, changedPosition) && map) {
       moveMapToPosition(map, currentPosition);
+
       setIsTargetClicked(false);
     }
   }, [isTargetClicked]);
