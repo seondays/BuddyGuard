@@ -11,6 +11,9 @@ import buddyguard.mybuddyguard.pet.mapper.UserPetMapper;
 import buddyguard.mybuddyguard.pet.repository.PetRepository;
 import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
+import buddyguard.mybuddyguard.weight.exception.InvalidPetRegisterException;
+import buddyguard.mybuddyguard.weight.exception.PetNotFoundException;
+import buddyguard.mybuddyguard.weight.exception.UserInformationNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -40,9 +43,10 @@ public class PetService {
      */
     @Transactional
     public void register(PetRegisterRequest petRegisterRequest) {
-        Users user = userRepository.findById(petRegisterRequest.userId()).orElseThrow();
+        Users user = userRepository.findById(petRegisterRequest.userId()).orElseThrow(
+                UserInformationNotFoundException::new);
         if (!validateUser(user)) {
-            throw new NoSuchElementException();
+            throw new InvalidPetRegisterException();
         }
 
         Pet toPet = PetMapper.toEntity(petRegisterRequest);
@@ -81,7 +85,8 @@ public class PetService {
      */
     @Transactional
     public void delete(Long userId, Long petId) {
-        UserPet userPetInfo = userPetRepository.findByUserIdAndPetId(userId, petId).orElseThrow();
+        UserPet userPetInfo = userPetRepository.findByUserIdAndPetId(userId, petId)
+                .orElseThrow(UserInformationNotFoundException::new);
         UserPetRole role = userPetInfo.getRole();
 
         userPetRepository.delete(userPetInfo);
