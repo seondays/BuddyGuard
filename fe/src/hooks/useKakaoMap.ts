@@ -44,6 +44,22 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: Sel
     return { customContents, closeButton };
   };
 
+  const createMarker = (currentLocation: PositionType, mapInstance: kakao.maps.Map) => {
+    const imageSize = new kakao.maps.Size(65, 65);
+    const imageOption = { offset: new kakao.maps.Point(27, 69) };
+    const markerImage = new kakao.maps.MarkerImage(mapMarkerImage, imageSize, imageOption);
+
+    const markerPosition = new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]);
+
+    const newMarker = new kakao.maps.Marker({
+      position: markerPosition,
+      image: markerImage,
+      map: mapInstance,
+    });
+
+    return newMarker;
+  };
+
   const createCustomOverLay = (newMarker: kakao.maps.Marker, mapInstance: kakao.maps.Map, buddys: SelctedBuddy[]) => {
     const { customContents, closeButton } = createOverLayElement(buddys);
     const overlay = new kakao.maps.CustomOverlay({
@@ -96,19 +112,8 @@ export const useKakaoMap = (mapRef: React.RefObject<HTMLDivElement>, buddys: Sel
           const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
           setMap(mapInstance);
 
-          // 마커이미지 생성
-          const imageSize = new kakao.maps.Size(65, 65);
-          const imageOption = { offset: new kakao.maps.Point(27, 69) };
-          const markerImage = new kakao.maps.MarkerImage(mapMarkerImage, imageSize, imageOption);
-
-          const markerPosition = new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]);
-
-          const newMarker = new kakao.maps.Marker({
-            position: markerPosition,
-            image: markerImage,
-            map: mapInstance,
-          });
-
+          // 마커이미지, 오버레이 생성
+          const newMarker = createMarker(currentLocation, mapInstance);
           createCustomOverLay(newMarker, mapInstance, buddys);
         });
       } catch (error) {
