@@ -24,15 +24,12 @@ public class PetController {
 
     private final PetService service;
 
-    // 반려동물 등록
     @PostMapping
-    public ResponseEntity<?> registerPet(@RequestBody PetRegisterRequest petRegisterRequest) {
-
+    public ResponseEntity<Void> registerPet(@RequestBody PetRegisterRequest petRegisterRequest) {
         service.register(petRegisterRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // 회원과 연결된 반려동물 조회
     @GetMapping("/{userId}")
     public ResponseEntity<List<PetWithUserListResponse>> getPetWithUser(
             @PathVariable("userId") Long userId) {
@@ -41,26 +38,23 @@ public class PetController {
         return ResponseEntity.ok(response);
     }
 
-    // 회원과 연관된 특정 반려동물 조회
     @GetMapping("/{userId}/{petId}")
-    public ResponseEntity<?> getOnePetWithUser(@PathVariable("userId") Long userId,
-            @PathVariable("petId") Long petId) {
+    public ResponseEntity<PetWithUserListResponse> getOnePetWithUser(
+            @PathVariable("userId") Long userId, @PathVariable("petId") Long petId) {
         PetWithUserListResponse response = service.getOnePetWithUser(userId, petId);
 
         return ResponseEntity.ok(response);
     }
 
-    // 반려동물 삭제
     @DeleteMapping("/{userId}/{petId}")
-    public ResponseEntity<?> deletePet(@PathVariable("userId") Long userId,
+    public ResponseEntity<Void> deletePet(@PathVariable("userId") Long userId,
             @PathVariable("petId") Long petId) {
         service.delete(userId, petId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 반려동물 수정
     @PatchMapping("/{userId}/{petId}")
-    public ResponseEntity<?> updatePetInformation(@PathVariable("userId") Long userId,
+    public ResponseEntity<Void> updatePetInformation(@PathVariable("userId") Long userId,
             @PathVariable("petId") Long petId,
             @RequestBody PetUpdateInformationRequest petUpdateInformationRequest) {
         service.update(userId, petId, petUpdateInformationRequest);

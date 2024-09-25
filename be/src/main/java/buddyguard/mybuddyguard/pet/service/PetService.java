@@ -118,6 +118,8 @@ public class PetService {
                 petUpdateInformationRequest.profileImage(),
                 petUpdateInformationRequest.birth());
 
+        repository.save(pet);
+
         log.info("UPDATE PET : {}번 펫 정보 수정 완료", petId);
     }
 
