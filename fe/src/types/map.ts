@@ -1,3 +1,5 @@
+export type StatusOfTime = 'start' | 'pause' | 'stop';
+
 export type PositionType = [number, number];
 
 export interface PositionPair {

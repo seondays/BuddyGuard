@@ -6,7 +6,7 @@ import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecul
 import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
-import { SelctedBuddy } from '@/types/map';
+import { SelctedBuddy, StatusOfTime } from '@/types/map';
 import targetIcon from '@public/assets/icons/targetIcon.png';
 import profile01 from '@public/images/profile01.png';
 import profile02 from '@public/images/profile02.png';
@@ -30,11 +30,12 @@ export default function GoWalk() {
   const [isStarted, setIsStarted] = useState(false);
   const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);
   const [isTargetClicked, setIsTargetClicked] = useState(false);
+  const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
 
   // TODO(Woody): API 연결
   const buddys: SelctedBuddy[] = [{ img: profile01 }, { img: profile02 }, { img: profile03 }];
 
-  useKakaoMap({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted });
+  useKakaoMap({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted, walkStatus });
 
   const startGoWalk = () => {
     if (!selectedBuddys.length) {
@@ -62,7 +63,7 @@ export default function GoWalk() {
         )}
         <StyledMap ref={mapRef} />
         {isStarted ? (
-          <WalkSatusBar />
+          <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} />
         ) : (
           <WalkBuddySelectBar selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
         )}

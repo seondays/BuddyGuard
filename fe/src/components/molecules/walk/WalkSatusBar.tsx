@@ -1,30 +1,30 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 
 import PauseIcon from '@/components/icons/PauseIcon';
 import PlayIcon from '@/components/icons/PlayIcon';
 import StopIcon from '@/components/icons/StopIcon';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
+import { StatusOfTime } from '@/types/map';
 
 import StopWatch from './StopWatch';
 
-export type StatusOfTime = 'start' | 'pause' | 'stop';
-
 const WALK_STATUS_BAR_HEIGHT = '8rem';
 
-export default function WalkSatusBar() {
-  const [status, setStatus] = useState<StatusOfTime>('start');
-
-  const pauseHandler = () => setStatus('pause');
-  const stopHandler = () => setStatus('stop');
-  const playHandler = () => setStatus('start');
+interface WalkStatusBarProps {
+  walkStatus: StatusOfTime;
+  setWalkStatus: React.Dispatch<React.SetStateAction<StatusOfTime>>;
+}
+export default function WalkSatusBar({ walkStatus, setWalkStatus }: WalkStatusBarProps) {
+  const pauseHandler = () => setWalkStatus('pause');
+  const stopHandler = () => setWalkStatus('stop');
+  const playHandler = () => setWalkStatus('start');
 
   return (
     <StyledStatusBar>
-      <StyledStopWatch status={status}>시간</StyledStopWatch>
+      <StyledStopWatch status={walkStatus}>시간</StyledStopWatch>
       <StyledIconWrapper>
-        {status === 'start' && <PauseIcon onClick={pauseHandler} />}
-        {(status === 'stop' || status === 'pause') && <PlayIcon onClick={playHandler} />}
+        {walkStatus === 'start' && <PauseIcon onClick={pauseHandler} />}
+        {(walkStatus === 'stop' || walkStatus === 'pause') && <PlayIcon onClick={playHandler} />}
         <StopIcon onClick={stopHandler} />
       </StyledIconWrapper>
     </StyledStatusBar>
