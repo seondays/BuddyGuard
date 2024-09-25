@@ -8,6 +8,7 @@ export default function Notification() {
     <div style={{ padding: '1rem', height: '100vh' }}>
       <PageTitleBar title="알림" />
       <BuddyInfoBar />
+
       <div style={{ height: '70vh', overflowY: 'scroll', scrollbarWidth: 'none' }}>
         <NotificationList />
       </div>

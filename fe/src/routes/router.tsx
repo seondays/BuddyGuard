@@ -65,10 +65,50 @@ export const router = createBrowserRouter([
   //   element: <GoWalk />,
   // },
   // { path: '*', element: <Root /> },
-  { path: '/menu/schedule', element: <Schedule /> },
-  { path: '/menu/health', element: <Health /> },
-  { path: '/menu/walk', element: <Walk /> },
-  { path: '/menu/walk', element: <Walk /> },
-  { path: '/menu/food', element: <Food /> },
-  { path: '/menu/weight', element: <Weight /> },
+  {
+    path: '/menu/schedule',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Schedule />{' '}
+      </ResponsiveLayout>
+    ),
+  },
+  {
+    path: '/menu/health',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Health />{' '}
+      </ResponsiveLayout>
+    ),
+  },
+  {
+    path: '/menu/walk',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Walk />{' '}
+      </ResponsiveLayout>
+    ),
+  },
+
+  {
+    path: '/menu/food',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Food />{' '}
+      </ResponsiveLayout>
+    ),
+  },
+  {
+    path: '/menu/weight',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Weight />{' '}
+      </ResponsiveLayout>
+    ),
+  },
 ]);

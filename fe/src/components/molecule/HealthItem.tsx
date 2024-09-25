@@ -1,7 +1,6 @@
-import React from 'react';
 import Span from '../atoms/Span';
 
-export default function NotificationItem({
+export default function HealthItem({
   title,
   time,
   content,
