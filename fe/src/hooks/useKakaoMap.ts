@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   createCustomOverLay,
   createMarker,
+  createOverLayElement,
   createPolyline,
   drawPolylineOnMap,
   getcurrentLocation,
@@ -27,6 +28,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
   const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
   const linePathRef = useRef<kakao.maps.LatLng[]>([]);
   const markerRef = useRef<kakao.maps.Marker | null>(null);
+  const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [positions, setPositions] = useState<PositionPair>({
@@ -46,10 +48,14 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
       currentPosition[1] + Math.random() * 0.001,
     ];
 
+    const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
+
     // linePath에 좌표 추가
-    linePathRef.current.push(new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]));
-    // 마커 위치 변경
-    markerRef.current?.setPosition(new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]));
+    linePathRef.current.push(newLatLng);
+
+    // 마커+오버레이 위치 변경
+    markerRef.current?.setPosition(newLatLng);
+    overlayRef.current?.setPosition(newLatLng);
 
     return { previous: currentPosition, current: updatedPosition };
   }, []);
@@ -135,7 +141,20 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
 
           // 마커이미지, 오버레이 생성
           markerRef.current = createMarker(currentLocation, mapInstance);
-          createCustomOverLay(markerRef.current, mapInstance, buddys);
+          const { customContents, closeButton } = createOverLayElement(buddys);
+          const overlay = createCustomOverLay(customContents, markerRef.current, mapInstance);
+          overlayRef.current = overlay;
+
+          // 닫기 버튼에 클릭 이벤트를 추가
+          closeButton.addEventListener('click', () => {
+            overlay.setMap(null);
+          });
+
+          kakao.maps.event.addListener(markerRef.current, 'click', function () {
+            overlay.setMap(mapInstance);
+          });
+
+          overlayRef.current = overlay;
         });
       } catch (error) {
         console.error('Map initialization error', error);

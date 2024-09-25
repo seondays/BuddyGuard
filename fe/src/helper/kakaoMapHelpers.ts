@@ -50,12 +50,11 @@ export const getMapPosition = ({ current }: PositionPair) => {
 };
 
 export const createCustomOverLay = (
+  customContents: HTMLDivElement,
   newMarker: kakao.maps.Marker,
-  mapInstance: kakao.maps.Map,
-  buddys: SelctedBuddy[]
+  mapInstance: kakao.maps.Map
 ) => {
-  const { customContents, closeButton } = createOverLayElement(buddys);
-  const overlay = new kakao.maps.CustomOverlay({
+  const newOverlay = new kakao.maps.CustomOverlay({
     content: customContents,
     map: mapInstance,
     position: newMarker.getPosition(),
@@ -63,14 +62,7 @@ export const createCustomOverLay = (
     yAnchor: 2,
   });
 
-  // 닫기 버튼에 클릭 이벤트를 추가
-  closeButton.addEventListener('click', () => {
-    overlay.setMap(null);
-  });
-
-  kakao.maps.event.addListener(newMarker, 'click', function () {
-    overlay.setMap(mapInstance);
-  });
+  return newOverlay;
 };
 
 export const createMarker = (currentLocation: PositionType, mapInstance: kakao.maps.Map) => {
