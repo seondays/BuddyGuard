@@ -19,12 +19,9 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-        # 디렉토리 구조 출력
-      - name: List directory
-        run: ls -la
-
       - name: Add permission for gradlew
-        run: chmod +x ./be/gradlew
+        run: chmod +x ./gradlew
+        working-directory: ./be  # 기본 디렉토리 설정
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -34,7 +31,8 @@ jobs:
           cache: 'gradle'
 
       - name: Build with Gradle
-        run: ./be/gradlew clean build
+        run: ./gradlew clean build
+        working-directory: ./be  # 기본 디렉토리 설정
 
       # 5. 현재 시간 가져오기
       - name: time for Versioning
