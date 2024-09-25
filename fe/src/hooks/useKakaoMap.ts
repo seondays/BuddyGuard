@@ -26,6 +26,7 @@ interface UseKakaoMapProps {
 export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted }: UseKakaoMapProps) => {
   const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
   const linePathRef = useRef<kakao.maps.LatLng[]>([]);
+  const markerRef = useRef<kakao.maps.Marker | null>(null);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [positions, setPositions] = useState<PositionPair>({
@@ -47,6 +48,8 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
 
     // linePath에 좌표 추가
     linePathRef.current.push(new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]));
+    // 마커 위치 변경
+    markerRef.current?.setPosition(new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]));
 
     return { previous: currentPosition, current: updatedPosition };
   }, []);
@@ -131,8 +134,8 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
           setMap(mapInstance);
 
           // 마커이미지, 오버레이 생성
-          const newMarker = createMarker(currentLocation, mapInstance);
-          createCustomOverLay(newMarker, mapInstance, buddys);
+          markerRef.current = createMarker(currentLocation, mapInstance);
+          createCustomOverLay(markerRef.current, mapInstance, buddys);
         });
       } catch (error) {
         console.error('Map initialization error', error);
