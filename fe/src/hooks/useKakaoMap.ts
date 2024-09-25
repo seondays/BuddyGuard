@@ -25,7 +25,6 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
 
-  // const [currentPositions, setCurrentPositions] = useState<PositionType[]>([defaultPosition]);
   const [positions, setPositions] = useState<PositionPair>({
     previous: null, // 초기에는 이전 위치가 없으므로 null
     current: defaultPosition, // 기본 위치를 현재 위치로 설정
@@ -89,7 +88,6 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
         // 위치 가져오기
         const currentLocation = await getcurrentLocation();
 
-        // setCurrentPositions([currentLocation]);
         setPositions((prev) => ({ ...prev, current: currentLocation }));
 
         // 지도 생성
@@ -97,7 +95,6 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
         window.kakao.maps.load(() => {
           // 지도의 중심좌표, 지도의 레벨(확대, 축소 정도)
           const mapOptions = {
-            // center: new window.kakao.maps.LatLng(currentPositions.[0], currentPositions[0][1]),
             center: new window.kakao.maps.LatLng(positions.current[0], positions.current[1]),
             level: 3,
           };
@@ -126,7 +123,6 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     };
 
     initMap();
-    // }, [mapRef, currentPositions]);
   }, [mapRef, positions]);
 
   useEffect(() => {
