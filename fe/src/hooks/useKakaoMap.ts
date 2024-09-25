@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { defaultShadow } from '@/components/atoms/Button';
-import { SelctedBuddy } from '@/components/pages/walk/GoWalk';
-import { getcurrentLocation, loadKakaoMapScript } from '@/helper/kakaoMapHelpers';
-import { PositionType } from '@/types/map';
-import closeIcon from '@public/assets/icons/closeIcon.png';
-import mapMarkerImage from '@public/images/mapMarker.png';
+import { createCustomOverLay, createMarker, getcurrentLocation, loadKakaoMapScript } from '@/helper/kakaoMapHelpers';
+import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
 
 export const defaultPosition: PositionType = [33.450701, 126.570667];
 
@@ -14,96 +10,68 @@ interface UseKakaoMapProps {
   buddys: SelctedBuddy[];
   isTargetClicked: boolean;
   setIsTargetClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  isStarted: boolean;
 }
 
-export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked }: UseKakaoMapProps) => {
+export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted }: UseKakaoMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [currentPositions, setCurrentPositions] = useState<PositionType[]>([defaultPosition]);
-  const [changedPosition, setChangedPosition] = useState<PositionType>(defaultPosition);
+  const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
 
-  const createOverLayElement = (buddys: SelctedBuddy[]) => {
-    // 커스텀 오버레이 생성
-    const customContents = document.createElement('div');
-    customContents.className = 'wrap';
-    customContents.style.cssText = `
-            background-color: #1B1D1F;
-            display: flex;
-            gap: 0.3rem;
-            padding: 0.5rem 1rem;
-            border-radius: 3rem;
-            box-shadow: ${defaultShadow};
-            align-items: center;
-          `;
-
-    const ImageCssText = 'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white;';
-    buddys.forEach(({ img }) => {
-      const profileImage = document.createElement('img');
-      profileImage.src = img;
-      profileImage.style.cssText = ImageCssText;
-      customContents.appendChild(profileImage);
-    });
-
-    const closeButton = document.createElement('img');
-    closeButton.src = closeIcon;
-    closeButton.style.cssText = 'width: 0.8rem; height: 0.8rem; margin-left: 0.5rem; cursor: pointer;';
-    customContents.appendChild(closeButton);
-
-    return { customContents, closeButton };
-  };
-
-  const createMarker = (currentLocation: PositionType, mapInstance: kakao.maps.Map) => {
-    const imageSize = new kakao.maps.Size(65, 65);
-    const imageOption = { offset: new kakao.maps.Point(27, 69) };
-    const markerImage = new kakao.maps.MarkerImage(mapMarkerImage, imageSize, imageOption);
-
-    const markerPosition = new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]);
-
-    const newMarker = new kakao.maps.Marker({
-      position: markerPosition,
-      image: markerImage,
-      map: mapInstance,
-    });
-
-    return newMarker;
-  };
-
-  const createCustomOverLay = (newMarker: kakao.maps.Marker, mapInstance: kakao.maps.Map, buddys: SelctedBuddy[]) => {
-    const { customContents, closeButton } = createOverLayElement(buddys);
-    const overlay = new kakao.maps.CustomOverlay({
-      content: customContents,
-      map: mapInstance,
-      position: newMarker.getPosition(),
-      xAnchor: 0,
-      yAnchor: 2,
-    });
-
-    // 닫기 버튼에 클릭 이벤트를 추가
-    closeButton.addEventListener('click', () => {
-      overlay.setMap(null);
-    });
-
-    kakao.maps.event.addListener(newMarker, 'click', function () {
-      overlay.setMap(mapInstance);
-    });
-  };
+  // const [currentPositions, setCurrentPositions] = useState<PositionType[]>([defaultPosition]);
+  const [positions, setPositions] = useState<PositionPair>({
+    previous: null, // 초기에는 이전 위치가 없으므로 null
+    current: defaultPosition, // 기본 위치를 현재 위치로 설정
+  });
 
   /** 이동할 위도 경도 위치를 생성합니다 */
-  const moveMapToPosition = (map: kakao.maps.Map, positions: PositionType[]) => {
-    const currentPosition = positions[positions.length - 1];
-    const moveLatLon = new kakao.maps.LatLng(currentPosition[0], currentPosition[1]);
-    map.setLevel(2);
-    map.panTo(moveLatLon);
-  };
+  // const moveMapToPosition = (map: kakao.maps.Map, positions: PositionType[], level: number) => {
+  //   const currentPosition = positions[positions.length - 1];
+  //   const moveLatLon = new kakao.maps.LatLng(currentPosition[0], currentPosition[1]);
+  //   map.setLevel(level);
+  //   map.panTo(moveLatLon);
+  // };
 
-  const isPositionsDifferent = (currentPositions: PositionType[], changedPosition: PositionType) =>
-    !currentPositions[currentPositions.length - 1].every((value, index) => value === changedPosition[index]);
+  // const isPositionsDifferent = (currentPositions: PositionType[], changedPosition: PositionType) =>
+  //   !currentPositions[currentPositions.length - 1].every((value, index) => value === changedPosition[index]);
 
-  useEffect(() => {
-    if (isTargetClicked && isPositionsDifferent(currentPositions, changedPosition) && map) {
-      moveMapToPosition(map, currentPositions);
-      setIsTargetClicked(false);
-    }
-  }, [isTargetClicked]);
+  // const addCurrentPosition = (currentLocation: [number, number]) => {
+  //   setCurrentPositions((prevPositions) => {
+  //     const lastPosition = prevPositions[prevPositions.length - 1];
+  //     if (lastPosition[0] === currentLocation[0] && lastPosition[1] === currentLocation[1]) {
+  //       return prevPositions;
+  //     } else {
+  //       return [...prevPositions, currentLocation];
+  //     }
+  //   });
+  // };
+
+  /** 임의의 위치 업데이트 함수 */
+  // const simulateLocationUpdate = () => {
+  //   setInterval(() => {
+  //     console.log('🎈');
+  //     const lastPosition = currentPositions[currentPositions.length - 1];
+  //     const updatedLocation: PositionType = [
+  //       lastPosition[0] + Math.random() * 0.001,
+  //       lastPosition[1] + Math.random() * 0.001,
+  //     ];
+  //     addCurrentPosition(updatedLocation);
+  //     // setChangedPosition((prevPosition) => [
+  //     //   prevPosition[0] + Math.random() * 0.001, // 위도 변경
+  //     //   prevPosition[1] + Math.random() * 0.001, // 경도 변경
+  //     // ]);
+  //   }, 2000);
+  // };
+
+  // useEffect(() => {
+  //   if (isStarted) simulateLocationUpdate();
+  // }, [isStarted]);
+
+  // useEffect(() => {
+  //   if (isTargetClicked && isPositionsDifferent(currentPositions, changedPosition) && map) {
+  //     moveMapToPosition(map, currentPositions, 2);
+  //     setIsTargetClicked(false);
+  //   }
+  // }, [isTargetClicked]);
 
   useEffect(() => {
     const loadScript = async () => {
@@ -123,14 +91,16 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
         // 위치 가져오기
         const currentLocation = await getcurrentLocation();
 
-        setCurrentPositions([currentLocation]);
+        // setCurrentPositions([currentLocation]);
+        setPositions((prev) => ({ ...prev, current: currentLocation }));
 
         // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
         window.kakao.maps.load(() => {
           // 지도의 중심좌표, 지도의 레벨(확대, 축소 정도)
           const mapOptions = {
-            center: new window.kakao.maps.LatLng(currentPositions[0][0], currentPositions[0][1]),
+            // center: new window.kakao.maps.LatLng(currentPositions.[0], currentPositions[0][1]),
+            center: new window.kakao.maps.LatLng(positions.current[0], positions.current[1]),
             level: 3,
           };
 
@@ -140,7 +110,6 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
 
           // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
           kakao.maps.event.addListener(mapInstance, 'center_changed', function () {
-            //const level = mapInstance.getLevel(); // 지도의  레벨을 얻어옵니다
             const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
             const lat = center.getLat(); // 위도
             const lng = center.getLng(); // 경도
@@ -159,7 +128,8 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     };
 
     initMap();
-  }, [mapRef, currentPositions]);
+    // }, [mapRef, currentPositions]);
+  }, [mapRef, positions]);
 
   useEffect(() => {
     const handleResize = () => {
