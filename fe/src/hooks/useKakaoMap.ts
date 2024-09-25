@@ -12,7 +12,7 @@ import {
   loadKakaoMapScript,
   moveMapTo,
 } from '@/helper/kakaoMapHelpers';
-import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
+import { PositionPair, PositionType, SelctedBuddy, StatusOfTime } from '@/types/map';
 
 export const defaultPosition: PositionType = [33.450701, 126.570667];
 
@@ -22,9 +22,17 @@ interface UseKakaoMapProps {
   isTargetClicked: boolean;
   setIsTargetClicked: React.Dispatch<React.SetStateAction<boolean>>;
   isStarted: boolean;
+  walkStatus: StatusOfTime;
 }
 
-export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted }: UseKakaoMapProps) => {
+export const useKakaoMap = ({
+  mapRef,
+  buddys,
+  isTargetClicked,
+  setIsTargetClicked,
+  isStarted,
+  walkStatus,
+}: UseKakaoMapProps) => {
   const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
   const linePathRef = useRef<kakao.maps.LatLng[]>([]);
   const markerRef = useRef<kakao.maps.Marker | null>(null);
@@ -80,19 +88,27 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     return intervalId;
   }, [handleDrawPolyline, updatePosition]);
 
+  const clearSimulate = () => {
+    if (!simulateIntervalID.current) return;
+    clearInterval(simulateIntervalID?.current);
+    simulateIntervalID.current = null;
+  };
+
+  // 일시 중지
+  useEffect(() => {
+    if (walkStatus === 'pause' && simulateIntervalID.current) clearSimulate();
+  }, [walkStatus]);
+
   // 위치 업데이트 인터벌 관리
   useEffect(() => {
     if (!isStarted) return;
-
+    if (walkStatus === 'stop' || walkStatus === 'pause') return;
     simulateIntervalID.current = simulateLocationUpdate();
 
     return () => {
-      if (simulateIntervalID.current) {
-        clearInterval(simulateIntervalID.current);
-        simulateIntervalID.current = null;
-      }
+      if (simulateIntervalID.current) clearSimulate();
     };
-  }, [isStarted, simulateLocationUpdate]);
+  }, [isStarted, simulateLocationUpdate, walkStatus]);
 
   // 위치가 변경되었을 때 지도 중심 이동 (지도 다시 초기화하지 않음)
   useEffect(() => {
