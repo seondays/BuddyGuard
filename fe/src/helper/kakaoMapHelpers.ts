@@ -22,6 +22,7 @@ export const loadKakaoMapScript = (): Promise<void> => {
   });
 };
 
+/** 현재 위치 가져오기 */
 export const getcurrentLocation = (): Promise<PositionType> => {
   return new Promise((resolve) => {
     if (!('geolocation' in navigator)) {

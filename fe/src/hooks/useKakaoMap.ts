@@ -20,7 +20,7 @@ interface UseKakaoMapProps {
 export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked }: UseKakaoMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [currentPositions, setCurrentPositions] = useState<PositionType[]>([defaultPosition]);
-  const [changedPosition, setchangedPosition] = useState<PositionType>(defaultPosition);
+  const [changedPosition, setChangedPosition] = useState<PositionType>(defaultPosition);
 
   const createOverLayElement = (buddys: SelctedBuddy[]) => {
     // 커스텀 오버레이 생성
@@ -88,12 +88,10 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     });
   };
 
+  /** 이동할 위도 경도 위치를 생성합니다 */
   const moveMapToPosition = (map: kakao.maps.Map, positions: PositionType[]) => {
-    // 이동할 위도 경도 위치를 생성합니다
     const currentPosition = positions[positions.length - 1];
     const moveLatLon = new kakao.maps.LatLng(currentPosition[0], currentPosition[1]);
-    // 지도 중심을 부드럽게 이동시킵니다
-    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
     map.setLevel(2);
     map.panTo(moveLatLon);
   };
@@ -104,7 +102,6 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
   useEffect(() => {
     if (isTargetClicked && isPositionsDifferent(currentPositions, changedPosition) && map) {
       moveMapToPosition(map, currentPositions);
-
       setIsTargetClicked(false);
     }
   }, [isTargetClicked]);
@@ -148,7 +145,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
             const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
             const lat = center.getLat(); // 위도
             const lng = center.getLng(); // 경도
-            setchangedPosition([lat, lng]);
+            setChangedPosition([lat, lng]);
           });
 
           setMap(mapInstance);
