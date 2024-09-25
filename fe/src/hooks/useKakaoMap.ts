@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   createCustomOverLay,
   createMarker,
+  createPolyline,
+  drawPolylineOnMap,
   getcurrentLocation,
   getMapPosition,
   isPositionsDifferent,
@@ -36,41 +38,38 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     setChangedPosition([center.getLat(), center.getLng()]); //[위도,경도]
   }, []);
 
+  const updatePosition = useCallback((prev: PositionPair): PositionPair => {
+    const currentPosition = prev.current;
+    const updatedPosition: PositionType = [
+      currentPosition[0] + Math.random() * 0.001,
+      currentPosition[1] + Math.random() * 0.001,
+    ];
+
+    // linePath에 좌표 추가
+    linePathRef.current.push(new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]));
+
+    return { previous: currentPosition, current: updatedPosition };
+  }, []);
+
+  /** 선을 지도에 그리는 함수 */
+  const handleDrawPolyline = useCallback(() => {
+    if (map && linePathRef.current.length > 1) {
+      const polyline = createPolyline(linePathRef.current);
+      drawPolylineOnMap(map, polyline);
+    }
+  }, [map]);
+
   /** 임의의 위치 업데이트 함수 */
-  const simulateLocationUpdate = () => {
+  const simulateLocationUpdate = useCallback(() => {
     const intervalId = setInterval(() => {
-      // console.log('🎈');
-      setPositions((prev) => {
-        const currentPosition = prev.current;
-        const updatedPosition: PositionType = [
-          currentPosition[0] + Math.random() * 0.001,
-          currentPosition[1] + Math.random() * 0.001,
-        ];
-
-        // linePath에 좌표 추가
-        linePathRef.current.push(new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]));
-
-        return { previous: currentPosition, current: updatedPosition };
-      });
-
-      // 지도에 표시할 선을 생성
-      if (map && linePathRef.current.length > 1) {
-        const polyline = new kakao.maps.Polyline({
-          path: linePathRef.current,
-          strokeWeight: 5,
-          strokeColor: '#FFAE00',
-          strokeOpacity: 0.7,
-          strokeStyle: 'solid',
-          zIndex: 999,
-        });
-
-        // 지도에 선을 표시합니다
-        polyline.setMap(map);
-      }
+      // 위치 업데이트
+      setPositions(updatePosition);
+      // 지도에 경로 선 그리기
+      handleDrawPolyline();
     }, 2000);
 
     return intervalId;
-  };
+  }, [handleDrawPolyline, updatePosition]);
 
   // 위치 업데이트 인터벌 관리
   useEffect(() => {
@@ -84,7 +83,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
         simulateIntervalID.current = null;
       }
     };
-  }, [isStarted]);
+  }, [isStarted, simulateLocationUpdate]);
 
   // 위치가 변경되었을 때 지도 중심 이동 (지도 다시 초기화하지 않음)
   useEffect(() => {
@@ -110,7 +109,6 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
   useEffect(() => {
     const initMap = async () => {
       try {
-        // console.log('🎇initMap');
         // 스크립트 로드
         await loadKakaoMapScript();
 

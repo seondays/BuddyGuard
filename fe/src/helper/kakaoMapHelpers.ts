@@ -5,6 +5,21 @@ import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
 
+/** Polyline 지도에 추가 */
+export const drawPolylineOnMap = (map: kakao.maps.Map, polyline: kakao.maps.Polyline) => polyline.setMap(map);
+
+/** 이동경로를 받아 Polyline 객체를 생성 */
+export const createPolyline = (path: kakao.maps.LatLng[]) => {
+  return new kakao.maps.Polyline({
+    path,
+    strokeWeight: 5,
+    strokeColor: '#FFAE00',
+    strokeOpacity: 0.7,
+    strokeStyle: 'solid',
+    zIndex: 999,
+  });
+};
+
 /** 이동한 위치와 현재 위치가 허용 오차를 초과하는지 비교 */
 export const isPositionsDifferent = (
   { current }: PositionPair,
