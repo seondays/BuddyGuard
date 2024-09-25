@@ -23,6 +23,7 @@ interface UseKakaoMapProps {
 
 export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted }: UseKakaoMapProps) => {
   const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
+  const linePathRef = useRef<kakao.maps.LatLng[]>([]);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [positions, setPositions] = useState<PositionPair>({
@@ -45,8 +46,27 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
           currentPosition[0] + Math.random() * 0.001,
           currentPosition[1] + Math.random() * 0.001,
         ];
+
+        // linePath에 좌표 추가
+        linePathRef.current.push(new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]));
+
         return { previous: currentPosition, current: updatedPosition };
       });
+
+      // 지도에 표시할 선을 생성
+      if (map && linePathRef.current.length > 1) {
+        const polyline = new kakao.maps.Polyline({
+          path: linePathRef.current,
+          strokeWeight: 5,
+          strokeColor: '#FFAE00',
+          strokeOpacity: 0.7,
+          strokeStyle: 'solid',
+          zIndex: 999,
+        });
+
+        // 지도에 선을 표시합니다
+        polyline.setMap(map);
+      }
     }, 2000);
 
     return intervalId;
