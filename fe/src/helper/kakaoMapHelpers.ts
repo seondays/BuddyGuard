@@ -5,10 +5,21 @@ import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
 
-/** 이동한 위치가 현재 위치와 다른지 비교 */
-export const isPositionsDifferent = (positions: PositionPair, changedPosition: PositionType | null) => {
+/** 이동한 위치와 현재 위치가 허용 오차를 초과하는지 비교 */
+export const isPositionsDifferent = (
+  { current }: PositionPair,
+  changedPosition: PositionType | null,
+  tolerance: number = 0.0001
+) => {
   if (!changedPosition) return true;
-  return !positions.current.every((value, index) => value === changedPosition[index]);
+
+  const [lat1, lng1] = current;
+  const [lat2, lng2] = changedPosition;
+
+  const latDiff = Math.abs(lat1 - lat2);
+  const lngDiff = Math.abs(lng1 - lng2);
+
+  return latDiff > tolerance || lngDiff > tolerance;
 };
 
 /** 지도 이동 */

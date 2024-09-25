@@ -72,15 +72,17 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
       // console.log('👓위치 이동!');
       const moveLatLon = getMapPosition(positions);
       setChangedPosition(() => [positions.current[0], positions.current[1]]);
-      moveMapTo(map, moveLatLon, 2);
+      moveMapTo(map, moveLatLon, 3);
     }
   }, [positions, map]);
 
+  // 타겟버튼 클릭 시 현재 위치로 지도 이동
   useEffect(() => {
-    if (isTargetClicked && map && isPositionsDifferent(positions, changedPosition)) {
+    if (isTargetClicked && isPositionsDifferent(positions, changedPosition) && map) {
       const moveLatLon = getMapPosition(positions);
+      setIsTargetClicked(() => false);
+      setChangedPosition(() => [positions.current[0], positions.current[1]]);
       moveMapTo(map, moveLatLon, 3);
-      setIsTargetClicked((prevClick) => !prevClick);
     }
   }, [isTargetClicked, positions, changedPosition, map, setIsTargetClicked]);
 
