@@ -1,9 +1,27 @@
 import { defaultShadow } from '@/components/atoms/Button';
 import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
 import { defaultPosition } from '@/hooks/useKakaoMap';
-import { PositionType, SelctedBuddy } from '@/types/map';
+import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
+
+/** 이동한 위치가 현재 위치와 다른지 비교 */
+export const isPositionsDifferent = (positions: PositionPair, changedPosition: PositionType | null) => {
+  if (!changedPosition) return true;
+  return !positions.current.every((value, index) => value === changedPosition[index]);
+};
+
+/** 지도 이동 */
+export const moveMapTo = (map: kakao.maps.Map, moveLatLon: kakao.maps.LatLng, mapLevel: number) => {
+  map.setLevel(mapLevel);
+  map.panTo(moveLatLon);
+};
+
+/** 이동할 위도 경도 위치를 생성 */
+export const getMapPosition = ({ current }: PositionPair) => {
+  const moveLatLon = new kakao.maps.LatLng(current[0], current[1]);
+  return moveLatLon;
+};
 
 export const createCustomOverLay = (
   newMarker: kakao.maps.Marker,

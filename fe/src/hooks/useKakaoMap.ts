@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { createCustomOverLay, createMarker, getcurrentLocation, loadKakaoMapScript } from '@/helper/kakaoMapHelpers';
+import {
+  createCustomOverLay,
+  createMarker,
+  getcurrentLocation,
+  getMapPosition,
+  isPositionsDifferent,
+  loadKakaoMapScript,
+  moveMapTo,
+} from '@/helper/kakaoMapHelpers';
 import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
 
 export const defaultPosition: PositionType = [33.450701, 126.570667];
@@ -23,22 +31,6 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     current: defaultPosition, // 기본 위치를 현재 위치로 설정
   });
 
-  /** 지도 이동 */
-  const moveMapTo = (map: kakao.maps.Map, moveLatLon: kakao.maps.LatLng, mapLevel: number) => {
-    map.setLevel(mapLevel);
-    map.panTo(moveLatLon);
-  };
-
-  /** 이동할 위도 경도 위치를 생성 */
-  const getMapPosition = ({ current }: PositionPair) => {
-    const moveLatLon = new kakao.maps.LatLng(current[0], current[1]);
-    return moveLatLon;
-  };
-
-  const isPositionsDifferent = (positions: PositionPair, changedPosition: PositionType | null) => {
-    if (!changedPosition) return true;
-    return !positions.current.every((value, index) => value === changedPosition[index]);
-  };
   // const addCurrentPosition = (currentLocation: [number, number]) => {
   //   setCurrentPositions((prevPositions) => {
   //     const lastPosition = prevPositions[prevPositions.length - 1];
@@ -77,7 +69,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
       moveMapTo(map, moveLatLon, 2);
       setIsTargetClicked(false);
     }
-  }, [isTargetClicked]);
+  }, [isTargetClicked, positions, changedPosition, map, setIsTargetClicked]);
 
   useEffect(() => {
     const loadScript = async () => {
