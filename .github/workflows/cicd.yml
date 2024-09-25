@@ -24,10 +24,10 @@ jobs:
           cache: 'gradle'
 
       - name: Add permission for gradlew
-        run: chmod +x ./be/gradlew
+        run: chmod +x ./BuddyGuard/gradlew
 
       - name: Build with Gradle
-        run: ./be/gradlew clean build
+        run: ./BuddyGuard/gradlew clean build
       
       # 5. 현재 시간 가져오기
       - name: time for Versioning
