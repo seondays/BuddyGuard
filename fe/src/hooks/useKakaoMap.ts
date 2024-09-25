@@ -94,10 +94,21 @@ export const useKakaoMap = ({
     simulateIntervalID.current = null;
   };
 
-  // 일시 중지
+  /** 현재위치로 이동 및 위치 상태 업데이트 */
+  const handleMapMoveAndStateUpdate = useCallback(() => {
+    const moveLatLon = getMapPosition(positions);
+    setIsTargetClicked(false);
+    setChangedPosition([positions.current[0], positions.current[1]]);
+    if (!map) return;
+    moveMapTo(map, moveLatLon, 3);
+  }, [map, setIsTargetClicked, positions]);
+
+  // 일시 중지, 시작 버튼
   useEffect(() => {
     if (walkStatus === 'pause' && simulateIntervalID.current) clearSimulate();
-  }, [walkStatus]);
+    if (walkStatus === 'start' && isPositionsDifferent(positions, changedPosition) && map)
+      handleMapMoveAndStateUpdate();
+  }, [walkStatus, handleMapMoveAndStateUpdate, positions, changedPosition, map]);
 
   // 위치 업데이트 인터벌 관리
   useEffect(() => {
@@ -122,13 +133,8 @@ export const useKakaoMap = ({
 
   // 타겟버튼 클릭 시 현재 위치로 지도 이동
   useEffect(() => {
-    if (isTargetClicked && isPositionsDifferent(positions, changedPosition) && map) {
-      const moveLatLon = getMapPosition(positions);
-      setIsTargetClicked(() => false);
-      setChangedPosition(() => [positions.current[0], positions.current[1]]);
-      moveMapTo(map, moveLatLon, 3);
-    }
-  }, [isTargetClicked, positions, changedPosition, map, setIsTargetClicked]);
+    if (isTargetClicked && isPositionsDifferent(positions, changedPosition) && map) handleMapMoveAndStateUpdate();
+  }, [handleMapMoveAndStateUpdate, isTargetClicked, positions, changedPosition, map]);
 
   // 최초에만 Kakao Map을 초기화 (초기 한 번만 실행)
   useEffect(() => {
