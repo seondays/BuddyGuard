@@ -23,17 +23,22 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     current: defaultPosition, // 기본 위치를 현재 위치로 설정
   });
 
-  /** 이동할 위도 경도 위치를 생성합니다 */
-  // const moveMapToPosition = (map: kakao.maps.Map, positions: PositionType[], level: number) => {
-  //   const currentPosition = positions[positions.length - 1];
-  //   const moveLatLon = new kakao.maps.LatLng(currentPosition[0], currentPosition[1]);
-  //   map.setLevel(level);
-  //   map.panTo(moveLatLon);
-  // };
+  /** 지도 이동 */
+  const moveMapTo = (map: kakao.maps.Map, moveLatLon: kakao.maps.LatLng, mapLevel: number) => {
+    map.setLevel(mapLevel);
+    map.panTo(moveLatLon);
+  };
 
-  // const isPositionsDifferent = (currentPositions: PositionType[], changedPosition: PositionType) =>
-  //   !currentPositions[currentPositions.length - 1].every((value, index) => value === changedPosition[index]);
+  /** 이동할 위도 경도 위치를 생성 */
+  const getMapPosition = ({ current }: PositionPair) => {
+    const moveLatLon = new kakao.maps.LatLng(current[0], current[1]);
+    return moveLatLon;
+  };
 
+  const isPositionsDifferent = (positions: PositionPair, changedPosition: PositionType | null) => {
+    if (!changedPosition) return true;
+    return !positions.current.every((value, index) => value === changedPosition[index]);
+  };
   // const addCurrentPosition = (currentLocation: [number, number]) => {
   //   setCurrentPositions((prevPositions) => {
   //     const lastPosition = prevPositions[prevPositions.length - 1];
@@ -66,12 +71,13 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
   //   if (isStarted) simulateLocationUpdate();
   // }, [isStarted]);
 
-  // useEffect(() => {
-  //   if (isTargetClicked && isPositionsDifferent(currentPositions, changedPosition) && map) {
-  //     moveMapToPosition(map, currentPositions, 2);
-  //     setIsTargetClicked(false);
-  //   }
-  // }, [isTargetClicked]);
+  useEffect(() => {
+    if (isTargetClicked && isPositionsDifferent(positions, changedPosition) && map) {
+      const moveLatLon = getMapPosition(positions);
+      moveMapTo(map, moveLatLon, 2);
+      setIsTargetClicked(false);
+    }
+  }, [isTargetClicked]);
 
   useEffect(() => {
     const loadScript = async () => {
