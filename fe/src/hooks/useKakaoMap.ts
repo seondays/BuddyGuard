@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   createCustomOverLay,
@@ -29,6 +29,11 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     previous: null, // 초기에는 이전 위치가 없으므로 null
     current: defaultPosition, // 기본 위치를 현재 위치로 설정
   });
+
+  const centerChangedEventListener = useCallback((mapInstance: kakao.maps.Map) => {
+    const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
+    setChangedPosition([center.getLat(), center.getLng()]); //[위도,경도]
+  }, []);
 
   // const addCurrentPosition = (currentLocation: [number, number]) => {
   //   setCurrentPositions((prevPositions) => {
@@ -87,29 +92,19 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
       try {
         // 위치 가져오기
         const currentLocation = await getcurrentLocation();
-
         setPositions((prev) => ({ ...prev, current: currentLocation }));
 
         // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
         window.kakao.maps.load(() => {
-          // 지도의 중심좌표, 지도의 레벨(확대, 축소 정도)
           const mapOptions = {
             center: new window.kakao.maps.LatLng(positions.current[0], positions.current[1]),
             level: 3,
           };
-
-          if (!mapRef.current) return;
-
           const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
 
           // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
-          kakao.maps.event.addListener(mapInstance, 'center_changed', function () {
-            const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
-            const lat = center.getLat(); // 위도
-            const lng = center.getLng(); // 경도
-            setChangedPosition([lat, lng]);
-          });
+          kakao.maps.event.addListener(mapInstance, 'center_changed', () => centerChangedEventListener(mapInstance));
 
           setMap(mapInstance);
 
@@ -123,7 +118,11 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     };
 
     initMap();
-  }, [mapRef, positions]);
+
+    return () => {
+      if (map) kakao.maps.event.removeListener(map, 'center_changed', centerChangedEventListener);
+    };
+  }, [mapRef, positions, centerChangedEventListener, buddys, map]);
 
   useEffect(() => {
     const handleResize = () => {
