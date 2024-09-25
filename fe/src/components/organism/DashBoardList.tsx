@@ -5,11 +5,6 @@ export default function DashBoardList() {
   return (
     <div>
       <DashBoard />
-      <DashBoard />
-      <DashBoard />
-      <DashBoard />
-      <DashBoard />
-      <DashBoard />
     </div>
   );
 }
