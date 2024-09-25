@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   createCustomOverLay,
@@ -24,48 +24,46 @@ interface UseKakaoMapProps {
 export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted }: UseKakaoMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
-
   const [positions, setPositions] = useState<PositionPair>({
     previous: null, // 초기에는 이전 위치가 없으므로 null
     current: defaultPosition, // 기본 위치를 현재 위치로 설정
   });
+  const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
 
   const centerChangedEventListener = useCallback((mapInstance: kakao.maps.Map) => {
     const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
     setChangedPosition([center.getLat(), center.getLng()]); //[위도,경도]
   }, []);
 
-  // const addCurrentPosition = (currentLocation: [number, number]) => {
-  //   setCurrentPositions((prevPositions) => {
-  //     const lastPosition = prevPositions[prevPositions.length - 1];
-  //     if (lastPosition[0] === currentLocation[0] && lastPosition[1] === currentLocation[1]) {
-  //       return prevPositions;
-  //     } else {
-  //       return [...prevPositions, currentLocation];
-  //     }
-  //   });
-  // };
-
   /** 임의의 위치 업데이트 함수 */
-  // const simulateLocationUpdate = () => {
-  //   setInterval(() => {
-  //     console.log('🎈');
-  //     const lastPosition = currentPositions[currentPositions.length - 1];
-  //     const updatedLocation: PositionType = [
-  //       lastPosition[0] + Math.random() * 0.001,
-  //       lastPosition[1] + Math.random() * 0.001,
-  //     ];
-  //     addCurrentPosition(updatedLocation);
-  //     // setChangedPosition((prevPosition) => [
-  //     //   prevPosition[0] + Math.random() * 0.001, // 위도 변경
-  //     //   prevPosition[1] + Math.random() * 0.001, // 경도 변경
-  //     // ]);
-  //   }, 2000);
-  // };
+  const simulateLocationUpdate = () => {
+    const intervalId = setInterval(() => {
+      // console.log('🎈');
+      setPositions((prev) => {
+        const currentPosition = prev.current;
+        const updatedPosition: PositionType = [
+          currentPosition[0] + Math.random() * 0.001,
+          currentPosition[1] + Math.random() * 0.001,
+        ];
+        return { previous: currentPosition, current: updatedPosition };
+      });
+    }, 2000);
 
-  // useEffect(() => {
-  //   if (isStarted) simulateLocationUpdate();
-  // }, [isStarted]);
+    return intervalId;
+  };
+
+  useEffect(() => {
+    if (!isStarted) return;
+
+    simulateIntervalID.current = simulateLocationUpdate();
+
+    return () => {
+      if (simulateIntervalID.current) {
+        clearInterval(simulateIntervalID.current);
+        simulateIntervalID.current = null;
+      }
+    };
+  }, [isStarted]);
 
   useEffect(() => {
     if (isTargetClicked && isPositionsDifferent(positions, changedPosition) && map) {
