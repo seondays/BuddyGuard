@@ -2,15 +2,11 @@
 name: buddyGuard_Dev_be_CI_CD
 
 # 2 워크플로가 시작될 조건 지정
-#on:
- # push:
-  #  branches:
-   #   - dev-be
 on:
   push:
     branches:
-      - dev-be
-  workflow_dispatch: # 수동으로 트리거 가능하게 설정
+      - dev-be  # dev-be 브랜치에서 푸시 이벤트 발생 시 실행
+  workflow_dispatch:  # 수동으로 트리거 가능하게 설정
 
 jobs:
   build:
