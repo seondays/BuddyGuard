@@ -22,13 +22,13 @@ interface UseKakaoMapProps {
 }
 
 export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted }: UseKakaoMapProps) => {
+  const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [positions, setPositions] = useState<PositionPair>({
     previous: null, // 초기에는 이전 위치가 없으므로 null
     current: defaultPosition, // 기본 위치를 현재 위치로 설정
   });
-  const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
 
   const centerChangedEventListener = useCallback((mapInstance: kakao.maps.Map) => {
     const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
@@ -52,6 +52,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     return intervalId;
   };
 
+  // 위치 업데이트 인터벌 관리
   useEffect(() => {
     if (!isStarted) return;
 
@@ -65,29 +66,32 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
     };
   }, [isStarted]);
 
+  // 위치가 변경되었을 때 지도 중심 이동 (지도 다시 초기화하지 않음)
   useEffect(() => {
-    if (isTargetClicked && isPositionsDifferent(positions, changedPosition) && map) {
+    if (map && positions.previous) {
+      // console.log('👓위치 이동!');
       const moveLatLon = getMapPosition(positions);
+      setChangedPosition(() => [positions.current[0], positions.current[1]]);
       moveMapTo(map, moveLatLon, 2);
-      setIsTargetClicked(false);
+    }
+  }, [positions, map]);
+
+  useEffect(() => {
+    if (isTargetClicked && map && isPositionsDifferent(positions, changedPosition)) {
+      const moveLatLon = getMapPosition(positions);
+      moveMapTo(map, moveLatLon, 3);
+      setIsTargetClicked((prevClick) => !prevClick);
     }
   }, [isTargetClicked, positions, changedPosition, map, setIsTargetClicked]);
 
-  useEffect(() => {
-    const loadScript = async () => {
-      try {
-        await loadKakaoMapScript();
-        if (!(window.kakao && mapRef.current)) return;
-      } catch (error) {
-        console.error('Kakao Map script load error', error);
-      }
-    };
-    loadScript();
-  }, [mapRef]);
-
+  // 최초에만 Kakao Map을 초기화 (초기 한 번만 실행)
   useEffect(() => {
     const initMap = async () => {
       try {
+        // console.log('🎇initMap');
+        // 스크립트 로드
+        await loadKakaoMapScript();
+
         // 위치 가져오기
         const currentLocation = await getcurrentLocation();
         setPositions((prev) => ({ ...prev, current: currentLocation }));
@@ -96,7 +100,7 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
         if (!(window.kakao && mapRef.current)) return;
         window.kakao.maps.load(() => {
           const mapOptions = {
-            center: new window.kakao.maps.LatLng(positions.current[0], positions.current[1]),
+            center: new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]),
             level: 3,
           };
           const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
@@ -115,12 +119,13 @@ export const useKakaoMap = ({ mapRef, buddys, isTargetClicked, setIsTargetClicke
       }
     };
 
-    initMap();
+    // 최초 실행
+    if (!map) initMap();
 
     return () => {
       if (map) kakao.maps.event.removeListener(map, 'center_changed', centerChangedEventListener);
     };
-  }, [mapRef, positions, centerChangedEventListener, buddys, map]);
+  }, [mapRef, map, buddys, centerChangedEventListener]);
 
   useEffect(() => {
     const handleResize = () => {
