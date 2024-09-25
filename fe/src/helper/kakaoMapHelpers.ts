@@ -1,5 +1,6 @@
 import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
-import { defaultPosition, PositionType } from '@/hooks/useKakaoMap';
+import { defaultPosition } from '@/hooks/useKakaoMap';
+import { PositionType } from '@/types/map';
 
 export const loadKakaoMapScript = (): Promise<void> => {
   return new Promise((resolve, reject) => {

@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react';
 import { defaultShadow } from '@/components/atoms/Button';
 import { SelctedBuddy } from '@/components/pages/walk/GoWalk';
 import { getcurrentLocation, loadKakaoMapScript } from '@/helper/kakaoMapHelpers';
+import { PositionType } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
-
-export type PositionType = [number, number];
 
 export const defaultPosition: PositionType = [33.450701, 126.570667];
 
