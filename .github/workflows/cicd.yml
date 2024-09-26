@@ -40,10 +40,12 @@ jobs:
       run: echo "EC2_HOST is ${{ secrets.EC2_HOST }}" 
 
     - name: Transfer files to EC2
-      uses: appleboy/scp-action@v0.1.5
+      uses: appleboy/scp-action@master
       with:
-        source: ./be/build/libs/myBuddyGuard-0.0.1-SNAPSHOT.jar  # 빌드 결과물인 JAR 파일 경로
-        target: ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/BuddyGuard  # 여기서 Secrets 값으로 통일
+        username: ${{ secrets.EC2_USER }}
+        host: ${{ secrets.EC2_HOST }}
+        source: "./be/build/libs/myBuddyGuard-0.0.1-SNAPSHOT.jar"  # 빌드 결과물인 JAR 파일 경로
+        target: "/home/ubuntu/BuddyGuard"  # 여기서 Secrets 값으로 통일
         key: ${{ secrets.EC2_SSH_KEY }}   # GitHub Secrets에 저장한 SSH Private Key 사용
         port: 22  # 추가적으로 명시
 
