@@ -32,6 +32,9 @@ jobs:
       working-directory: ./be
       run: ./gradlew build -x test  # 테스트 생략하고 빌드
 
+    - name: List build directory
+      run: ls ./be/build/libs
+
     - name: Transfer files to EC2
       uses: appleboy/scp-action@v0.1.2
       with:
