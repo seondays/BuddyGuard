@@ -51,7 +51,7 @@ jobs:
         timeout: 10m  # timeout 설정
 
     - name: SSH into EC2 and restart application
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v0.1.2
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
