@@ -1,17 +1,14 @@
-import React from 'react';
 import Span from '../atoms/Span';
+import React from 'react';
 
-export default function NotificationItem({
-  title,
-  time,
-  content,
-  onClick,
-}: {
+export interface CommonCardProps {
   title: string;
   time: string;
-  content: string;
   onClick: () => void;
-}) {
+  children: React.ReactNode;
+}
+
+export default function CommonCard({ title, time, onClick, children }: CommonCardProps) {
   return (
     <div
       onClick={onClick}
@@ -30,7 +27,7 @@ export default function NotificationItem({
         </Span>
       </div>
       <div style={{ marginTop: '3rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-        <Span>{content}</Span>
+        {children}
       </div>
     </div>
   );

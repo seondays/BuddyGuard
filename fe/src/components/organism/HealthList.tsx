@@ -1,5 +1,5 @@
 import React from 'react';
-import HealthItem from '../molecule/HealthItem';
+import CommonCard from '../molecule/CommonCard';
 
 export default function HealthList() {
   const healthList = [
@@ -29,7 +29,9 @@ export default function HealthList() {
   return (
     <div>
       {healthList.map((health, index) => (
-        <HealthItem key={index} title={health.title} time={health.time} content={health.content} />
+        <CommonCard key={index} title={health.title} time={health.time} onClick={() => NaN}>
+          {health.content}
+        </CommonCard>
       ))}
     </div>
   );
