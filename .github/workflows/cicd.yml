@@ -53,4 +53,5 @@ jobs:
         port: 22
         script: |
           pkill -f 'your-app.jar' || true   # 기존 애플리케이션 종료
-          nohup java -jar /path/to/your/deployment/folder/your-app.jar &   # 새로운 JAR 파일 실행
+          nohup java -jar /home/ubuntu/BuddyGuard/myBuddyGuard-0.0.1-SNAPSHOT.jar &   
+        
