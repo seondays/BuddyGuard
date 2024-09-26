@@ -57,6 +57,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
+        debug: true
         timeout: 10m  # timeout 설정
         script: |
           pkill -f 'myBuddyGuard-0.0.1-SNAPSHOT.jar' || true   # 기존 애플리케이션 종료
