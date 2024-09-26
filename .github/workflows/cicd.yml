@@ -47,7 +47,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}   # GitHub Secrets에 저장한 SSH Private Key 사용
 
     - name: SSH into EC2 and restart application
-      uses: appleboy/ssh-action@v0.1.2
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
