@@ -42,6 +42,7 @@ jobs:
         target: ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/BuddyGuard
         key: ${{ secrets.EC2_SSH_KEY }}   # GitHub Secrets에 저장한 SSH Private Key 사용
         port: 22
+        debug: true
 
     - name: SSH into EC2 and restart application
       uses: appleboy/ssh-action@v0.1.2
