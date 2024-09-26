@@ -5,6 +5,16 @@ import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
 
+/** 전체경로가 보이도록 지도범위 재설정 */
+export const adjustMapBounds = (map: kakao.maps.Map, linePath: kakao.maps.LatLng[]) => {
+  const bounds = new kakao.maps.LatLngBounds();
+  linePath.forEach((latLng) => {
+    bounds.extend(latLng);
+  });
+
+  map.setBounds(bounds);
+};
+
 /** Polyline 지도에 추가 */
 export const drawPolylineOnMap = (map: kakao.maps.Map, polyline: kakao.maps.Polyline) => polyline.setMap(map);
 

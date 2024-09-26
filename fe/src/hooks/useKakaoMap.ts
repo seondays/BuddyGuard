@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
+  adjustMapBounds,
   createCustomOverLay,
   createMarker,
   createOverLayElement,
@@ -102,6 +103,13 @@ export const useKakaoMap = ({
     if (!map) return;
     moveMapTo(map, moveLatLon, 3);
   }, [map, setIsTargetClicked, positions]);
+
+  // 종료 버튼
+  useEffect(() => {
+    if (walkStatus === 'stop' && linePathRef.current && map) {
+      adjustMapBounds(map, linePathRef.current);
+    }
+  }, [map, walkStatus]);
 
   // 일시 중지, 시작 버튼
   useEffect(() => {
