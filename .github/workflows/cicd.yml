@@ -35,7 +35,7 @@ jobs:
     - name: Transfer files to EC2
       uses: appleboy/scp-action@v0.1.2
       with:
-        source: build/libs/your-app.jar  # 빌드 결과물인 JAR 파일 경로
+        source: ./be/build/libs/your-app.jar  # 빌드 결과물인 JAR 파일 경로
         target: ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/path/to/your/deployment/folder
         key: ${{ secrets.EC2_SSH_KEY }}   # GitHub Secrets에 저장한 SSH Private Key 사용
         port: 22
