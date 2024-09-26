@@ -139,10 +139,16 @@ export const useKakaoMap = ({
     }
   }, [positions, map]);
 
-  // 타겟버튼 클릭 시 현재 위치로 지도 이동
+  // 타겟버튼 클릭 시 지도 재조정
   useEffect(() => {
-    if (isTargetClicked && isPositionsDifferent(positions, changedPosition) && map) handleMapMoveAndStateUpdate();
-  }, [handleMapMoveAndStateUpdate, isTargetClicked, positions, changedPosition, map]);
+    if (isTargetClicked && walkStatus === 'stop' && map) {
+      adjustMapBounds(map, linePathRef.current);
+      setIsTargetClicked(false);
+      return;
+    }
+    if (isTargetClicked && isPositionsDifferent(positions, changedPosition) && map && walkStatus !== 'stop')
+      handleMapMoveAndStateUpdate();
+  }, [isTargetClicked, positions, changedPosition, map, walkStatus, handleMapMoveAndStateUpdate, setIsTargetClicked]);
 
   // 최초에만 Kakao Map을 초기화 (초기 한 번만 실행)
   useEffect(() => {
