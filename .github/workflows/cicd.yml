@@ -35,7 +35,7 @@ jobs:
     - name: List build directory
       run: ls ./be/build/libs
 
- # Check EC2_HOST value
+    # Check EC2_HOST value (디버깅용)
     - name: Check EC2_HOST value
       run: echo "EC2_HOST is ${{ secrets.EC2_HOST }}" 
 
@@ -43,8 +43,9 @@ jobs:
       uses: appleboy/scp-action@v0.1.5
       with:
         source: ./be/build/libs/myBuddyGuard-0.0.1-SNAPSHOT.jar  # 빌드 결과물인 JAR 파일 경로
-        target: ubuntu@buddyguard.site:/home/ubuntu/BuddyGuard
+        target: ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/BuddyGuard  # 여기서 Secrets 값으로 통일
         key: ${{ secrets.EC2_SSH_KEY }}   # GitHub Secrets에 저장한 SSH Private Key 사용
+        port: 22  # 추가적으로 명시
 
     - name: SSH into EC2 and restart application
       uses: appleboy/ssh-action@master
@@ -56,4 +57,3 @@ jobs:
         script: |
           pkill -f 'myBuddyGuard-0.0.1-SNAPSHOT.jar' || true   # 기존 애플리케이션 종료
           nohup java -jar /home/ubuntu/BuddyGuard/myBuddyGuard-0.0.1-SNAPSHOT.jar &   
-        
