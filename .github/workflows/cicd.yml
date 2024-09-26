@@ -47,7 +47,7 @@ jobs:
     - name: SSH into EC2 and restart application
       uses: appleboy/ssh-action@v0.1.2
       with:
-        host: ${{ secrets.EC2_HOST }}
+        host: buddyguard.site
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
