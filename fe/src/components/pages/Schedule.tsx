@@ -9,7 +9,6 @@ export default function Schedule() {
       <PageTitleBar title="건강 관리" />
       <BuddyInfoBar />
       <CustomCalendar />
-      <div style={{ height: '70vh', overflowY: 'scroll', scrollbarWidth: 'none' }}>{/* <ScheduleList /> */}</div>
     </div>
   );
 }
