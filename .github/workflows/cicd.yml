@@ -35,6 +35,10 @@ jobs:
     - name: List build directory
       run: ls ./be/build/libs
 
+ # Check EC2_HOST value
+    - name: Check EC2_HOST value
+      run: echo "EC2_HOST is ${{ secrets.EC2_HOST }}" 
+
     - name: Transfer files to EC2
       uses: appleboy/scp-action@v0.1.5
       with:
