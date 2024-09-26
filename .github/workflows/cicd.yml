@@ -39,7 +39,7 @@ jobs:
       uses: appleboy/scp-action@v0.1.5
       with:
         source: ./be/build/libs/myBuddyGuard-0.0.1-SNAPSHOT.jar  # 빌드 결과물인 JAR 파일 경로
-        target: ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/BuddyGuard
+        target: ubuntu@$buddyguard.site:/home/ubuntu/BuddyGuard
         key: ${{ secrets.EC2_SSH_KEY }}   # GitHub Secrets에 저장한 SSH Private Key 사용
         port: 22
         debug: true
@@ -52,6 +52,6 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          pkill -f 'your-app.jar' || true   # 기존 애플리케이션 종료
+          pkill -f 'myBuddyGuard-0.0.1-SNAPSHOT.jar' || true   # 기존 애플리케이션 종료
           nohup java -jar /home/ubuntu/BuddyGuard/myBuddyGuard-0.0.1-SNAPSHOT.jar &   
         
