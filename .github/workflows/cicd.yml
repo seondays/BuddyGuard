@@ -61,4 +61,5 @@ jobs:
         timeout: 10m  # timeout 설정
         script: |
           pkill -f 'myBuddyGuard-0.0.1-SNAPSHOT.jar' || true   # 기존 애플리케이션 종료
-          nohup java -jar /home/ubuntu/BuddyGuard/myBuddyGuard-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &   # 백그라운드 실행
+          sleep 2   # 잠시 대기
+          java -jar /home/ubuntu/BuddyGuard/myBuddyGuard-0.0.1-SNAPSHOT.jar   # 백그라운드 실행 없이 테스트
