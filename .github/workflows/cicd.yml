@@ -45,9 +45,10 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         host: ${{ secrets.EC2_HOST }}
         source: "./be/build/libs/myBuddyGuard-0.0.1-SNAPSHOT.jar"  # 빌드 결과물인 JAR 파일 경로
-        target: "/home/ubuntu/BuddyGuard"  # 여기서 Secrets 값으로 통일
+        target: "/home/ubuntu/BuddyGuard"  # EC2에 전송할 위치
         key: ${{ secrets.EC2_SSH_KEY }}   # GitHub Secrets에 저장한 SSH Private Key 사용
         port: 22  # 추가적으로 명시
+        timeout: 10m  # timeout 설정
 
     - name: SSH into EC2 and restart application
       uses: appleboy/ssh-action@master
@@ -56,6 +57,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
+        timeout: 10m  # timeout 설정
         script: |
           pkill -f 'myBuddyGuard-0.0.1-SNAPSHOT.jar' || true   # 기존 애플리케이션 종료
-          nohup java -jar /home/ubuntu/BuddyGuard/myBuddyGuard-0.0.1-SNAPSHOT.jar &   
+          nohup java -jar /home/ubuntu/BuddyGuard/myBuddyGuard-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &   # 백그라운드 실행
