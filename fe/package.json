@@ -12,6 +12,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.19.3",
     "@types/styled-components": "^5.1.34",
     "html2canvas": "^1.4.1",
     "react": "^18.3.1",
