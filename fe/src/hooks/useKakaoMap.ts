@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-// import { STATIC_KAKAOMAP_API_SRC } from '@/constants/urlConstants';
 import {
   adjustMapBounds,
   createCustomOverLay,
@@ -62,8 +61,11 @@ export const useKakaoMap = ({
 
     const canvasWidth = (canvas.width = 600);
     const canvasHeight = (canvas.height = 600);
-    // 배경을 흰색으로 채우기 (배경이 투명하지 않게)
-    ctx.fillStyle = '#ffffff';
+    const paddingX = canvasWidth * 0.1;
+    const paddingY = canvasHeight * 0.1;
+
+    // 배경 그리기
+    ctx.fillStyle = '#f0f0f0';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     // 위도/경도 범위 계산
@@ -75,18 +77,18 @@ export const useKakaoMap = ({
     // 경로 그리기
     ctx.beginPath();
     linePathRef.current.forEach((point, index) => {
-      const x = ((point.getLng() - lngMin) / (lngMax - lngMin)) * canvasWidth;
-      const y = canvasHeight - ((point.getLat() - latMin) / (latMax - latMin)) * canvasHeight; // y 좌표를 반대로 그려서 일치시킴
+      const x = paddingX + ((point.getLng() - lngMin) / (lngMax - lngMin)) * (canvasWidth - 2 * paddingX);
+      const y =
+        canvasHeight - paddingY - ((point.getLat() - latMin) / (latMax - latMin)) * (canvasHeight - 2 * paddingY);
 
       if (index === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     });
 
-    ctx.strokeStyle = '#FFAE00'; // 경로 색상
-    ctx.lineWidth = 5; // 경로 두께
+    ctx.strokeStyle = '#FFAE00';
+    ctx.lineWidth = 3;
     ctx.stroke();
 
-    // 캡처된 이미지를 base64로 변환하여 저장
     const dataUrl = canvas.toDataURL('image/png');
     console.log(dataUrl);
     setCapturedImage(dataUrl);
@@ -151,11 +153,9 @@ export const useKakaoMap = ({
     moveMapTo(map, moveLatLon, defaultMapLevel);
   }, [map, setIsTargetClicked, positions]);
 
-  // 경로만 캡처 (지도가 아닌 경로만 그리기)
+  // 경로만 그리기
   useEffect(() => {
-    if (changedPosition && walkStatus === 'stop' && mapRef.current) {
-      captureMap();
-    }
+    if (changedPosition && walkStatus === 'stop' && mapRef.current) captureMap();
   }, [changedPosition, walkStatus]);
 
   // 종료 버튼
