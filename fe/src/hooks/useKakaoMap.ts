@@ -51,6 +51,26 @@ export const useKakaoMap = ({
     current: defaultPosition, // 기본 위치를 현재 위치로 설정
   });
 
+  // 격자 무늬 그리기
+  const drawGrid = (ctx: CanvasRenderingContext2D, width: number, height: number, gab: number) => {
+    ctx.strokeStyle = '#cccccc';
+    ctx.lineWidth = 0.5;
+
+    for (let x = 0; x <= width; x += gab) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+
+    for (let y = 0; y <= height; y += gab) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+  };
+
   /** 경로만 캔버스에 그리는 함수 */
   const captureMap = async () => {
     if (!canvasRef.current) return;
@@ -67,6 +87,8 @@ export const useKakaoMap = ({
     // 배경 그리기
     ctx.fillStyle = '#f0f0f0';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    const gridGab = 50;
+    drawGrid(ctx, canvasWidth, canvasHeight, gridGab);
 
     // 위도/경도 범위 계산
     const latMin = Math.min(...linePathRef.current.map((p) => p.getLat()));
