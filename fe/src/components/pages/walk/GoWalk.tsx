@@ -27,6 +27,8 @@ export interface CheckboxChangeHandler {
 
 export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null); // 캡처된 이미지를 저장할 상태
   const [isStarted, setIsStarted] = useState(false);
   const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);
   const [isTargetClicked, setIsTargetClicked] = useState(false);
@@ -35,7 +37,16 @@ export default function GoWalk() {
   // TODO(Woody): API 연결
   const buddys: SelctedBuddy[] = [{ img: profile01 }, { img: profile02 }, { img: profile03 }];
 
-  useKakaoMap({ mapRef, buddys, isTargetClicked, setIsTargetClicked, isStarted, walkStatus });
+  useKakaoMap({
+    mapRef,
+    buddys,
+    isTargetClicked,
+    setIsTargetClicked,
+    isStarted,
+    walkStatus,
+    setCapturedImage,
+    canvasRef,
+  });
 
   const startGoWalk = () => {
     if (!selectedBuddys.length) {
@@ -62,11 +73,20 @@ export default function GoWalk() {
           </StyledTargetIcon>
         )}
         <StyledMap ref={mapRef} />
+        <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* 캔버스는 숨김 */}
         {isStarted ? (
           <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} />
         ) : (
           <WalkBuddySelectBar selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
         )}
+        {/* {capturedImage && ( */}
+        <StyledBlockLayer2>
+          {/* <h3>테스트로 캡처된 이미지 미리 보기:</h3> */}
+          <img src={capturedImage || targetIcon} alt="Captured Map" style={{ width: '100%', maxWidth: '600px' }} />
+          {/* <GoogleMapsCapture /> */}
+          {/* <MapCaptureComponent /> */}
+        </StyledBlockLayer2>
+        {/* )} */}
       </StyledWalkWrapper>
     </>
   );
@@ -93,6 +113,13 @@ const StyledTargetIcon = styled.div`
   }
 `;
 
+const StyledBlockLayer2 = styled.div`
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  min-width: 100%;
+  min-height: 50%;
+`;
 const StyledBlockLayer = styled.div`
   position: absolute;
   top: 0;

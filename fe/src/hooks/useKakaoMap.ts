@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+// import { STATIC_KAKAOMAP_API_SRC } from '@/constants/urlConstants';
 import {
   adjustMapBounds,
   createCustomOverLay,
@@ -24,7 +25,11 @@ interface UseKakaoMapProps {
   setIsTargetClicked: React.Dispatch<React.SetStateAction<boolean>>;
   isStarted: boolean;
   walkStatus: StatusOfTime;
+  setCapturedImage: React.Dispatch<React.SetStateAction<string | null>>;
+  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
 }
+
+const defaultMapLevel = 3;
 
 export const useKakaoMap = ({
   mapRef,
@@ -33,6 +38,8 @@ export const useKakaoMap = ({
   setIsTargetClicked,
   isStarted,
   walkStatus,
+  setCapturedImage,
+  canvasRef,
 }: UseKakaoMapProps) => {
   const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
   const linePathRef = useRef<kakao.maps.LatLng[]>([]);
@@ -44,6 +51,46 @@ export const useKakaoMap = ({
     previous: null, // 초기에는 이전 위치가 없으므로 null
     current: defaultPosition, // 기본 위치를 현재 위치로 설정
   });
+
+  /** 경로만 캔버스에 그리는 함수 */
+  const captureMap = async () => {
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const canvasWidth = (canvas.width = 600);
+    const canvasHeight = (canvas.height = 600);
+    // 배경을 흰색으로 채우기 (배경이 투명하지 않게)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // 위도/경도 범위 계산
+    const latMin = Math.min(...linePathRef.current.map((p) => p.getLat()));
+    const latMax = Math.max(...linePathRef.current.map((p) => p.getLat()));
+    const lngMin = Math.min(...linePathRef.current.map((p) => p.getLng()));
+    const lngMax = Math.max(...linePathRef.current.map((p) => p.getLng()));
+
+    // 경로 그리기
+    ctx.beginPath();
+    linePathRef.current.forEach((point, index) => {
+      const x = ((point.getLng() - lngMin) / (lngMax - lngMin)) * canvasWidth;
+      const y = canvasHeight - ((point.getLat() - latMin) / (latMax - latMin)) * canvasHeight; // y 좌표를 반대로 그려서 일치시킴
+
+      if (index === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+
+    ctx.strokeStyle = '#FFAE00'; // 경로 색상
+    ctx.lineWidth = 5; // 경로 두께
+    ctx.stroke();
+
+    // 캡처된 이미지를 base64로 변환하여 저장
+    const dataUrl = canvas.toDataURL('image/png');
+    console.log(dataUrl);
+    setCapturedImage(dataUrl);
+  };
 
   const centerChangedEventListener = useCallback((mapInstance: kakao.maps.Map) => {
     const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
@@ -101,13 +148,24 @@ export const useKakaoMap = ({
     setIsTargetClicked(false);
     setChangedPosition([positions.current[0], positions.current[1]]);
     if (!map) return;
-    moveMapTo(map, moveLatLon, 3);
+    moveMapTo(map, moveLatLon, defaultMapLevel);
   }, [map, setIsTargetClicked, positions]);
+
+  // 경로만 캡처 (지도가 아닌 경로만 그리기)
+  useEffect(() => {
+    if (changedPosition && walkStatus === 'stop' && mapRef.current) {
+      captureMap();
+    }
+  }, [changedPosition, walkStatus]);
 
   // 종료 버튼
   useEffect(() => {
     if (walkStatus === 'stop' && linePathRef.current && map) {
       adjustMapBounds(map, linePathRef.current);
+
+      // 지도 범위가 설정된 후 중심 좌표 및 레벨 저장
+      const newCenter = map.getCenter();
+      setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
     }
   }, [map, walkStatus]);
 
@@ -135,7 +193,7 @@ export const useKakaoMap = ({
       // console.log('👓위치 이동!');
       const moveLatLon = getMapPosition(positions);
       setChangedPosition(() => [positions.current[0], positions.current[1]]);
-      moveMapTo(map, moveLatLon, 3);
+      moveMapTo(map, moveLatLon, defaultMapLevel);
     }
   }, [positions, map]);
 
