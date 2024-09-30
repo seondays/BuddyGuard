@@ -18,6 +18,7 @@ import {
 import { PositionPair, PositionType, SelctedBuddy, StatusOfTime } from '@/types/map';
 import { drawGrid, fillBackground, initCanvas } from '@/utils/canvasUtils';
 import { calculateTotalDistance } from '@/utils/mapUtils';
+import { getCurrentDate } from '@/utils/timeUtils';
 
 export interface UseKakaoMapProps {
   mapRef: React.RefObject<HTMLDivElement>;
@@ -135,6 +136,9 @@ export const useKakaoMap = ({
 
       const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
       console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
+
+      const endDate = getCurrentDate(true);
+      console.log(`🏃‍♀️💦 End Date: ${endDate}`);
     }
   }, [canvasPaddingX, canvasPaddingY, canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
 
