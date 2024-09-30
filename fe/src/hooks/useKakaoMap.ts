@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { DEFAULT_MAP_LEVEL, DEFAULT_MAP_POSITION } from '@/constants/walk';
+import { convertImageAndSave, drawGrid, drawPath, fillBackground, initCanvas } from '@/helper/drawHelpers';
 import {
   adjustMapBounds,
   createCustomOverLay,
@@ -15,9 +17,7 @@ import {
 } from '@/helper/kakaoMapHelpers';
 import { PositionPair, PositionType, SelctedBuddy, StatusOfTime } from '@/types/map';
 
-export const defaultPosition: PositionType = [33.450701, 126.570667];
-
-interface UseKakaoMapProps {
+export interface UseKakaoMapProps {
   mapRef: React.RefObject<HTMLDivElement>;
   buddys: SelctedBuddy[];
   isTargetClicked: boolean;
@@ -27,8 +27,6 @@ interface UseKakaoMapProps {
   setCapturedImage: React.Dispatch<React.SetStateAction<string | null>>;
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
 }
-
-const defaultMapLevel = 3;
 
 export const useKakaoMap = ({
   mapRef,
@@ -48,73 +46,14 @@ export const useKakaoMap = ({
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [positions, setPositions] = useState<PositionPair>({
     previous: null, // 초기에는 이전 위치가 없으므로 null
-    current: defaultPosition, // 기본 위치를 현재 위치로 설정
+    current: DEFAULT_MAP_POSITION, // 기본 위치를 현재 위치로 설정
   });
 
-  // 격자 무늬 그리기
-  const drawGrid = (ctx: CanvasRenderingContext2D, width: number, height: number, gab: number) => {
-    ctx.strokeStyle = '#cccccc';
-    ctx.lineWidth = 0.5;
-
-    for (let x = 0; x <= width; x += gab) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-
-    for (let y = 0; y <= height; y += gab) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
-  };
-
-  /** 경로만 캔버스에 그리는 함수 */
-  const captureMap = async () => {
-    if (!canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const canvasWidth = (canvas.width = 600);
-    const canvasHeight = (canvas.height = 600);
-    const paddingX = canvasWidth * 0.1;
-    const paddingY = canvasHeight * 0.1;
-
-    // 배경 그리기
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    const gridGab = 50;
-    drawGrid(ctx, canvasWidth, canvasHeight, gridGab);
-
-    // 위도/경도 범위 계산
-    const latMin = Math.min(...linePathRef.current.map((p) => p.getLat()));
-    const latMax = Math.max(...linePathRef.current.map((p) => p.getLat()));
-    const lngMin = Math.min(...linePathRef.current.map((p) => p.getLng()));
-    const lngMax = Math.max(...linePathRef.current.map((p) => p.getLng()));
-
-    // 경로 그리기
-    ctx.beginPath();
-    linePathRef.current.forEach((point, index) => {
-      const x = paddingX + ((point.getLng() - lngMin) / (lngMax - lngMin)) * (canvasWidth - 2 * paddingX);
-      const y =
-        canvasHeight - paddingY - ((point.getLat() - latMin) / (latMax - latMin)) * (canvasHeight - 2 * paddingY);
-
-      if (index === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-
-    ctx.strokeStyle = '#FFAE00';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    const dataUrl = canvas.toDataURL('image/png');
-    console.log(dataUrl);
-    setCapturedImage(dataUrl);
-  };
+  const canvasWidth = 600;
+  const canvasHeight = 600;
+  const canvasGridGab = 50;
+  const canvasPaddingX = canvasWidth * 0.1;
+  const canvasPaddingY = canvasHeight * 0.1;
 
   const centerChangedEventListener = useCallback((mapInstance: kakao.maps.Map) => {
     const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
@@ -172,13 +111,27 @@ export const useKakaoMap = ({
     setIsTargetClicked(false);
     setChangedPosition([positions.current[0], positions.current[1]]);
     if (!map) return;
-    moveMapTo(map, moveLatLon, defaultMapLevel);
+    moveMapTo(map, moveLatLon, DEFAULT_MAP_LEVEL);
   }, [map, setIsTargetClicked, positions]);
 
-  // 경로만 그리기
+  // 산책 종료 후 경로 그리고 이미지 저장
   useEffect(() => {
-    if (changedPosition && walkStatus === 'stop' && mapRef.current) captureMap();
-  }, [changedPosition, walkStatus]);
+    if (!canvasRef.current) return;
+    if (changedPosition && walkStatus === 'stop' && mapRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = initCanvas(canvas, canvasWidth, canvasHeight);
+      if (!ctx) return;
+      const filledCtx = fillBackground(ctx, canvasWidth, canvasHeight);
+      const gridedCtx = drawGrid(filledCtx, canvasWidth, canvasHeight, canvasGridGab);
+
+      const linePath = linePathRef.current;
+      if (!(linePath && linePath.length > 0)) return;
+
+      const isDrawn = drawPath(gridedCtx, linePath, canvasWidth, canvasHeight, canvasPaddingX, canvasPaddingY);
+
+      if (isDrawn) convertImageAndSave(canvas, setCapturedImage);
+    }
+  }, [canvasPaddingX, canvasPaddingY, canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
 
   // 종료 버튼
   useEffect(() => {
@@ -215,7 +168,7 @@ export const useKakaoMap = ({
       // console.log('👓위치 이동!');
       const moveLatLon = getMapPosition(positions);
       setChangedPosition(() => [positions.current[0], positions.current[1]]);
-      moveMapTo(map, moveLatLon, defaultMapLevel);
+      moveMapTo(map, moveLatLon, DEFAULT_MAP_LEVEL);
     }
   }, [positions, map]);
 

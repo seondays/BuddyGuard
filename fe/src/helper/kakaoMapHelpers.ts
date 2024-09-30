@@ -1,6 +1,6 @@
 import { defaultShadow } from '@/components/atoms/Button';
 import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
-import { defaultPosition } from '@/hooks/useKakaoMap';
+import { DEFAULT_MAP_POSITION } from '@/constants/walk';
 import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
@@ -146,28 +146,28 @@ export const loadKakaoMapScript = (): Promise<void> => {
 export const getcurrentLocation = (): Promise<PositionType> => {
   return new Promise((resolve) => {
     if (!('geolocation' in navigator)) {
-      resolve(defaultPosition);
+      resolve(DEFAULT_MAP_POSITION);
       return;
     }
 
     navigator.geolocation.watchPosition(
       ({ coords }) => {
         if (!coords) {
-          resolve(defaultPosition);
+          resolve(DEFAULT_MAP_POSITION);
           return;
         }
         const latitude = coords.latitude;
         const longitude = coords.longitude;
 
         if (!(latitude && longitude)) {
-          resolve(defaultPosition);
+          resolve(DEFAULT_MAP_POSITION);
           return;
         }
         resolve([latitude, longitude]);
       },
       (error) => {
         console.error(error);
-        resolve(defaultPosition); // 에러 발생 시 기본 위치 반환
+        resolve(DEFAULT_MAP_POSITION); // 에러 발생 시 기본 위치 반환
       }
     );
   });
