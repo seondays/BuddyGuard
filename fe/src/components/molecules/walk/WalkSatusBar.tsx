@@ -4,19 +4,24 @@ import PauseIcon from '@/components/icons/PauseIcon';
 import PlayIcon from '@/components/icons/PlayIcon';
 import StopIcon from '@/components/icons/StopIcon';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
-import { StatusOfTime } from '@/types/map';
+import { StatusOfTime, TimeRef } from '@/types/map';
+import { getCurrentDate } from '@/utils/timeUtils';
 
 import StopWatch from './StopWatch';
 
 const WALK_STATUS_BAR_HEIGHT = '8rem';
-
 interface WalkStatusBarProps {
   walkStatus: StatusOfTime;
   setWalkStatus: React.Dispatch<React.SetStateAction<StatusOfTime>>;
+  timeRef: React.MutableRefObject<TimeRef>;
 }
-export default function WalkSatusBar({ walkStatus, setWalkStatus }: WalkStatusBarProps) {
+export default function WalkSatusBar({ walkStatus, setWalkStatus, timeRef }: WalkStatusBarProps) {
   const pauseHandler = () => setWalkStatus('pause');
-  const stopHandler = () => setWalkStatus('stop');
+  const stopHandler = () => {
+    setWalkStatus('stop');
+    const endTime = getCurrentDate(false, true);
+    timeRef.current.end = endTime;
+  };
   const playHandler = () => setWalkStatus('start');
 
   return (

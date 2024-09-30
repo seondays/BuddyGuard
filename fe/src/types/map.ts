@@ -9,3 +9,12 @@ export interface PositionPair {
 export interface SelctedBuddy {
   img: string;
 }
+
+export interface CheckboxChangeHandler {
+  (checkBoxId: string, isChecked: boolean): void;
+}
+
+export interface TimeRef {
+  start: string;
+  end: string;
+}

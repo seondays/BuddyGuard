@@ -2,8 +2,7 @@ import styled from 'styled-components';
 
 import { getTimeFormatString } from '@/helper/timerHelpers';
 import useStopWatch from '@/hooks/useStopWatch';
-
-import { StatusOfTime } from './WalkSatusBar';
+import { StatusOfTime } from '@/types/map';
 
 interface StopWatchProps {
   className?: string;

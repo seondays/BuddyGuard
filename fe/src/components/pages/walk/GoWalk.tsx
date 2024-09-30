@@ -6,7 +6,8 @@ import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecul
 import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
-import { SelctedBuddy, StatusOfTime } from '@/types/map';
+import { CheckboxChangeHandler, SelctedBuddy, StatusOfTime, TimeRef } from '@/types/map';
+import { getCurrentDate } from '@/utils/timeUtils';
 import targetIcon from '@public/assets/icons/targetIcon.png';
 import profile01 from '@public/images/profile01.png';
 import profile02 from '@public/images/profile02.png';
@@ -21,13 +22,10 @@ const playIconStyle = {
 
 const PLAY_ICON_GAP = '5rem';
 
-export interface CheckboxChangeHandler {
-  (checkBoxId: string, isChecked: boolean): void;
-}
-
 export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const timeRef = useRef<TimeRef>({ start: '', end: '' });
   const [capturedImage, setCapturedImage] = useState<string | null>(null); // 캡처된 이미지를 저장할 상태
   const [isStarted, setIsStarted] = useState(false);
   const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);
@@ -54,6 +52,8 @@ export default function GoWalk() {
       return;
     }
     setIsStarted(true);
+    const startTime = getCurrentDate(false, true);
+    timeRef.current.start = startTime;
   };
 
   const selectBuddy: CheckboxChangeHandler = (selectId, isSelect) => {
@@ -75,16 +75,13 @@ export default function GoWalk() {
         <StyledMap ref={mapRef} />
         <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* 캔버스는 숨김 */}
         {isStarted ? (
-          <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} />
+          <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} timeRef={timeRef} />
         ) : (
           <WalkBuddySelectBar selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
         )}
         {/* {capturedImage && ( */}
         <StyledBlockLayer2>
-          {/* <h3>테스트로 캡처된 이미지 미리 보기:</h3> */}
           <img src={capturedImage || targetIcon} alt="Captured Map" style={{ width: '100%', maxWidth: '600px' }} />
-          {/* <GoogleMapsCapture /> */}
-          {/* <MapCaptureComponent /> */}
         </StyledBlockLayer2>
         {/* )} */}
       </StyledWalkWrapper>
