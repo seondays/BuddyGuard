@@ -4,6 +4,7 @@ import { DEFAULT_MAP_LEVEL, DEFAULT_MAP_POSITION } from '@/constants/walk';
 import { convertImageAndSave, drawGrid, drawPath, fillBackground, initCanvas } from '@/helper/drawHelpers';
 import {
   adjustMapBounds,
+  calculateTotalDistance,
   createCustomOverLay,
   createMarker,
   createOverLayElement,
@@ -130,6 +131,10 @@ export const useKakaoMap = ({
       const isDrawn = drawPath(gridedCtx, linePath, canvasWidth, canvasHeight, canvasPaddingX, canvasPaddingY);
 
       if (isDrawn) convertImageAndSave(canvas, setCapturedImage);
+
+      // 사용 예시
+      const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
+      console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
     }
   }, [canvasPaddingX, canvasPaddingY, canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
 
