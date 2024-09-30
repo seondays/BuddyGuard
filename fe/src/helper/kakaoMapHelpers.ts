@@ -1,6 +1,6 @@
 import { defaultShadow } from '@/components/atoms/Button';
+import { DEFAULT_MAP_POSITION } from '@/constants/map';
 import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
-import { DEFAULT_MAP_POSITION } from '@/constants/walk';
 import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';

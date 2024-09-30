@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { DEFAULT_MAP_LEVEL, DEFAULT_MAP_POSITION } from '@/constants/walk';
+import { DEFAULT_MAP_LEVEL, DEFAULT_MAP_POSITION } from '@/constants/map';
 import { convertImageAndSave, drawGrid, drawPath, fillBackground, initCanvas } from '@/helper/drawHelpers';
 import {
   adjustMapBounds,
