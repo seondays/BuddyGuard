@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { DEFAULT_MAP_LEVEL, DEFAULT_MAP_POSITION } from '@/constants/map';
-import { convertImageAndSave, drawGrid, drawPath, fillBackground, initCanvas } from '@/helper/drawHelpers';
+import { convertImageAndSave, drawPath } from '@/helper/drawHelpers';
 import {
   adjustMapBounds,
-  calculateTotalDistance,
   createCustomOverLay,
   createMarker,
   createOverLayElement,
@@ -17,6 +16,8 @@ import {
   moveMapTo,
 } from '@/helper/kakaoMapHelpers';
 import { PositionPair, PositionType, SelctedBuddy, StatusOfTime } from '@/types/map';
+import { drawGrid, fillBackground, initCanvas } from '@/utils/canvasUtils';
+import { calculateTotalDistance } from '@/utils/mapUtils';
 
 export interface UseKakaoMapProps {
   mapRef: React.RefObject<HTMLDivElement>;
@@ -132,7 +133,6 @@ export const useKakaoMap = ({
 
       if (isDrawn) convertImageAndSave(canvas, setCapturedImage);
 
-      // 사용 예시
       const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
       console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
     }
