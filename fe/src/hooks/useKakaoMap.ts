@@ -137,7 +137,7 @@ export const useKakaoMap = ({
       const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
       console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
 
-      const endDate = getCurrentDate(true);
+      const endDate = getCurrentDate(true, false);
       console.log(`🏃‍♀️💦 End Date: ${endDate}`);
     }
   }, [canvasPaddingX, canvasPaddingY, canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
