@@ -21,11 +21,12 @@ const playIconStyle = {
 };
 
 const PLAY_ICON_GAP = '5rem';
+const initTimeRef: TimeRef = { start: { day: '', time: '' }, end: { day: '', time: '' }, total: '' };
 
 export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const timeRef = useRef<TimeRef>({ start: '', end: '', total: '' });
+  const timeRef = useRef<TimeRef>(initTimeRef);
   const [capturedImage, setCapturedImage] = useState<string | null>(null); // 캡처된 이미지를 저장할 상태
   const [isStarted, setIsStarted] = useState(false);
   const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);
@@ -52,8 +53,8 @@ export default function GoWalk() {
       return;
     }
     setIsStarted(true);
-    const startTime = getCurrentDate(false, true);
-    timeRef.current.start = startTime;
+    timeRef.current.start.day = getCurrentDate(true, false);
+    timeRef.current.start.time = getCurrentDate(false, true);
   };
 
   const selectBuddy: CheckboxChangeHandler = (selectId, isSelect) => {
