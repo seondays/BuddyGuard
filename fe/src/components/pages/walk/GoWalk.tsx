@@ -25,7 +25,7 @@ const PLAY_ICON_GAP = '5rem';
 export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const timeRef = useRef<TimeRef>({ start: '', end: '' });
+  const timeRef = useRef<TimeRef>({ start: '', end: '', total: '' });
   const [capturedImage, setCapturedImage] = useState<string | null>(null); // 캡처된 이미지를 저장할 상태
   const [isStarted, setIsStarted] = useState(false);
   const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);

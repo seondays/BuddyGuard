@@ -26,7 +26,9 @@ export default function WalkSatusBar({ walkStatus, setWalkStatus, timeRef }: Wal
 
   return (
     <StyledStatusBar>
-      <StyledStopWatch status={walkStatus}>시간</StyledStopWatch>
+      <StyledStopWatch status={walkStatus} timeRef={timeRef}>
+        시간
+      </StyledStopWatch>
       <StyledIconWrapper>
         {walkStatus === 'start' && <PauseIcon onClick={pauseHandler} />}
         {(walkStatus === 'stop' || walkStatus === 'pause') && <PlayIcon onClick={playHandler} />}

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { StatusOfTime } from '@/types/map';
+import { getTimeFormatString } from '@/helper/timerHelpers';
+import { StatusOfTime, TimeRef } from '@/types/map';
 
-export default function useStopWatch(status: StatusOfTime) {
+export default function useStopWatch(status: StatusOfTime, timeRef: React.MutableRefObject<TimeRef>) {
   const [time, setTime] = useState(0);
   const timeoutRef = useRef<number | null>(null);
 
@@ -16,6 +17,7 @@ export default function useStopWatch(status: StatusOfTime) {
   const stopTimer = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
   }, []);
 
@@ -27,18 +29,18 @@ export default function useStopWatch(status: StatusOfTime) {
 
     if (status === 'pause') {
       stopTimer();
-      timeoutRef.current = null;
+
       return;
     }
 
     if (status === 'stop') {
+      timeRef.current.total = getTimeFormatString(time);
       stopTimer();
-      setTime(0);
-      timeoutRef.current = null;
+      // setTime(0);
     }
 
     return () => stopTimer();
-  }, [status, startTimer, stopTimer]);
+  }, [status, startTimer, stopTimer, time, timeRef]);
 
   return time;
 }

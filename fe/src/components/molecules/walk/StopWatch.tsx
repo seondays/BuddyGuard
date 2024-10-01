@@ -2,16 +2,17 @@ import styled from 'styled-components';
 
 import { getTimeFormatString } from '@/helper/timerHelpers';
 import useStopWatch from '@/hooks/useStopWatch';
-import { StatusOfTime } from '@/types/map';
+import { StatusOfTime, TimeRef } from '@/types/map';
 
 interface StopWatchProps {
   className?: string;
   children?: React.ReactNode;
   status: StatusOfTime;
+  timeRef: React.MutableRefObject<TimeRef>;
 }
 
-export default function StopWatch({ className, children, status }: StopWatchProps) {
-  const time = useStopWatch(status);
+export default function StopWatch({ className, children, status, timeRef }: StopWatchProps) {
+  const time = useStopWatch(status, timeRef);
 
   return (
     <StyledStopWatchWrapper className={className}>
