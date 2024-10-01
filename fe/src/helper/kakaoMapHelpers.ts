@@ -1,7 +1,7 @@
 import { defaultShadow } from '@/components/atoms/Button';
 import { DEFAULT_MAP_POSITION } from '@/constants/map';
 import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
-import { PositionPair, PositionType, SelctedBuddy } from '@/types/map';
+import { BuddysType, PositionPair, PositionType, SelectedBuddysType } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
 
@@ -91,7 +91,7 @@ export const createMarker = (currentLocation: PositionType, mapInstance: kakao.m
   return newMarker;
 };
 
-export const createOverLayElement = (buddys: SelctedBuddy[]) => {
+export const createOverLayElement = (SelectedBuddys: SelectedBuddysType, buddys: BuddysType[]) => {
   // 커스텀 오버레이 생성
   const customContents = document.createElement('div');
   customContents.className = 'wrap';
@@ -105,8 +105,10 @@ export const createOverLayElement = (buddys: SelctedBuddy[]) => {
             align-items: center;
           `;
 
+  const filterdBuddys = buddys.filter(({ id }) => SelectedBuddys.includes(id));
+
   const ImageCssText = 'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white;';
-  buddys.forEach(({ img }) => {
+  filterdBuddys.forEach(({ img }) => {
     const profileImage = document.createElement('img');
     profileImage.src = img;
     profileImage.style.cssText = ImageCssText;

@@ -6,7 +6,7 @@ import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecul
 import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
-import { CheckboxChangeHandler, SelctedBuddy, StatusOfTime, TimeRef } from '@/types/map';
+import { BuddysType, CheckboxChangeHandler, SelectedBuddysType, StatusOfTime, TimeRef } from '@/types/map';
 import { getCurrentDate } from '@/utils/timeUtils';
 import targetIcon from '@public/assets/icons/targetIcon.png';
 import profile01 from '@public/images/profile01.png';
@@ -29,16 +29,48 @@ export default function GoWalk() {
   const timeRef = useRef<TimeRef>(initTimeRef);
   const [capturedImage, setCapturedImage] = useState<string | null>(null); // 캡처된 이미지를 저장할 상태
   const [isStarted, setIsStarted] = useState(false);
-  const [selectedBuddys, setSelectedBuddys] = useState<string[]>([]);
+  const [selectedBuddys, setSelectedBuddys] = useState<SelectedBuddysType>([]); // 클릭한 버디
   const [isTargetClicked, setIsTargetClicked] = useState(false);
   const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
 
   // TODO(Woody): API 연결
-  const buddys: SelctedBuddy[] = [{ img: profile01 }, { img: profile02 }, { img: profile03 }];
+  const buddys: BuddysType[] = [
+    {
+      id: 1,
+      img: `${profile01}`,
+      name: '우디',
+    },
+    {
+      id: 2,
+      img: `${profile02}`,
+      name: '수잔',
+    },
+    {
+      id: 3,
+      img: `${profile03}`,
+      name: '데이',
+    },
+    {
+      id: 4,
+      img: `${profile01}`,
+      name: '진',
+    },
+    {
+      id: 5,
+      img: `${profile02}`,
+      name: '잔',
+    },
+    {
+      id: 6,
+      img: `${profile03}`,
+      name: '심바',
+    },
+  ];
 
   useKakaoMap({
     mapRef,
     buddys,
+    selectedBuddys,
     isTargetClicked,
     setIsTargetClicked,
     isStarted,
@@ -57,7 +89,7 @@ export default function GoWalk() {
     timeRef.current.start.time = getCurrentDate(false, true);
   };
 
-  const selectBuddy: CheckboxChangeHandler = (selectId, isSelect) => {
+  const selectBuddy: CheckboxChangeHandler = (selectId: number, isSelect) => {
     setSelectedBuddys((prev) => (isSelect ? [...prev, selectId] : prev.filter((buddyId) => buddyId !== selectId)));
   };
 
@@ -78,12 +110,12 @@ export default function GoWalk() {
         {isStarted ? (
           <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} timeRef={timeRef} />
         ) : (
-          <WalkBuddySelectBar selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
+          <WalkBuddySelectBar buddys={buddys} selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
         )}
         {/* {capturedImage && ( */}
-        <StyledBlockLayer2>
+        {/* <StyledBlockLayer2>
           <img src={capturedImage || targetIcon} alt="Captured Map" style={{ width: '100%', maxWidth: '600px' }} />
-        </StyledBlockLayer2>
+        </StyledBlockLayer2> */}
         {/* )} */}
       </StyledWalkWrapper>
     </>

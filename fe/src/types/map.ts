@@ -1,3 +1,6 @@
+export type SelectedBuddysType = number[];
+export type BuddysType = { id: number; img: string; name: string };
+
 export type StatusOfTime = 'start' | 'pause' | 'stop';
 
 export type PositionType = [number, number];
@@ -11,7 +14,7 @@ export interface SelctedBuddy {
 }
 
 export interface CheckboxChangeHandler {
-  (checkBoxId: string, isChecked: boolean): void;
+  (checkBoxId: number, isChecked: boolean): void;
 }
 
 export interface TimeRef {

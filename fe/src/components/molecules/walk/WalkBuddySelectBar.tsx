@@ -5,10 +5,7 @@ import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 // NOTE: 임시 이미지
-import { CheckboxChangeHandler } from '@/types/map';
-import profile01 from '@public/images/profile01.png';
-import profile02 from '@public/images/profile02.png';
-import profile03 from '@public/images/profile03.png';
+import { BuddysType, CheckboxChangeHandler, SelectedBuddysType } from '@/types/map';
 
 // TODO(Woody): API 연동
 // TODO(Woody): 대표 버디는 처음부터 체크되어있음
@@ -16,28 +13,16 @@ import profile03 from '@public/images/profile03.png';
 export const BUDDY_SELECTBAR_HEIGHT = '10rem';
 
 interface BuddySelectBarProps {
-  selectedBuddys: string[];
+  buddys: BuddysType[];
+  selectedBuddys: SelectedBuddysType;
   handleOnChange: CheckboxChangeHandler;
 }
-export default function BuddySelectBar({ selectedBuddys, handleOnChange }: BuddySelectBarProps) {
-  const buddys = [
-    profile01,
-    profile02,
-    profile03,
-    profile01,
-    profile02,
-    profile01,
-    profile02,
-    profile03,
-    profile01,
-    profile02,
-  ];
-  // buddys = [profile01, profile02];
 
+export default function BuddySelectBar({ buddys, selectedBuddys, handleOnChange }: BuddySelectBarProps) {
   const theme = useTheme();
   const spanColor = theme.currentTheme.textSubtle;
 
-  const isChecked = (id: string) => selectedBuddys.includes(id);
+  const isChecked = (id: BuddysType['id']) => selectedBuddys.includes(id);
 
   return (
     <StyledSelectBar>
@@ -45,17 +30,17 @@ export default function BuddySelectBar({ selectedBuddys, handleOnChange }: Buddy
         <Span style={{ color: spanColor }}>함께 산책할 버디를 선택해 주세요</Span>
       </section>
 
-      <StyledSlideWrapper $buddyCount={buddys.length}>
-        {buddys.map((buddyImg, idx) => (
-          <StyledBuddyWrapper key={`duddy-no-${idx}-${buddyImg}`}>
-            <StyledCheckbox checkBoxId={`${idx}`} isChecked={isChecked(`idx`)} handleOnChange={handleOnChange} />
+      <StyledSlideWrapper $buddyCount={buddys.length || 0}>
+        {buddys.map(({ id, img, name }) => (
+          <StyledBuddyWrapper key={`duddy-${id}`}>
+            <StyledCheckbox checkBoxId={`${id}`} isChecked={isChecked(id)} handleOnChange={handleOnChange} />
             <StyledImgWrapper>
               <Image
                 style={{ width: '50%', color: spanColor, marginTop: '1rem' }}
                 $borderRadius={'50%'}
-                src={buddyImg}
+                src={img}
               ></Image>
-              <StyledText style={{ color: spanColor }}>{`버디이름sfsfsd${idx}`}</StyledText>
+              <StyledText style={{ color: spanColor }}>{`${name}sfsfsd${id}더긴이름이름이름`}</StyledText>
             </StyledImgWrapper>
           </StyledBuddyWrapper>
         ))}
