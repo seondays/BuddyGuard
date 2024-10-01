@@ -6,9 +6,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/invitation")
 public class InvitationController {
 
     private final InvitationService invitationService;
@@ -17,14 +19,14 @@ public class InvitationController {
         this.invitationService = invitationService;
     }
 
-    @GetMapping("/invitation/{userId}/{petId}")
+    @GetMapping("/{userId}/{petId}")
     public ResponseEntity<InvitationLinkResponse> makeInvitationLink(
             @PathVariable("userId") Long userId, @PathVariable("petId") Long petId) {
         InvitationLinkResponse response = invitationService.makeInvitationLink(userId, petId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/invitation/{uuid}")
+    @GetMapping("/{uuid}")
     public ResponseEntity<?> registerInvitation(@PathVariable("uuid") String uuid,
             HttpServletRequest request) {
         String token = request.getHeader("access");
