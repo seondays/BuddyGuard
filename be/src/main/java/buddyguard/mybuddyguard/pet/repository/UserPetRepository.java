@@ -23,4 +23,6 @@ public interface UserPetRepository extends JpaRepository<UserPet, Long> {
     boolean existsByUserIdAndPetId(Long userId, Long petId);
 
     boolean existsByUserIdAndPetIdAndRole(Long userId, Long petId, UserPetRole role);
+
+    boolean existsByPetIdAndRole(Long petId, UserPetRole role);
 }
