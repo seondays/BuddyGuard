@@ -23,7 +23,6 @@ export default function StopWatch({ className, children, status, timeRef }: Stop
 }
 
 const StyledTime = styled.span`
-  margin-left: 1rem;
   align-content: center;
   display: flex;
   justify-content: center;
@@ -37,6 +36,8 @@ const StyledStopWatchWrapper = styled.div`
     color: white;
   }
   & .time {
-    font-size: 1.5rem;
+    font-size: 2.3rem;
+    margin-left: 0.7rem;
+    font-weight: bold;
   }
 `;

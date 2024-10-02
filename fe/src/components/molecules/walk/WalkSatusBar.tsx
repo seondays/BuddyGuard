@@ -30,9 +30,11 @@ export default function WalkSatusBar({ walkStatus, setWalkStatus, timeRef }: Wal
         시간
       </StyledStopWatch>
       <StyledIconWrapper>
-        {walkStatus === 'start' && <PauseIcon onClick={pauseHandler} />}
-        {(walkStatus === 'stop' || walkStatus === 'pause') && <PlayIcon onClick={playHandler} />}
-        <StopIcon onClick={stopHandler} />
+        {walkStatus === 'start' && <PauseIcon onClick={pauseHandler} customStyle={{ $size: 38 }} />}
+        {(walkStatus === 'stop' || walkStatus === 'pause') && (
+          <PlayIcon onClick={playHandler} customStyle={{ $size: 38 }} />
+        )}
+        <StopIcon onClick={stopHandler} customStyle={{ $size: 38 }} />
       </StyledIconWrapper>
     </StyledStatusBar>
   );
