@@ -223,12 +223,14 @@ export const useKakaoMap = ({
 
   // 종료 버튼
   useEffect(() => {
-    if (walkStatus === 'stop' && linePathRef.current && map) {
+    if (walkStatus === 'stop' && map && linePathRef.current && overlayRef.current) {
       adjustMapBounds(map, linePathRef.current);
 
       // 지도 범위가 설정된 후 중심 좌표 및 레벨 저장
       const newCenter = map.getCenter();
       setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
+
+      overlayRef.current.setMap(null);
     }
   }, [map, walkStatus]);
 
