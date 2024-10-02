@@ -32,6 +32,16 @@ export interface UseKakaoMapProps {
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
 }
 
+interface SetOverlayProps {
+  isStarted: boolean;
+  selectedBuddys: SelectedBuddysType;
+  markerRef: React.MutableRefObject<kakao.maps.Marker | null>;
+  overlayRef: React.MutableRefObject<kakao.maps.CustomOverlay | null>;
+  map: kakao.maps.Map | null;
+  customContents: HTMLDivElement;
+  closeButton: HTMLImageElement;
+}
+
 export const useKakaoMap = ({
   mapRef,
   buddys,
@@ -59,6 +69,45 @@ export const useKakaoMap = ({
   const canvasGridGab = 50;
   const canvasPaddingX = canvasWidth * 0.1;
   const canvasPaddingY = canvasHeight * 0.1;
+
+  /** 마커의 새로운 위치로 오버레이 이동 */
+  const replaceCustomOverLay = ({ overlayRef, markerRef }: Pick<SetOverlayProps, 'overlayRef' | 'markerRef'>) => {
+    if (!(overlayRef.current && markerRef.current)) return;
+    overlayRef.current.setPosition(markerRef.current.getPosition());
+  };
+
+  /** 오버레이 셋팅 */
+  const setOverlay = ({
+    isStarted,
+    selectedBuddys,
+    markerRef,
+    overlayRef,
+    map: mapInstance,
+    customContents,
+    closeButton,
+  }: SetOverlayProps) => {
+    // 기존 오버레이가 있으면 위치만 업데이트
+    if (overlayRef.current && markerRef.current) {
+      replaceCustomOverLay({ overlayRef, markerRef });
+      return;
+    }
+
+    if (!(isStarted && selectedBuddys.length && markerRef.current && mapInstance)) return;
+
+    const overlay = createCustomOverLay(customContents, markerRef.current, mapInstance);
+    overlayRef.current = overlay;
+
+    // 닫기 버튼 이벤트 추가
+    closeButton.addEventListener('click', () => {
+      overlay.setMap(null);
+    });
+    // 마커 클릭 시 오버레이 표시
+    kakao.maps.event.addListener(markerRef.current, 'click', function () {
+      overlay.setMap(mapInstance);
+    });
+
+    overlayRef.current = overlay;
+  };
 
   const centerChangedEventListener = useCallback((mapInstance: kakao.maps.Map) => {
     const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
@@ -130,48 +179,21 @@ export const useKakaoMap = ({
     // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
     kakao.maps.event.addListener(mapInstance, 'center_changed', () => centerChangedEventListener(mapInstance));
 
-    setMap(mapInstance);
-
-    // 마커이미지, 오버레이 생성
-    markerRef.current = createMarker(currentLocation, mapInstance);
-
-    // 기존 오버레이가 있으면 제거
-    if (overlayRef.current) {
-      overlayRef.current.setMap(null); // 기존 오버레이 숨김
-    }
-
-    // 마커 및 오버레이 생성은 isStarted가 true일 때만 실행
-    if (!(isStarted && selectedBuddys.length)) return;
-    const { customContents, closeButton } = createOverLayElement(selectedBuddys, buddys);
-    const overlay = createCustomOverLay(customContents, markerRef.current, mapInstance);
-    overlayRef.current = overlay;
-
-    // 닫기 버튼 이벤트 추가
-    closeButton.addEventListener('click', () => {
-      overlay.setMap(null);
-    });
-
-    // 마커 클릭 시 오버레이 표시
-    kakao.maps.event.addListener(markerRef.current, 'click', function () {
-      overlay.setMap(mapInstance);
-    });
-
-    overlayRef.current = overlay;
+    return mapInstance;
   };
 
+  // 마커의 새로운 위치로 오버레이 이동
   useEffect(() => {
-    if (isStarted && map && selectedBuddys.length && markerRef.current) {
-      overlayRef.current = null;
-      // 오버레이 표시 로직 실행
-      const { customContents, closeButton } = createOverLayElement(selectedBuddys, buddys);
-      const overlay = createCustomOverLay(customContents, markerRef.current, map);
-      overlay.setMap(map);
-
-      // 닫기 버튼 이벤트 추가
-      closeButton.addEventListener('click', () => {
-        overlay.setMap(null); // 닫기 버튼 클릭 시 오버레이 숨김
-      });
+    if (isStarted && map && selectedBuddys.length) {
+      replaceCustomOverLay({ overlayRef, markerRef });
     }
+  }, [isStarted, map, selectedBuddys, buddys]);
+
+  // 오버레이 설정
+  useEffect(() => {
+    if (!(isStarted && map && selectedBuddys.length && markerRef.current)) return;
+    const { customContents, closeButton } = createOverLayElement(selectedBuddys, buddys);
+    setOverlay({ isStarted, selectedBuddys, overlayRef, markerRef, map, customContents, closeButton });
   }, [isStarted, map, selectedBuddys, buddys]);
 
   // 산책 종료 후 경로 그리고 이미지 저장
@@ -261,7 +283,12 @@ export const useKakaoMap = ({
 
         // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
-        window.kakao.maps.load(() => createMap(currentLocation));
+        window.kakao.maps.load(() => {
+          const mapInstance = createMap(currentLocation);
+          const newMarker = createMarker(currentLocation, mapInstance);
+          setMap(mapInstance);
+          markerRef.current = newMarker;
+        });
       } catch (error) {
         console.error('Map initialization error', error);
       }
