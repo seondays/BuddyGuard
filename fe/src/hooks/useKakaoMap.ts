@@ -4,7 +4,6 @@ import { DEFAULT_MAP_LEVEL, DEFAULT_MAP_POSITION } from '@/constants/map';
 import { convertImageAndSave, drawPath } from '@/helper/drawHelpers';
 import {
   adjustMapBounds,
-  createCustomOverLay,
   createMarker,
   createOverLayElement,
   createPolyline,
@@ -14,6 +13,7 @@ import {
   isPositionsDifferent,
   loadKakaoMapScript,
   moveMapTo,
+  setOverlay,
 } from '@/helper/kakaoMapHelpers';
 import { BuddysType, PositionPair, PositionType, SelectedBuddysType, StatusOfTime } from '@/types/map';
 import { drawGrid, fillBackground, initCanvas } from '@/utils/canvasUtils';
@@ -32,7 +32,7 @@ export interface UseKakaoMapProps {
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
 }
 
-interface SetOverlayProps {
+export interface SetOverlayProps {
   isStarted: boolean;
   selectedBuddys: SelectedBuddysType;
   markerRef: React.MutableRefObject<kakao.maps.Marker | null>;
@@ -74,39 +74,6 @@ export const useKakaoMap = ({
   const replaceCustomOverLay = ({ overlayRef, markerRef }: Pick<SetOverlayProps, 'overlayRef' | 'markerRef'>) => {
     if (!(overlayRef.current && markerRef.current)) return;
     overlayRef.current.setPosition(markerRef.current.getPosition());
-  };
-
-  /** 오버레이 셋팅 */
-  const setOverlay = ({
-    isStarted,
-    selectedBuddys,
-    markerRef,
-    overlayRef,
-    map: mapInstance,
-    customContents,
-    closeButton,
-  }: SetOverlayProps) => {
-    // 기존 오버레이가 있으면 위치만 업데이트
-    if (overlayRef.current && markerRef.current) {
-      replaceCustomOverLay({ overlayRef, markerRef });
-      return;
-    }
-
-    if (!(isStarted && selectedBuddys.length && markerRef.current && mapInstance)) return;
-
-    const overlay = createCustomOverLay(customContents, markerRef.current, mapInstance);
-    overlayRef.current = overlay;
-
-    // 닫기 버튼 이벤트 추가
-    closeButton.addEventListener('click', () => {
-      overlay.setMap(null);
-    });
-    // 마커 클릭 시 오버레이 표시
-    kakao.maps.event.addListener(markerRef.current, 'click', function () {
-      overlay.setMap(mapInstance);
-    });
-
-    overlayRef.current = overlay;
   };
 
   const centerChangedEventListener = useCallback((mapInstance: kakao.maps.Map) => {

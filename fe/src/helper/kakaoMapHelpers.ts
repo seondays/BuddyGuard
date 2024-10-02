@@ -1,9 +1,47 @@
 import { defaultShadow } from '@/components/atoms/Button';
 import { DEFAULT_MAP_POSITION } from '@/constants/map';
 import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
+import { SetOverlayProps } from '@/hooks/useKakaoMap';
 import { BuddysType, PositionPair, PositionType, SelectedBuddysType } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
+
+/** 마커의 새로운 위치로 오버레이 이동 */
+export const replaceCustomOverLay = ({ overlayRef, markerRef }: Pick<SetOverlayProps, 'overlayRef' | 'markerRef'>) => {
+  if (!(overlayRef.current && markerRef.current)) return;
+  overlayRef.current.setPosition(markerRef.current.getPosition());
+};
+
+/** 오버레이 셋팅 */
+export const setOverlay = ({
+  isStarted,
+  selectedBuddys,
+  markerRef,
+  overlayRef,
+  map: mapInstance,
+  customContents,
+  closeButton,
+}: SetOverlayProps) => {
+  // 기존 오버레이가 있으면 위치만 업데이트
+  if (overlayRef.current && markerRef.current) {
+    replaceCustomOverLay({ overlayRef, markerRef });
+    return;
+  }
+
+  if (!(isStarted && selectedBuddys.length && markerRef.current && mapInstance)) return;
+
+  const overlay = createCustomOverLay(customContents, markerRef.current, mapInstance);
+  overlayRef.current = overlay;
+
+  // 닫기 버튼 이벤트 추가
+  closeButton.addEventListener('click', () => {
+    overlay.setMap(null);
+  });
+  // 마커 클릭 시 오버레이 표시
+  kakao.maps.event.addListener(markerRef.current, 'click', function () {
+    overlay.setMap(mapInstance);
+  });
+};
 
 /** 전체경로가 보이도록 지도범위 재설정 */
 export const adjustMapBounds = (map: kakao.maps.Map, linePath: kakao.maps.LatLng[]) => {
