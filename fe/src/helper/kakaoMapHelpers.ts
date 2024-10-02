@@ -97,6 +97,35 @@ export const getMapPosition = ({ current }: PositionPair) => {
   return moveLatLon;
 };
 
+/** 지도의 중심좌표를 얻어오는 이벤트리스너 */
+export const centerChangedEventListener = (
+  mapInstance: kakao.maps.Map,
+  setChangedPosition: React.Dispatch<React.SetStateAction<PositionType | null>>
+) => {
+  const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
+  setChangedPosition([center.getLat(), center.getLng()]); //[위도,경도]
+};
+
+/** 스크립트 로드 후 지도 생성 */
+export const createMap = (
+  currentLocation: PositionType,
+  mapRef: React.RefObject<HTMLDivElement>,
+  setChangedPosition: React.Dispatch<React.SetStateAction<PositionType | null>>
+) => {
+  const mapOptions = {
+    center: new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]),
+    level: 3,
+  };
+  const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
+
+  // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+  kakao.maps.event.addListener(mapInstance, 'center_changed', () =>
+    centerChangedEventListener(mapInstance, setChangedPosition)
+  );
+
+  return mapInstance;
+};
+
 export const createCustomOverLay = (
   customContents: HTMLDivElement,
   newMarker: kakao.maps.Marker,

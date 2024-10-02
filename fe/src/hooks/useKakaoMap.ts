@@ -4,6 +4,8 @@ import { DEFAULT_MAP_LEVEL, DEFAULT_MAP_POSITION } from '@/constants/map';
 import { convertImageAndSave, drawPath } from '@/helper/drawHelpers';
 import {
   adjustMapBounds,
+  centerChangedEventListener,
+  createMap,
   createMarker,
   createOverLayElement,
   createPolyline,
@@ -76,11 +78,6 @@ export const useKakaoMap = ({
     overlayRef.current.setPosition(markerRef.current.getPosition());
   };
 
-  const centerChangedEventListener = useCallback((mapInstance: kakao.maps.Map) => {
-    const center = mapInstance.getCenter(); // 지도의 중심좌표를 얻어옵니다
-    setChangedPosition([center.getLat(), center.getLng()]); //[위도,경도]
-  }, []);
-
   const updatePosition = useCallback((prev: PositionPair): PositionPair => {
     const currentPosition = prev.current;
     const updatedPosition: PositionType = [
@@ -134,20 +131,6 @@ export const useKakaoMap = ({
     if (!map) return;
     moveMapTo(map, moveLatLon, DEFAULT_MAP_LEVEL);
   }, [map, setIsTargetClicked, positions]);
-
-  /** 스크립트 로드 후 지도 생성 */
-  const createMap = (currentLocation: PositionType) => {
-    const mapOptions = {
-      center: new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]),
-      level: 3,
-    };
-    const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
-
-    // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
-    kakao.maps.event.addListener(mapInstance, 'center_changed', () => centerChangedEventListener(mapInstance));
-
-    return mapInstance;
-  };
 
   // 마커의 새로운 위치로 오버레이 이동
   useEffect(() => {
@@ -253,7 +236,7 @@ export const useKakaoMap = ({
         // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
         window.kakao.maps.load(() => {
-          const mapInstance = createMap(currentLocation);
+          const mapInstance = createMap(currentLocation, mapRef, setChangedPosition);
           const newMarker = createMarker(currentLocation, mapInstance);
           setMap(mapInstance);
           markerRef.current = newMarker;
@@ -267,9 +250,12 @@ export const useKakaoMap = ({
     if (!map) initMap();
 
     return () => {
-      if (map) kakao.maps.event.removeListener(map, 'center_changed', centerChangedEventListener);
+      if (map)
+        kakao.maps.event.removeListener(map, 'center_changed', () =>
+          centerChangedEventListener(map, setChangedPosition)
+        );
     };
-  }, [mapRef, map, selectedBuddys, buddys, centerChangedEventListener]);
+  }, [mapRef, map, selectedBuddys, buddys]);
 
   useEffect(() => {
     const handleResize = () => {
