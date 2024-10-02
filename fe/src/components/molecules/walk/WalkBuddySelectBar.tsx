@@ -33,7 +33,11 @@ export default function BuddySelectBar({ buddys, selectedBuddys, handleOnChange 
       <StyledSlideWrapper $buddyCount={buddys.length || 0}>
         {buddys.map(({ id, img, name }) => (
           <StyledBuddyWrapper key={`duddy-${id}`}>
-            <StyledCheckbox checkBoxId={`${id}`} isChecked={isChecked(id)} handleOnChange={handleOnChange} />
+            <StyledCheckbox
+              checkBoxId={`${id}`}
+              isChecked={isChecked(id)}
+              handleOnChange={() => handleOnChange(id, !isChecked(id))}
+            />
             <StyledImgWrapper>
               <Image
                 style={{ width: '50%', color: spanColor, marginTop: '1rem' }}

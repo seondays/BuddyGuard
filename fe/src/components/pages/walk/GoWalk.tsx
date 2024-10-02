@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import PlayIcon from '@/components/icons/PlayIcon';
@@ -89,11 +89,8 @@ export default function GoWalk() {
     timeRef.current.start.time = getCurrentDate(false, true);
   };
 
-  const selectBuddy: CheckboxChangeHandler = (selectId: number, isSelect) => {
+  const selectBuddy: CheckboxChangeHandler = (selectId: number, isSelect) =>
     setSelectedBuddys((prev) => (isSelect ? [...prev, selectId] : prev.filter((buddyId) => buddyId !== selectId)));
-  };
-
-  useEffect(() => {}, [isStarted]);
 
   return (
     <>
@@ -143,13 +140,6 @@ const StyledTargetIcon = styled.div`
   }
 `;
 
-const StyledBlockLayer2 = styled.div`
-  position: absolute;
-  top: 0;
-  z-index: 999;
-  min-width: 100%;
-  min-height: 50%;
-`;
 const StyledBlockLayer = styled.div`
   position: absolute;
   top: 0;
