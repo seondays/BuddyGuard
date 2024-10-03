@@ -11,8 +11,7 @@ export default function BuddyInfoBar() {
   return (
     <div
       style={{
-        marginTop: '1rem',
-        marginBottom: '1rem',
+        margin: '1rem 0rem',
         padding: '1rem',
         backgroundColor: '#FFEEA9',
         borderRadius: '1rem',

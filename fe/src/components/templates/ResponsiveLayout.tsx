@@ -18,13 +18,14 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
           <div>{HOME_DESCRIPTION_TEXT1}</div>
           <div>{HOME_DESCRIPTION_TEXT2}</div>
         </StyledDescriptionArea>
+
         <StyledMain>
-          <StyledMobileFrame>
+          <StyledMobileWrapper>
             {children}
             <StyledNavWrapper>
               <Nav />
             </StyledNavWrapper>
-          </StyledMobileFrame>
+          </StyledMobileWrapper>
 
           <StyledToggleTheme onClick={toggleDarkMode}>🌗</StyledToggleTheme>
         </StyledMain>
@@ -54,36 +55,19 @@ const StyledToggleTheme = styled.button`
   }
 `;
 
-const StyledDescriptionArea = styled.article`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  text-align: right;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-right: 2rem;
-
-  & div {
-    color: ${({ theme }) => theme.currentTheme.textPrimary};
-  }
-
-  @media (max-width: 37.5rem) {
-    display: none;
-  }
-`;
-
-export const StyledMobileFrame = styled.div`
+export const StyledMobileWrapper = styled.div`
   position: relative;
   width: 90vw;
   height: 90vh;
-  max-width: 27.5rem;
-  max-height: 59.75rem;
+  max-width: 30rem;
+  max-height: 60rem;
   margin: 0 auto;
   overflow: hidden;
 
-  @media (min-width: 27.5rem) {
-    border: 0.3rem solid ${({ theme }) => theme.themeValues.colorValues.grayscale[600]};
+  @media (min-width: 30rem) {
+    border: 0.2rem solid ${({ theme }) => theme.themeValues.colorValues.grayscale[600]};
     border-radius: 1rem;
+    margin: 1rem 4rem;
   }
 
   @media (max-width: 37.5rem) {
@@ -99,6 +83,7 @@ const StyledNavWrapper = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
+  background: white;
 `;
 
 const StyledContentWrapper = styled.div`
@@ -112,7 +97,7 @@ const StyledScreenWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   ${({ theme }) => {
     const { backgroundPrimary, textPrimary } = theme.currentTheme;
@@ -121,4 +106,25 @@ const StyledScreenWrapper = styled.div`
       color: ${textPrimary};
     `;
   }}
+`;
+
+const StyledDescriptionArea = styled.article`
+  display: none;
+
+  @media (min-width: 30rem) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    text-align: right;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-right: 2rem;
+
+    & div {
+      color: ${({ theme }) => theme.currentTheme.textPrimary};
+    }
+  }
 `;

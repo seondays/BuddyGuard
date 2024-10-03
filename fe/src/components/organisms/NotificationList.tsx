@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import NotificationItem from '@/components/molecules/NotificationItem';
+import CommonCard from '@/components/molecules/CommonCard';
 import NotificationPopup from '@/components/molecules/NotificationModal';
 
 export default function NotificationList() {
@@ -45,13 +45,14 @@ export default function NotificationList() {
   return (
     <div>
       {notifications.map((notification, index) => (
-        <NotificationItem
+        <CommonCard
           key={index}
           title={notification.title}
           time={notification.time}
-          content={notification.content}
           onClick={() => handleNotificationClick(notification)}
-        />
+        >
+          {notification.content}
+        </CommonCard>
       ))}
 
       {isPopupOpen && selectedNotification && (
