@@ -9,7 +9,7 @@ import buddyguard.mybuddyguard.invitation.entity.InvitationInformation;
 import buddyguard.mybuddyguard.invitation.exception.InvitationLinkExpiredException;
 import buddyguard.mybuddyguard.invitation.exception.UserPetGroupNotFound;
 import buddyguard.mybuddyguard.invitation.repository.InvitationRepository;
-import buddyguard.mybuddyguard.invitation.utils.InvitationLineGenerator;
+import buddyguard.mybuddyguard.invitation.utils.InvitationLinkGenerator;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
@@ -43,14 +43,14 @@ public class InvitationService {
     public InvitationLinkResponse makeInvitationLink(Long userId, Long petId) {
         validateInvitation(userId, petId);
 
-        String uuid = InvitationLineGenerator.generateUuid().toString();
+        String uuid = InvitationLinkGenerator.generateUuid().toString();
 
         InvitationInformation invitationInformation = InvitationInformation.builder().id(uuid)
                 .userId(userId).petId(petId).build();
 
         invitationRepository.save(invitationInformation);
 
-        String link = InvitationLineGenerator.generateLink(uuid);
+        String link = InvitationLinkGenerator.generateLink(uuid);
         return new InvitationLinkResponse(link);
     }
 
