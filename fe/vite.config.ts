@@ -26,4 +26,14 @@ export default defineConfig({
     },
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
+
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://buddyguard.site:8080',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 });
