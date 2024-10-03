@@ -14,11 +14,17 @@ interface FormItemProps {
   titleLabel?: string;
   dateLabel?: string;
   timeLabel?: string;
+  categoryTitle: string;
 }
 
-export default function FormItem({ titleLabel = '제목', dateLabel = '날짜', timeLabel = '시간' }: FormItemProps) {
+export default function FormItem({
+  titleLabel = '제목',
+  dateLabel = '날짜',
+  timeLabel = '시간',
+  categoryTitle,
+}: FormItemProps) {
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(new Date());
-  const [selectedCategory, setSelectedCategory] = useState<string>('건강');
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryTitle);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleDateTimeChange = (date: Date | null) => {
@@ -32,10 +38,15 @@ export default function FormItem({ titleLabel = '제목', dateLabel = '날짜', 
 
   return (
     <FormContainer>
-      <DatePicker value={selectedDateTime} onChange={handleDateTimeChange} />
+      <DatePicker
+        dateLabel={dateLabel}
+        timeLabel={timeLabel}
+        value={selectedDateTime}
+        onChange={handleDateTimeChange}
+      />
 
       <InputWrapper>
-        <StyledLabel>{titleLabel}</StyledLabel>
+        <StyledLabel>{categoryTitle}</StyledLabel>
         <CategoryButton
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           style={{ backgroundColor: categoryColors[selectedCategory] }}
@@ -57,20 +68,8 @@ export default function FormItem({ titleLabel = '제목', dateLabel = '날짜', 
         )}
       </InputWrapper>
 
-      <Input
-        id="name"
-        type="text"
-        label={dateLabel}
-        placeholder="날짜를 선택해주세요"
-        style={{ marginBottom: '0rem' }}
-      />
-      <Input
-        id="note"
-        type="text"
-        label={timeLabel}
-        placeholder="시간을 선택해주세요"
-        style={{ marginBottom: '0rem' }}
-      />
+      <Input id="name" type="text" label={titleLabel} style={{ marginBottom: '0rem' }} />
+      <Input id="note" type="text" label="노트" style={{ marginBottom: '0rem' }} />
     </FormContainer>
   );
 }

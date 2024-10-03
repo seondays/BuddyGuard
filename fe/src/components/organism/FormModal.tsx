@@ -4,23 +4,32 @@ import FormItem from '../molecule/FormItem';
 
 interface FormModalProps {
   onClose: () => void;
-  titleLabel: string;
-  dateLabel: string;
-  timeLabel: string;
+  titleLabel?: string;
+  dateLabel?: string;
+  timeLabel?: string;
+  formTitle: string;
+  categoryTitle: string;
 }
 
-export default function FormModal({ onClose, titleLabel, dateLabel, timeLabel }: FormModalProps) {
+export default function FormModal({
+  onClose,
+  titleLabel,
+  dateLabel,
+  timeLabel,
+  formTitle,
+  categoryTitle,
+}: FormModalProps) {
   return (
     <>
       <Overlay onClick={onClose} />
 
       <ModalContainer>
         <ModalHeader>
-          <h2>Form</h2>
+          <h3>{formTitle}</h3>
         </ModalHeader>
 
         <FormItemWrapper>
-          <FormItem titleLabel={titleLabel} dateLabel={dateLabel} timeLabel={timeLabel} />
+          <FormItem titleLabel={titleLabel} dateLabel={dateLabel} timeLabel={timeLabel} categoryTitle={categoryTitle} />
         </FormItemWrapper>
 
         <CloseButton onClick={onClose}>닫기</CloseButton>
@@ -54,10 +63,12 @@ const ModalContainer = styled.div`
 `;
 
 const ModalHeader = styled.div`
-  margin-bottom: 1rem;
-  h2 {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  h3 {
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 `;
 

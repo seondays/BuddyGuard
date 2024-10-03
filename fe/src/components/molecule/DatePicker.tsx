@@ -10,6 +10,8 @@ interface DatePickerProps {
   onChange: (date: Date | null) => void;
   size?: InputSizeType;
   $widthPercent?: number;
+  dateLabel: string;
+  timeLabel: string;
 }
 
 type InputSizeType = 'small' | 'medium' | 'large';
@@ -20,7 +22,14 @@ const inputTypography: { [key in InputSizeType]: string } = {
   large: '1.3rem',
 };
 
-const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, size = 'medium', $widthPercent = 100 }) => {
+const DatePicker: React.FC<DatePickerProps> = ({
+  dateLabel = '날짜',
+  timeLabel = '시간',
+  value,
+  onChange,
+  size = 'medium',
+  $widthPercent = 100,
+}) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [time, setTime] = useState<string>(value ? moment(value).format('HH:mm') : '12:00');
 
@@ -45,13 +54,13 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, size = 'medium
   return (
     <DateField $widthPercent={$widthPercent}>
       <InputWrapper>
-        <StyledLabel size={size}>날짜</StyledLabel>
+        <StyledLabel size={size}>{dateLabel}</StyledLabel>
         <StyledInput size={size} onClick={() => setIsCalendarOpen(!isCalendarOpen)}>
           {formattedDate || '날짜를 선택해주세요'}
         </StyledInput>
       </InputWrapper>
       <InputWrapper>
-        <StyledLabel size={size}>시간</StyledLabel>
+        <StyledLabel size={size}>{timeLabel}</StyledLabel>
         <TimeInput size={size} type="time" value={time} onChange={handleTimeChange} />
       </InputWrapper>
 
