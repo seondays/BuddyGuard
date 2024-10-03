@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
-import moment from 'moment';
 import Span from '../atoms/Span';
-
-moment.locale('ko');
+import CommonCalendar from '../molecule/CommonCalendar';
 
 // 카테고리별 색상 맵
 const categoryColors: { [key: string]: string } = {
   건강: '#ff9999',
   산책: '#99ccff',
   식사: '#ffcc99',
+  체중: '#A6C8DD',
 };
 
 // 일정 데이터
@@ -39,85 +36,18 @@ const schedulesData = [
 ];
 
 // 메인 컴포넌트
-export default function CustomCalendar() {
-  const [date, setDate] = useState<Date | null>(null);
+export default function ScheduleCalendar() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const filteredSchedules = schedulesData.filter((schedule) => selectedDate === schedule.date);
 
-  const handleDateChange = (newDate: Date) => {
-    const formattedDate = moment(newDate).format('YYYY-MM-DD');
-    setDate(newDate);
-    setSelectedDate(formattedDate);
-  };
-
-  // 캘린더에 일정이 있으면 점 표시
-  const tileContent = ({ date, view }: { date: Date; view: string }) => {
-    const formattedDate = moment(date).format('YYYY-MM-DD');
-    const schedule = schedulesData.find((schedule) => schedule.date === formattedDate);
-    return schedule && view === 'month' ? <Dot color={categoryColors[schedule.category]} /> : null;
-  };
-
   return (
     <div style={{ padding: '1rem' }}>
-      <StyledCalendarWrapper>
-        <StyledCalendar
-          value={date}
-          onChange={handleDateChange}
-          tileContent={tileContent}
-          formatDay={(locale, date) => moment(date).format('D')}
-          formatYear={(locale, date) => moment(date).format('YYYY')}
-          formatMonthYear={(locale, date) => moment(date).format('YYYY. MM')}
-          calendarType="gregory"
-          showNeighboringMonth={false}
-          next2Label={null}
-          prev2Label={null}
-          minDetail="year"
-          locale="ko"
-        />
-      </StyledCalendarWrapper>
-
-      {/* 선택한 날짜의 일정 목록 */}
+      <CommonCalendar schedules={schedulesData} onDateChange={setSelectedDate} />
       <ScheduleList schedules={filteredSchedules} />
     </div>
   );
 }
-
-// 스타일
-const StyledCalendarWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: relative;
-
-  .react-calendar {
-    width: 100%;
-    border: none;
-    border-radius: 0.5rem;
-    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.13);
-    padding: 3% 5%;
-    background-color: white;
-  }
-
-  .react-calendar__tile--now {
-    background-color: gray;
-    opacity: 50%;
-    border-radius: 0.3rem;
-    abbr {
-      color: white;
-    }
-  }
-
-  .react-calendar__tile--active {
-    background-color: red;
-    border-radius: 0.2rem;
-    abbr {
-      color: white;
-    }
-  }
-`;
-
-const StyledCalendar = styled(Calendar)``;
 
 // 일정 리스트 컴포넌트
 function ScheduleList({
@@ -178,13 +108,4 @@ const NoSchedule = styled.div`
   text-align: center;
   background-color: #f2f2f2;
   border-radius: 0.5rem;
-`;
-
-// 일정에 점 표시 스타일
-const Dot = styled.div<{ color: string }>`
-  width: 8px;
-  height: 8px;
-  background-color: ${({ color }) => color};
-  border-radius: 50%;
-  margin: 0 auto;
 `;
