@@ -72,7 +72,7 @@ const StyledDescriptionArea = styled.article`
   }
 `;
 
-const StyledMobileFrame = styled.div`
+export const StyledMobileFrame = styled.div`
   position: relative;
   width: 90vw;
   height: 90vh;
