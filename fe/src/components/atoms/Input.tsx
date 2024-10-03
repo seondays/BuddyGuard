@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, CSSProperties } from 'react';
 import styled from 'styled-components';
 
 type InputSizeType = 'small' | 'medium' | 'large';
@@ -15,6 +15,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   placeholder?: string;
   $widthPercent?: number;
   $isBottomLine?: boolean;
+  style?: CSSProperties;
 }
 
 export default function Input({
@@ -23,10 +24,11 @@ export default function Input({
   placeholder = '',
   $widthPercent = 100,
   $isBottomLine = true,
+  style,
   ...rest
 }: InputProps) {
   return (
-    <InputWrapper $widthPercent={$widthPercent} $isBottomLine={$isBottomLine}>
+    <InputWrapper $widthPercent={$widthPercent} $isBottomLine={$isBottomLine} style={style}>
       {label && <StyledLabel size={size}>{label}</StyledLabel>}
       <StyledInput size={size} placeholder={placeholder} {...rest} />
     </InputWrapper>
@@ -41,7 +43,6 @@ const InputWrapper = styled.div<{ $widthPercent: number; $isBottomLine: boolean 
   padding: 0.3rem 1rem;
   width: ${({ $widthPercent }) => `${$widthPercent}%`};
   position: relative;
-
   ${({ $isBottomLine, theme }) =>
     $isBottomLine &&
     `
@@ -66,7 +67,6 @@ const StyledLabel = styled.label<{ size: InputSizeType }>`
 
 const StyledInput = styled.input<{ size: InputSizeType }>`
   background-color: transparent;
-  /* background-color: red; */
   width: 100%;
   caret-color: ${({ theme }) => theme.themeValues.colorValues.special.textForce};
   padding: 0.5rem;
@@ -74,7 +74,7 @@ const StyledInput = styled.input<{ size: InputSizeType }>`
   border: none;
   outline: none;
   color: ${({ theme }) => theme.currentTheme.textSecondary};
-  & focus {
+  &:focus {
     outline: none;
   }
 `;

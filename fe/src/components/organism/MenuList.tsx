@@ -1,22 +1,43 @@
 import React from 'react';
+import styled from 'styled-components';
 import MenuItem from '../molecule/MenuItem';
 
 export default function MenuList() {
-  // api 완성되면 배열 갯수대로 MenuItem map 돌릴 예정
   const menuItems = [
-    { id: 1, backgroundColor: '#8C8C8C' },
-    { id: 2, backgroundColor: '#6dd47e' },
-    { id: 3, backgroundColor: '#A7C4A5' },
-    { id: 4, backgroundColor: '#FF7D29' },
-    { id: 5, backgroundColor: '#A6C8DD' },
-    { id: 6, backgroundColor: '#F7DB78' },
+    {
+      id: 1,
+      backgroundColor: '#8C8C8C',
+      title: '일정',
+      src: '/assets/icons/menu_calendar.png',
+      path: '/menu/schedule',
+    },
+    { id: 2, backgroundColor: '#ebebeb', title: '', src: '/assets/images/mascot.png', path: '' },
+    { id: 3, backgroundColor: '#6dd47e', title: '건강', src: '/assets/icons/menu_health.png', path: '/menu/health' },
+    { id: 4, backgroundColor: '#A7C4A5', title: '식사', src: '/assets/icons/menu_meal.png', path: '/menu/food' },
+    { id: 5, backgroundColor: '#FF7D29', title: '산책', src: '/assets/icons/menu_walk.png', path: '/menu/walk' },
+    { id: 6, backgroundColor: '#A6C8DD', title: '체중', src: '/assets/icons/menu_weight.png', path: '/menu/weight' },
   ];
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem', padding: '2rem' }}>
+    <MenuWrapper>
       {menuItems.map((item) => (
-        <MenuItem key={item.id} backgroundColor={item.backgroundColor} />
+        <MenuItem
+          key={item.id}
+          backgroundColor={item.backgroundColor}
+          src={item.src}
+          title={item.title}
+          path={item.path}
+        />
       ))}
-    </div>
+    </MenuWrapper>
   );
 }
+
+const MenuWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  padding: 1rem;
+`;

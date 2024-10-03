@@ -6,6 +6,10 @@ import Walk from '@/components/pages/Walk';
 import ResponsiveLayout from '@/components/templates/ResponsiveLayout';
 import Notification from '@/components/pages/Notification';
 import Login from '@/components/pages/Login';
+import Health from '@/components/pages/Health';
+import Schedule from '@/components/pages/Schedule';
+import Food from '@/components/pages/Food';
+import Weight from '@/components/pages/Weight';
 
 export const router = createBrowserRouter([
   {
@@ -61,7 +65,50 @@ export const router = createBrowserRouter([
   //   element: <GoWalk />,
   // },
   // { path: '*', element: <Root /> },
-  // { path: '/menu/schedule', element: <Schedule /> },
-  // { path: '/menu/health', element: <Health /> },
-  // { path: '/menu/food', element: <Food /> },
+  {
+    path: '/menu/schedule',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Schedule />{' '}
+      </ResponsiveLayout>
+    ),
+  },
+  {
+    path: '/menu/health',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Health />{' '}
+      </ResponsiveLayout>
+    ),
+  },
+  {
+    path: '/menu/walk',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Walk />{' '}
+      </ResponsiveLayout>
+    ),
+  },
+
+  {
+    path: '/menu/food',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Food />{' '}
+      </ResponsiveLayout>
+    ),
+  },
+  {
+    path: '/menu/weight',
+    element: (
+      <ResponsiveLayout>
+        {' '}
+        <Weight />{' '}
+      </ResponsiveLayout>
+    ),
+  },
 ]);
