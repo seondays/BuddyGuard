@@ -15,6 +15,7 @@ interface FormItemProps {
   dateLabel?: string;
   timeLabel?: string;
   categoryTitle: string;
+  onChange: (data: any) => void;
 }
 
 export default function FormItem({
@@ -22,18 +23,44 @@ export default function FormItem({
   dateLabel = '날짜',
   timeLabel = '시간',
   categoryTitle,
+  onChange,
 }: FormItemProps) {
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(new Date());
   const [selectedCategory, setSelectedCategory] = useState<string>(categoryTitle);
+  const [title, setTitle] = useState<string>('');
+  const [note, setNote] = useState<string>('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleDateTimeChange = (date: Date | null) => {
     setSelectedDateTime(date);
+    updateFormData({ date });
   };
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     setIsDropdownOpen(false);
+    updateFormData({ category });
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    updateFormData({ title: e.target.value });
+  };
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNote(e.target.value);
+    updateFormData({ note: e.target.value });
+  };
+
+  const updateFormData = (updatedData: any) => {
+    const formData = {
+      title,
+      note,
+      selectedCategory,
+      selectedDateTime,
+      ...updatedData,
+    };
+    onChange(formData); // 입력된 모든 데이터를 합쳐서 onChange로 전달
   };
 
   return (
@@ -68,8 +95,22 @@ export default function FormItem({
         )}
       </InputWrapper>
 
-      <Input id="name" type="text" label={titleLabel} style={{ marginBottom: '0rem' }} />
-      <Input id="note" type="text" label="노트" style={{ marginBottom: '0rem' }} />
+      <Input
+        id="title"
+        type="text"
+        label={titleLabel}
+        value={title}
+        onChange={handleTitleChange}
+        style={{ marginBottom: '0rem' }}
+      />
+      <Input
+        id="note"
+        type="text"
+        label="노트"
+        value={note}
+        onChange={handleNoteChange}
+        style={{ marginBottom: '0rem' }}
+      />
     </FormContainer>
   );
 }

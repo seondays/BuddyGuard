@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import FormItem from '../molecule/FormItem';
 
 interface FormModalProps {
   onClose: () => void;
+  onSubmit: (data: any) => void;
   titleLabel?: string;
   dateLabel?: string;
   timeLabel?: string;
@@ -13,12 +14,15 @@ interface FormModalProps {
 
 export default function FormModal({
   onClose,
+  onSubmit,
   titleLabel,
   dateLabel,
   timeLabel,
   formTitle,
   categoryTitle,
 }: FormModalProps) {
+  const [formData, setFormData] = useState({});
+
   return (
     <>
       <Overlay onClick={onClose} />
@@ -29,10 +33,19 @@ export default function FormModal({
         </ModalHeader>
 
         <FormItemWrapper>
-          <FormItem titleLabel={titleLabel} dateLabel={dateLabel} timeLabel={timeLabel} categoryTitle={categoryTitle} />
+          <FormItem
+            titleLabel={titleLabel}
+            dateLabel={dateLabel}
+            timeLabel={timeLabel}
+            categoryTitle={categoryTitle}
+            onChange={setFormData}
+          />
         </FormItemWrapper>
 
-        <CloseButton onClick={onClose}>닫기</CloseButton>
+        <ButtonWrapper>
+          <CloseButton onClick={onClose}>닫기</CloseButton>
+          <SubmitButton onClick={() => onSubmit(formData)}>등록</SubmitButton> {/* 데이터를 제출 */}
+        </ButtonWrapper>
       </ModalContainer>
     </>
   );
@@ -76,6 +89,12 @@ const FormItemWrapper = styled.div`
   margin-bottom: 2rem;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1rem;
+`;
+
 const CloseButton = styled.button`
   padding: 0.5rem 1rem;
   background-color: #ff5c5c;
@@ -83,6 +102,13 @@ const CloseButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  display: block;
-  margin: 0 auto;
+`;
+
+const SubmitButton = styled.button`
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 `;
