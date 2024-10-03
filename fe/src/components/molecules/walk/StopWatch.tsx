@@ -4,7 +4,7 @@ import { getTimeFormatString } from '@/helper/timerHelpers';
 import useStopWatch from '@/hooks/useStopWatch';
 import { StatusOfTime, TimeRef } from '@/types/map';
 
-interface StopWatchProps {
+export interface StopWatchProps {
   className?: string;
   children?: React.ReactNode;
   status: StatusOfTime;
