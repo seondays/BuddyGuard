@@ -4,7 +4,6 @@ import Checkbox from '@/components/atoms/Checkbox';
 import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
-// NOTE: 임시 이미지
 import { BuddysType, CheckboxChangeHandler, SelectedBuddysType } from '@/types/map';
 
 // TODO(Woody): API 연동
@@ -12,13 +11,13 @@ import { BuddysType, CheckboxChangeHandler, SelectedBuddysType } from '@/types/m
 
 export const BUDDY_SELECTBAR_HEIGHT = '10rem';
 
-interface BuddySelectBarProps {
+export interface WalkBuddySelectBarProps {
   buddys: BuddysType[];
   selectedBuddys: SelectedBuddysType;
   handleOnChange: CheckboxChangeHandler;
 }
 
-export default function BuddySelectBar({ buddys, selectedBuddys, handleOnChange }: BuddySelectBarProps) {
+export default function WalkBuddySelectBar({ buddys, selectedBuddys, handleOnChange }: WalkBuddySelectBarProps) {
   const theme = useTheme();
   const spanColor = theme.currentTheme.textSubtle;
 
