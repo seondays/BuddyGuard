@@ -41,6 +41,7 @@ jobs:
         if: |
           contains(github.ref, 'main') ||
           contains(github.ref, 'dev-be')
+        working-directory: ./BuddyGuard/be  # BuddyGuard 프로젝트 경로로 이동
         run: |
           sudo mkdir -p ./src/main/resources  # 필요한 경우 sudo 사용
           touch ./src/main/resources/application.yml
