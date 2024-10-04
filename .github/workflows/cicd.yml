@@ -94,8 +94,8 @@ jobs:
           envs: GITHUB_SHA
           script: |
             # 기존 컨테이너 중지 및 삭제
-            sudo docker stop mybuddyguard-container || true
-            sudo docker rm mybuddyguard-container || true
+            sudo docker stop cranky_leakey || true
+            sudo docker rm cranky_leakey || true
             
             # 도커 이미지 풀
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-test-dev
