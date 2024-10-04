@@ -54,6 +54,12 @@ jobs:
           echo "${{ secrets.YML }}" | sudo tee ./src/main/resources/application.yml > /dev/null  # tee 명령어로 권한 문제 해결
         shell: bash
 
+      # **application.yml 파일 내용 확인**
+      - name: Check application.yml content
+        if: contains(github.ref, 'dev-be')
+        run: cat ./src/main/resources/application.yml  # 파일 내용 출력
+
+
       # gradle build
       - name: Build with Gradle
         working-directory: ./be
