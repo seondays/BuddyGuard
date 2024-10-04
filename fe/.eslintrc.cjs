@@ -61,7 +61,8 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'],
       },
       node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'],
+        paths: ['src', 'public'],
       },
     },
   },
