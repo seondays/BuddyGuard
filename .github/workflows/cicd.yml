@@ -93,8 +93,16 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            sudo docker ps
+            # 기존 컨테이너 중지 및 삭제
+            sudo docker stop mybuddyguard-container || true
+            sudo docker rm mybuddyguard-container || true
+            
+            # 도커 이미지 풀
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-test-dev
-            sudo docker run -d -p 8081:8080 ${{ secrets.DOCKER_USERNAME }}/docker-test-dev
+            
+            # 새 컨테이너 실행
+            sudo docker run -d --name mybuddyguard-container -p 8081:8080 ${{ secrets.DOCKER_USERNAME }}/docker-test-dev
+            
+            # 불필요한 도커 이미지 정리
             sudo docker image prune -f
 
