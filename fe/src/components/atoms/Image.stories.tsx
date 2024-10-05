@@ -1,4 +1,5 @@
 import { Meta, StoryFn } from '@storybook/react';
+
 import Image, { ImageProps } from './Image';
 
 export default {
@@ -14,6 +15,7 @@ export default {
       control: { type: 'select', options: ['top', 'bottom', 'left', 'right'] },
     },
     style: { control: 'object' },
+    $isTextHidden: { control: 'boolean' },
   },
 } as Meta<ImageProps>;
 
@@ -77,4 +79,20 @@ LeftTextImage.args = {
     width: '300px',
     height: 'auto',
   },
+};
+
+// 텍스트 말줄임 이미지
+export const TextHiddenImage = Template.bind({});
+TextHiddenImage.args = {
+  src: 'https://via.placeholder.com/300',
+  style: {
+    width: '300px',
+    height: 'auto',
+  },
+  $borderRadius: '8px',
+  $boxShadow: true,
+  $isClicked: false,
+  text: 'LongText on bottom LongText on bottom LongText on bottom LongText on bottom LongText on bottom LongText on bottom LongText on bottom LongText on bottom LongText on bottom LongText on bottom LongText on bottom LongText on bottom',
+  textPosition: 'bottom',
+  $isTextHidden: true,
 };

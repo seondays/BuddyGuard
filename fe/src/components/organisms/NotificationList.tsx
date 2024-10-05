@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import NotificationPopup from '../molecule/NotificationModal';
-import CommonCard from '../molecule/CommonCard';
+import { useState } from 'react';
+
+import CommonCard from '@/components/molecules/CommonCard';
+import NotificationPopup from '@/components/molecules/NotificationModal';
 
 export default function NotificationList() {
   const [selectedNotification, setSelectedNotification] = useState(null);

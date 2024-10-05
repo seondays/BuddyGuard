@@ -11,7 +11,7 @@
       "@/*": ["*"],
       "@public/*": ["../public/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["kakao.maps.d.ts", "vitest/globals", "@testing-library/jest-dom"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

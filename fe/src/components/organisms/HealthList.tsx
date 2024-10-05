@@ -1,5 +1,4 @@
-import React from 'react';
-import CommonCard from '../molecule/CommonCard';
+import CommonCard from '@/components/molecules/CommonCard';
 
 export default function HealthList() {
   const healthList = [

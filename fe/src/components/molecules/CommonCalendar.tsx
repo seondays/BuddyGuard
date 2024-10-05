@@ -1,8 +1,8 @@
+import moment from 'moment';
 import React, { useState } from 'react';
-import Calendar from 'react-calendar';
+import { Calendar } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
-import moment from 'moment';
 
 // 카테고리별 색상 맵
 const categoryColors: { [key: string]: string } = {

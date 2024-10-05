@@ -1,6 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
-import MenuItem from '../molecule/MenuItem';
+
+import MenuItem from '@/components/molecules/MenuItem';
 
 export default function MenuList() {
   const menuItems = [

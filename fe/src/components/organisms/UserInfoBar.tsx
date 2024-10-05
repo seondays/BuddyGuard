@@ -1,6 +1,5 @@
-import React from 'react';
-import Span from '../atoms/Span';
-import Image from '../atoms/Image';
+import Image from '@/components/atoms/Image';
+import Span from '@/components/atoms/Span';
 
 export default function UserInfoBar() {
   return (

@@ -1,26 +1,34 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import Image from '../atoms/Image';
-import Span from '../atoms/Span';
+import { useTheme } from 'styled-components';
+
+import Image from '@/components/atoms/Image';
+import Span from '@/components/atoms/Span';
+
+export const NAV_HEIGHT = '4rem';
 
 const navItems = [
   { to: '/', src: '/assets/icons/home.png', label: '홈' },
-  { to: '/menu/walk', src: '/assets/icons/walk.png', label: '산책' },
+  { to: '/menu/walk/go', src: '/assets/icons/walk.png', label: '산책' },
   { to: '/menu', src: '/assets/icons/menu.png', label: '메뉴' },
   { to: '/notification', src: '/assets/icons/notification.png', label: '알림' },
   { to: '/MyPage', src: '/assets/icons/myPage.png', label: '내 정보' },
 ];
 
 export default function Nav() {
+  const theme = useTheme();
+  const { backgroundPrimary: navBgColor, textPrimary: navTextColor } = theme.currentTheme;
+
   return (
     <div
       style={{
         display: 'flex',
         width: '100%',
-        height: '4rem',
+        height: NAV_HEIGHT,
         justifyContent: 'space-around',
         alignItems: 'center',
         borderTop: '0.1rem solid black',
+        backgroundColor: navBgColor,
+        color: navTextColor,
       }}
     >
       {navItems.map((item) => (
@@ -36,7 +44,7 @@ export default function Nav() {
           }}
         >
           <Image src={item.src} style={{ fontSize: '0.8rem', width: '1.5rem' }} />
-          <Span>{item.label}</Span>
+          <Span $color={navTextColor}>{item.label}</Span>
         </Link>
       ))}
     </div>

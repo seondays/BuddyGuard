@@ -1,15 +1,17 @@
 import { createBrowserRouter } from 'react-router-dom';
+
+import Food from '@/components/pages/Food';
+import Health from '@/components/pages/Health';
 import Home from '@/components/pages/Home';
+import Login from '@/components/pages/Login';
 import Menu from '@/components/pages/Menu';
 import MyPage from '@/components/pages/MyPage';
-import Walk from '@/components/pages/Walk';
-import ResponsiveLayout from '@/components/templates/ResponsiveLayout';
 import Notification from '@/components/pages/Notification';
-import Login from '@/components/pages/Login';
-import Health from '@/components/pages/Health';
 import Schedule from '@/components/pages/Schedule';
-import Food from '@/components/pages/Food';
+import Walk from '@/components/pages/Walk';
+import GoWalk from '@/components/pages/walk/GoWalk';
 import Weight from '@/components/pages/Weight';
+import ResponsiveLayout from '@/components/templates/ResponsiveLayout';
 
 export const router = createBrowserRouter([
   {
@@ -60,10 +62,14 @@ export const router = createBrowserRouter([
       </ResponsiveLayout>
     ),
   },
-  // {
-  //   path: '/menu/walk/go',
-  //   element: <GoWalk />,
-  // },
+  {
+    path: '/menu/walk/go',
+    element: (
+      <ResponsiveLayout>
+        <GoWalk />
+      </ResponsiveLayout>
+    ),
+  },
   // { path: '*', element: <Root /> },
   {
     path: '/menu/schedule',

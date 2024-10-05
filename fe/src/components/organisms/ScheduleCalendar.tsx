@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
+
+import CommonCalendar from '@/components/molecules/CommonCalendar';
+
 import Span from '../atoms/Span';
-import CommonCalendar from '../molecule/CommonCalendar';
 
 // 카테고리별 색상 맵
 const categoryColors: { [key: string]: string } = {

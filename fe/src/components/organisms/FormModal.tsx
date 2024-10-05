@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import FormItem from '../molecule/FormItem';
+
+import FormItem from '@/components/molecules/FormItem';
 
 interface FormModalProps {
   onClose: () => void;

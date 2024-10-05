@@ -1,7 +1,6 @@
-import React from 'react';
-import PageTitleBar from '../molecule/PageTitleBar';
-import BuddyInfoBar from '../organism/BuddyInfoBar';
-import FoodList from '../organism/FoodList';
+import PageTitleBar from '@/components/molecules/PageTitleBar';
+import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
+import FoodList from '@/components/organisms/FoodList';
 
 export default function Food() {
   return (

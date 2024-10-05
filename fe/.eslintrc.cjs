@@ -4,6 +4,7 @@ module.exports = {
     browser: true,
     es2020: true,
     node: true,
+    'vitest-globals/env': true,
   },
   extends: [
     'eslint:recommended',
@@ -12,6 +13,8 @@ module.exports = {
     'plugin:storybook/recommended',
     'plugin:import/recommended',
     'plugin:prettier/recommended',
+    'prettier',
+    'plugin:vitest-globals/recommended',
   ],
   ignorePatterns: ['dist'],
   parser: '@typescript-eslint/parser',

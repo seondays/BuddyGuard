@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import CheckIcon from '@/components/icons/CheckIcon';
 
+import { CheckboxChangeHandler } from '../pages/walk/GoWalk';
+
 type CheckboxSizeType = 'small' | 'medium' | 'large';
 
 const checkboxSize: { [key in CheckboxSizeType]: string } = {
@@ -21,48 +23,58 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   size?: CheckboxSizeType;
   label?: string;
   isChecked?: boolean;
+  checkBoxId?: string;
+  handleOnChange?: CheckboxChangeHandler;
   position?: 'left' | 'right';
-  justifyContent?: 'flex-start' | 'center' | 'flex-end';
+  $justifyContent?: 'flex-start' | 'center' | 'flex-end';
   style?: React.CSSProperties;
 }
 
 export default function Checkbox({
+  className,
   size = 'small',
   label = '',
   isChecked = false,
+  checkBoxId = '',
+  handleOnChange = () => {},
   position = 'left',
-  justifyContent = 'flex-start',
+  $justifyContent = 'flex-start',
   style,
 }: CheckboxProps) {
   const [checked, setChecked] = useState(isChecked);
 
-  const handleCheckboxChange = () => setChecked((prevChecked) => !prevChecked);
+  const handleCheckboxChange = (checkBoxId: string) => {
+    const newCheckedState: boolean = !checked;
+    setChecked((prevChecked) => !prevChecked);
+    handleOnChange(checkBoxId, newCheckedState);
+  };
+  const htmlForAttribute = `check${checkBoxId}`;
 
   return (
-    <StyledCheckboxContainer justifyContent={justifyContent} style={style}>
+    <StyledCheckboxContainer className={className} $justifyContent={$justifyContent} style={style}>
       {position === 'left' && (
-        <StyledCheckbox htmlFor="chk" checked={checked} size={size}>
+        <StyledCheckbox htmlFor={htmlForAttribute} checked={checked} size={size}>
           {checked && <CheckIcon size={checkIconSize[size]} />}
         </StyledCheckbox>
       )}
-      <StyledCheckboxLabel htmlFor="chk" size={size}>
+      <StyledCheckboxLabel htmlFor={htmlForAttribute} size={size}>
         {label}
       </StyledCheckboxLabel>
       {position === 'right' && (
-        <StyledCheckbox htmlFor="chk" checked={checked} size={size}>
+        <StyledCheckbox htmlFor={htmlForAttribute} checked={checked} size={size}>
           {checked && <CheckIcon size={checkIconSize[size]} />}
         </StyledCheckbox>
       )}
-      <StyledHiddenCheckbox id="chk" checked={checked} onChange={handleCheckboxChange} />
+      <StyledHiddenCheckbox id={htmlForAttribute} checked={checked} onChange={() => handleCheckboxChange(checkBoxId)} />
     </StyledCheckboxContainer>
   );
 }
 
-const StyledCheckboxContainer = styled.div<{ justifyContent: string }>`
+const StyledCheckboxContainer = styled.div<{ $justifyContent: string }>`
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
-  justify-content: ${({ justifyContent }) => justifyContent};
+  justify-content: ${({ $justifyContent }) => $justifyContent};
 `;
 
 const StyledCheckboxLabel = styled.label<{ size: CheckboxSizeType }>`

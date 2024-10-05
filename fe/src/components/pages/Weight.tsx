@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import PageTitleBar from '../molecule/PageTitleBar';
-import BuddyInfoBar from '../organism/BuddyInfoBar';
-import WeightList from '../organism/WeightList';
-import FormModal from '../organism/FormModal';
+import { useState } from 'react';
+
+import PageTitleBar from '@/components/molecules/PageTitleBar';
+import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
+import FormModal from '@/components/organisms/FormModal';
+import WeightList from '@/components/organisms/WeightList';
 import { createWeightRecord } from '@/utils/weightApi';
 
 export default function Weight() {

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+export interface ImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, '$borderRadius'> {
   $borderRadius?: string;
   $boxShadow?: boolean;
   $isClicked?: boolean;
@@ -8,29 +8,29 @@ export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 export default function Image({
-  $borderRadius = '0',
+  className,
+  $borderRadius = 'none',
   $boxShadow = false,
   $isClicked = false,
   src,
   style,
   ...rest
 }: ImageProps) {
-  return (
-    <StyledImage
-      $borderRadius={$borderRadius}
-      $boxShadow={$boxShadow}
-      $isClicked={$isClicked}
-      src={src}
-      style={style}
-      {...rest}
-    />
-  );
+  return <StyledImage {...{ className, $borderRadius, $boxShadow, $isClicked, src, style, ...rest }} />;
 }
 
 const StyledImage = styled.img<ImageProps & { $isClicked: boolean }>`
-  width: ${({ style }) => style?.width || '100%'};
-  height: ${({ style }) => style?.height || 'auto'};
-  border-radius: ${({ $borderRadius }) => $borderRadius};
+  ${({ style }) => {
+    const { width, height, border, marginTop } = style || {};
+    return `
+      width: ${width || '100%'};
+      height: ${height || 'auto'};
+      border: ${border || 'none'};
+      margin-top:${marginTop || 'none'};
+    `;
+  }}
+
+  border-radius: ${({ $borderRadius }) => $borderRadius || '0'};
   background: transparent;
   cursor: pointer;
 

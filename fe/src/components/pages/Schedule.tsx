@@ -1,7 +1,6 @@
-import React from 'react';
-import PageTitleBar from '../molecule/PageTitleBar';
-import BuddyInfoBar from '../organism/BuddyInfoBar';
-import ScheduleCalendar from '../organism/ScheduleCalendar';
+import PageTitleBar from '@/components/molecules/PageTitleBar';
+import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
+import ScheduleCalendar from '@/components/organisms/ScheduleCalendar';
 
 export default function Schedule() {
   return (

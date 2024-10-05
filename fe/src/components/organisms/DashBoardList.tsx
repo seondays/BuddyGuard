@@ -1,5 +1,4 @@
-import React from 'react';
-import DashBoard from '../molecule/DashBoard';
+import DashBoard from '@/components/molecules/DashBoard';
 
 export default function DashBoardList() {
   return (

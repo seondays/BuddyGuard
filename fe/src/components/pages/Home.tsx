@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import BuddyInfoBar from '../organism/BuddyInfoBar';
-import DashBoardList from '../organism/DashBoardList';
+import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
+import DashBoardList from '@/components/organisms/DashBoardList';
 
 export default function Home() {
   return (

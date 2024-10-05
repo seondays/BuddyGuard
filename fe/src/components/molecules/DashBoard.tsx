@@ -1,6 +1,5 @@
-import React from 'react';
-import Image from '../atoms/Image';
-import Span from '../atoms/Span';
+import Image from '@/components/atoms/Image';
+import Span from '@/components/atoms/Span';
 import { DASHBOARD_DESCRIPTION_TEXT } from '@/constants/textConstants';
 
 export default function DashBoard() {

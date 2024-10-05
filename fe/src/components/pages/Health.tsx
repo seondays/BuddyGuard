@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import PageTitleBar from '../molecule/PageTitleBar';
-import BuddyInfoBar from '../organism/BuddyInfoBar';
-import HealthList from '../organism/HealthList';
-import FormModal from '../organism/FormModal';
+import { useState } from 'react';
+
+import PageTitleBar from '@/components/molecules/PageTitleBar';
+import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
+import FormModal from '@/components/organisms/FormModal';
+import HealthList from '@/components/organisms/HealthList';
 
 export default function Health() {
   const [isModalOpen, setIsModalOpen] = useState(false);
