@@ -86,8 +86,7 @@ public class SecurityConfig {
                         config.setMaxAge(60 * 60L);
                         return config;
                     }
-                }))
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+                }));
         return http.build();
     }
 
