@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://192.168.45.65:5173",  // 로컬 IP 주소
+                        "http://175.124.214.65:5173",  // 로컬 IP 주소
                         "http://buddyguard.site:5173" // 도메인 주소
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드 설정
