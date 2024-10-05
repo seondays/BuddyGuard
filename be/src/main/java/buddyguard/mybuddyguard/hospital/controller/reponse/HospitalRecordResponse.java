@@ -6,8 +6,8 @@ public record HospitalRecordResponse(
         Long id,
         Long userId,
         Long petId,
-        LocalDateTime visitDate,
-        String hospitalName,
+        LocalDateTime date,
+        String title,
         String description
 
 ) {

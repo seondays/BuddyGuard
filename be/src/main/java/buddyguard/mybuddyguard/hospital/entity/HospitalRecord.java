@@ -26,18 +26,18 @@ public class HospitalRecord {
     @Column(name = "pet_id", nullable = false)
     private Long petId;
 
-    @Column(name = "visit_date", nullable = false)
-    private LocalDateTime visitDate;
+    @Column(name = "date", nullable = false)
+    private LocalDateTime date;
 
-    @Column(name = "hospital_name", nullable = false)
-    private String hospitalName;
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    public void update(String description, String hospitalName, LocalDateTime visitDate) {
+    public void update(String description, String title, LocalDateTime date) {
         this.description = description;
-        this.hospitalName = hospitalName;
-        this.visitDate = visitDate;
+        this.title = title;
+        this.date = date;
     }
 }

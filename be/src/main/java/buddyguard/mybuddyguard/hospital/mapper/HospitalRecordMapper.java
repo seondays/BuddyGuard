@@ -11,8 +11,8 @@ public class HospitalRecordMapper {
                 hospitalRecord.getId(),
                 hospitalRecord.getUserId(),
                 hospitalRecord.getPetId(),
-                hospitalRecord.getVisitDate(),
-                hospitalRecord.getHospitalName(),
+                hospitalRecord.getDate(),
+                hospitalRecord.getTitle(),
                 hospitalRecord.getDescription()
         );
     }
@@ -21,8 +21,8 @@ public class HospitalRecordMapper {
         return HospitalRecord.builder()
                 .userId(userId)
                 .petId(petId)
-                .visitDate(request.visitDate())
-                .hospitalName(request.hospitalName())
+                .date(request.visitDate())
+                .title(request.hospitalName())
                 .description(request.description())
                 .build();
     }
