@@ -13,10 +13,12 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://175.124.214.65:5173",  // 로컬 IP 주소
                         "http://buddyguard.site:5173", // 도메인 주소
-                        "http://localhost:5173"
+                        "http://localhost:5173",
+                        "http://buddyguard.site",
+                        "http://buddyguard.site:8081"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드 설정
-                .allowedHeaders("*") // 허용할 헤더 설정
+                .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더 설정
                 .allowCredentials(true); // 인증 정보 허용
     }
 }
