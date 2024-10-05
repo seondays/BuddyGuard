@@ -54,6 +54,13 @@ jobs:
           echo "${{ secrets.YML }}" | sudo tee ./src/main/resources/application.yml > /dev/null  # tee 명령어로 권한 문제 해결
         shell: bash
 
+      # **application.yml 파일 내용 확인**
+      - name: Check application.yml content
+        if: contains(github.ref, 'dev-be')
+        working-directory: ./be
+        run: cat ./src/main/resources/application.yml  # 파일 내용 출력
+
+
       # gradle build
       - name: Build with Gradle
         working-directory: ./be
@@ -72,7 +79,7 @@ jobs:
         if: contains(github.ref, 'dev-be')
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f ./be/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/docker-test-dev .
+          docker build -f ./be/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/docker-test-dev ./be
           docker push ${{ secrets.DOCKER_USERNAME }}/docker-test-dev
 
       ## deploy to production
@@ -86,8 +93,18 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            sudo docker ps
+            # 기존 컨테이너가 존재하면 중지 및 삭제
+            if [ $(sudo docker ps -q -f name=mybuddyguard-container) ]; then
+              sudo docker stop mybuddyguard-container
+              sudo docker rm -f mybuddyguard-container
+            fi
+            
+            # 도커 이미지 풀
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-test-dev
-            sudo docker run -d -p 8082:8082 ${{ secrets.DOCKER_USERNAME }}/docker-test-prod
+            
+            # 새 컨테이너 실행
+            sudo docker run -d --name mybuddyguard-container -p 8081:8080 ${{ secrets.DOCKER_USERNAME }}/docker-test-dev
+            
+            # 불필요한 도커 이미지 정리
             sudo docker image prune -f
 

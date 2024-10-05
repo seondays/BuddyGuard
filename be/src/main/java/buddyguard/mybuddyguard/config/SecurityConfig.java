@@ -69,6 +69,8 @@ public class SecurityConfig {
         http.addFilterBefore(new CustomLogoutFilter(tokenService, repository, entryPoint),
                 LogoutFilter.class);
 
+        http.oauth2Login(oauth2 -> oauth2.loginPage("/oauth2/authorization/kakao"));
+
         http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
                 new CorsConfigurationSource() {
                     @Override
