@@ -3,7 +3,7 @@ import path from 'path';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
-
+import svgr from 'vite-plugin-svgr';
 // Vitest 설정을 위한 타입 임포트
 import type { UserConfig as VitestUserConfig } from 'vitest/config';
 
@@ -22,6 +22,9 @@ interface UserConfig extends VitestUserConfig {
 export default defineConfig({
   plugins: [
     react(),
+    svgr({
+      include: ['**/*.svg'],
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
@@ -38,7 +41,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@public': path.resolve(__dirname, './public'),
     },
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'],
   },
   test: {
     globals: true,

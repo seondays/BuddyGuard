@@ -3,7 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Food from '@/components/pages/Food';
 import Health from '@/components/pages/Health';
 import Home from '@/components/pages/Home';
-import Login from '@/components/pages/Login';
+import Login from '@/components/pages/login/Login';
 import Menu from '@/components/pages/Menu';
 import MyPage from '@/components/pages/MyPage';
 import Notification from '@/components/pages/Notification';

@@ -11,7 +11,7 @@
       "@/*": ["*"],
       "@public/*": ["../public/*"]
     },
-    "types": ["kakao.maps.d.ts", "vitest/globals", "@testing-library/jest-dom"],
+    "types": ["kakao.maps.d.ts", "vitest/globals", "@testing-library/jest-dom", "vite-plugin-svgr/client"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -27,6 +27,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "src/svg.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

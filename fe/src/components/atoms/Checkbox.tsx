@@ -2,14 +2,13 @@ import { InputHTMLAttributes, useState } from 'react';
 import styled from 'styled-components';
 
 import CheckIcon from '@/components/icons/CheckIcon';
-
-import { CheckboxChangeHandler } from '../pages/walk/GoWalk';
+import { CheckboxChangeHandler } from '@/types/map';
 
 type CheckboxSizeType = 'small' | 'medium' | 'large';
 
 const checkboxSize: { [key in CheckboxSizeType]: string } = {
-  small: '1.25rem',
-  medium: '1.5rem',
+  small: '1rem',
+  medium: '1.25rem',
   large: '2rem',
 };
 
@@ -46,7 +45,7 @@ export default function Checkbox({
   const handleCheckboxChange = (checkBoxId: string) => {
     const newCheckedState: boolean = !checked;
     setChecked((prevChecked) => !prevChecked);
-    handleOnChange(checkBoxId, newCheckedState);
+    handleOnChange(Number(checkBoxId), newCheckedState);
   };
   const htmlForAttribute = `check${checkBoxId}`;
 
@@ -99,6 +98,7 @@ const StyledCheckbox = styled.label<{ checked: boolean; size: CheckboxSizeType }
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: ${({ size }) => (size === 'small' ? '0.5rem' : '1rem')};
   cursor: pointer;
   border-radius: ${({ theme, size }) => theme.themeValues.radius[size]};
   user-select: none;
