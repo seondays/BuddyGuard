@@ -1,21 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Button from '@/components/atoms/Button';
-import Image from '@/components/atoms/Image';
-import Input from '@/components/atoms/Input';
-// import FormItem from '@/components/molecules/walk/FormItem';
+import WalkFormItem from '@/components/molecules/walk/WalkFormItem';
 import { initTimeRef } from '@/components/pages/walk/GoWalk';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
 import { BuddysType, SelectedBuddysType, TimeRef } from '@/types/map';
-import { calculateTotalDistance } from '@/utils/mapUtils';
 
 import { NAV_HEIGHT } from '../Nav';
 
 export interface WalkModalProps {
-  // onClose: () => void;
-  // onSubmit: (data: any) => void;
   titleLabel?: string;
   timeLabel?: string;
   formTitle: string;
@@ -23,41 +18,45 @@ export interface WalkModalProps {
   linePathRef: React.MutableRefObject<kakao.maps.LatLng[]>;
   selectedBuddys: SelectedBuddysType;
   buddyList: BuddysType[];
+  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
 }
 
+const initFormData = {
+  startDate: '',
+  endDate: '',
+  startTime: '',
+  endTime: '',
+  totalTime: '',
+  buddysId: [1, 2],
+  note: '',
+  centerPosition: [],
+  mapLevel: 3,
+  path: [
+    { lat: 37.5297067082716, lng: 126.6616366315937 },
+    { lat: 37.5297067082716, lng: 126.6616366315937 },
+  ],
+  pathImage: '',
+};
+// const pathData = linePathRef.current.map(
+//   ({ La, Ma }): kakao.maps.LatLng => ({
+//     lat: Ma, // 위도
+//     lng: La, // 경도
+//   })
+// );
+// console.log('pathData : ', pathData);
+
 export default function WalkModal({
-  // onClose,
-  // onSubmit,
   formTitle,
   timeRef,
   linePathRef,
   selectedBuddys,
   buddyList,
+  canvasRef,
 }: WalkModalProps) {
-  const [formData, setFormData] = useState({});
-  // const navigate = useNavigate();
+  const [formData, setFormData] = useState(initFormData);
 
-  const [totalDistance, setTotalDistance] = useState(0);
   const [dateTime, setDateTime] = useState<TimeRef>(initTimeRef);
   const [note, setNote] = useState<string>('');
-  const [filterdBuddys, setFilterdBuddys] = useState<BuddysType[]>([]);
-
-  const filterBuddys = useCallback(
-    (buddyList: BuddysType[], selectedBuddys: SelectedBuddysType) =>
-      buddyList.filter(({ id }) => {
-        return selectedBuddys.includes(id);
-      }),
-    []
-  );
-
-  useEffect(() => {
-    setFilterdBuddys(filterBuddys(buddyList, selectedBuddys));
-  }, [selectedBuddys, buddyList]);
-
-  const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNote(e.target.value);
-    // updateFormData({ note: e.target.value });
-  };
 
   useEffect(() => {
     if (!timeRef.current) return;
@@ -68,11 +67,6 @@ export default function WalkModal({
       total: timeRef.current.total,
     }));
   }, [timeRef]);
-
-  useEffect(() => {
-    if (!linePathRef.current) return;
-    setTotalDistance(() => calculateTotalDistance(linePathRef.current));
-  }, [linePathRef]);
 
   const onClose = () => {
     console.log('close');
@@ -92,62 +86,7 @@ export default function WalkModal({
         </ModalHeader>
 
         <FormItemWrapper>
-          {/* <FormItem
-            titleLabel={titleLabel}
-            timeLabel={timeLabel}
-            onChange={setFormData}
-          /> */}
-
-          <InfoItem>
-            <Label>날짜</Label>
-            <Value className="date">{dateTime.end.day}</Value>
-          </InfoItem>
-
-          <InfoItem>
-            <Label>거리</Label>
-            <Value>{totalDistance}</Value>
-            <SubValue>km</SubValue>
-          </InfoItem>
-
-          <InfoItem>
-            <Label>시간</Label>
-            <Value>{dateTime.total}</Value>
-            <SubValue>
-              {dateTime.start.time} ~ {dateTime.end.time}
-            </SubValue>
-          </InfoItem>
-
-          <InfoItem>
-            <Label>버디</Label>
-            <BuddysWrapper>
-              {filterdBuddys &&
-                filterdBuddys.map(({ id, img, name }) => (
-                  <BuddyWrapper key={`select-${id}`}>
-                    <Image
-                      style={{ width: '2.5rem', border: '0.2rem solid white' }}
-                      $borderRadius={'50%'}
-                      $isHover={false}
-                      $isPointer={false}
-                      src={img}
-                      alt={name}
-                    />
-                    <SubValue>{`${name}`}</SubValue>
-                  </BuddyWrapper>
-                ))}
-            </BuddysWrapper>
-          </InfoItem>
-
-          <InfoItem>
-            <Label>노트</Label>
-            <Input
-              id="note"
-              type="text"
-              value={note}
-              onChange={handleNoteChange}
-              $isBottomLine={false}
-              style={{ marginBottom: '0rem' }}
-            />
-          </InfoItem>
+          <WalkFormItem {...{ linePathRef, buddyList, selectedBuddys }}></WalkFormItem>
         </FormItemWrapper>
 
         <ButtonWrapper>
@@ -176,13 +115,10 @@ const ModalContainer = styled.div`
   bottom: ${NAV_HEIGHT};
   width: 100%;
   min-width: 23rem;
-  /* max-height: 35rem; */
-
   padding: 1.3rem 1.5rem;
   border-radius: 1rem;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 999;
-
   background-color: ${({ theme }) => theme.currentTheme.modalBackground2};
   border: 0.2rem solid ${({ theme }) => theme.currentTheme.modalBackground};
 
@@ -201,63 +137,6 @@ const Overlay = styled.div`
   z-index: 999;
 `;
 
-const BuddyWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.3rem 1rem;
-`;
-const BuddysWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-height: 6rem;
-  overflow-y: auto;
-  width: 100%;
-`;
-const InfoItem = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  & .date {
-    font-size: 1rem;
-  }
-  margin-bottom: 2rem;
-  ${({ theme }) =>
-    `
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -1rem;
-      width: 100%;
-      height:  0.05rem; 
-      background-color: ${theme.themeValues.colorValues.grayscale[300]};
-      z-index: 1000;
-    }
-   `}
-`;
-
-const Label = styled.span`
-  width: 4rem;
-  color: ${({ theme }) => theme.currentTheme.textPrimary};
-  margin-left: 1rem;
-`;
-
-const Value = styled.span`
-  font-weight: 600;
-  color: ${({ theme }) => theme.currentTheme.textPrimary};
-  padding: 0.3rem 1rem;
-  font-size: 1rem;
-`;
-
-const SubValue = styled.span`
-  margin-left: 1rem;
-  font-size: 1rem;
-  color: ${({ theme }) => theme.currentTheme.textSecondary};
-`;
-
 const FormItemWrapper = styled.div`
   margin-bottom: 2rem;
 `;
@@ -269,14 +148,13 @@ const ButtonWrapper = styled.div`
 `;
 
 const ModalHeader = styled.div<{ $isBottomLine: boolean; $lineThick: string }>`
-  /* background-color: red; */
   display: flex;
   justify-content: left;
   position: relative;
   text-align: center;
   margin-bottom: 3rem;
-  h3 {
-    /* background-color: skyblue; */
+
+  & h3 {
     font-weight: bold;
     font-size: 1.5rem;
     color: ${({ theme }) => theme.currentTheme.textPrimary};
@@ -294,5 +172,5 @@ const ModalHeader = styled.div<{ $isBottomLine: boolean; $lineThick: string }>`
       background-color: ${theme.themeValues.colorValues.grayscale[300]};
       z-index: 1000;
     }
-   `}
+  `}
 `;
