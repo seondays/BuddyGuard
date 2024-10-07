@@ -7,7 +7,14 @@ import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import WalkModal from '@/components/organisms/walk/WalkModal';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
-import { BuddysType, CheckboxChangeHandler, SelectedBuddysType, StatusOfTime, TimeRef } from '@/types/map';
+import {
+  BuddysType,
+  CheckboxChangeHandler,
+  PositionType,
+  SelectedBuddysType,
+  StatusOfTime,
+  TimeRef,
+} from '@/types/map';
 import { getCurrentDate } from '@/utils/timeUtils';
 import targetIcon from '@public/assets/icons/targetIcon.png';
 import profile01 from '@public/images/profile01.png';
@@ -63,6 +70,8 @@ export default function GoWalk() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const timeRef = useRef<TimeRef>(initTimeRef);
   const linePathRef = useRef<kakao.maps.LatLng[]>([]);
+  const [map, setMap] = useState<kakao.maps.Map | null>(null);
+  const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null); // 캡처된 이미지를 저장할 상태
   const [isStarted, setIsStarted] = useState<IsStartedType>('ready');
   const [selectedBuddys, setSelectedBuddys] = useState<SelectedBuddysType>([]); // 클릭한 버디
@@ -82,6 +91,10 @@ export default function GoWalk() {
     setCapturedImage,
     canvasRef,
     linePathRef,
+    changedPosition,
+    setChangedPosition,
+    map,
+    setMap,
   });
 
   const startGoWalk = () => {
@@ -122,6 +135,9 @@ export default function GoWalk() {
             linePathRef={linePathRef}
             selectedBuddys={selectedBuddys}
             buddyList={buddyList}
+            canvasRef={canvasRef}
+            changedPosition={changedPosition}
+            map={map}
           />
         )}
         {/* {capturedImage && ( */}

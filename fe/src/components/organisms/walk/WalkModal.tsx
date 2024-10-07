@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 import Button from '@/components/atoms/Button';
 import WalkFormItem from '@/components/molecules/walk/WalkFormItem';
-import { initTimeRef } from '@/components/pages/walk/GoWalk';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
-import { BuddysType, SelectedBuddysType, TimeRef } from '@/types/map';
+import { BuddysType, PositionType, SelectedBuddysType, TimeRef } from '@/types/map';
 
 import { NAV_HEIGHT } from '../Nav';
-
 export interface WalkModalProps {
   titleLabel?: string;
   timeLabel?: string;
@@ -19,31 +19,39 @@ export interface WalkModalProps {
   selectedBuddys: SelectedBuddysType;
   buddyList: BuddysType[];
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+  changedPosition: PositionType | null;
+  map: kakao.maps.Map | null;
 }
 
-const initFormData = {
+export interface FormDataType {
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  totalTime: string;
+  buddysId: number[];
+  note: string;
+  centerPosition: number[];
+  mapLevel: number;
+  path: { lat: number; lng: number }[];
+  pathImage: string; // 이미지 URL 또는 base64
+  distance: number;
+}
+
+const initFormData: FormDataType = {
   startDate: '',
   endDate: '',
   startTime: '',
   endTime: '',
   totalTime: '',
-  buddysId: [1, 2],
+  buddysId: [],
   note: '',
   centerPosition: [],
   mapLevel: 3,
-  path: [
-    { lat: 37.5297067082716, lng: 126.6616366315937 },
-    { lat: 37.5297067082716, lng: 126.6616366315937 },
-  ],
+  path: [],
   pathImage: '',
+  distance: 0,
 };
-// const pathData = linePathRef.current.map(
-//   ({ La, Ma }): kakao.maps.LatLng => ({
-//     lat: Ma, // 위도
-//     lng: La, // 경도
-//   })
-// );
-// console.log('pathData : ', pathData);
 
 export default function WalkModal({
   formTitle,
@@ -52,26 +60,95 @@ export default function WalkModal({
   selectedBuddys,
   buddyList,
   canvasRef,
+  changedPosition,
+  map,
 }: WalkModalProps) {
-  const [formData, setFormData] = useState(initFormData);
+  // const [dateTime, setDateTime] = useState<TimeRef>(initTimeRef);
+  // const [formData, setFormData] = useState(initFormData);
 
-  const [dateTime, setDateTime] = useState<TimeRef>(initTimeRef);
-  const [note, setNote] = useState<string>('');
+  const { handleSubmit, setValue, getValues } = useForm<FormDataType>({
+    defaultValues: initFormData,
+  });
 
-  useEffect(() => {
-    if (!timeRef.current) return;
-    setDateTime((prevDateTime) => ({
-      ...prevDateTime,
-      start: { ...timeRef.current.start },
-      end: { ...timeRef.current.end },
-      total: timeRef.current.total,
-    }));
-  }, [timeRef]);
+  const onSubmit = async (data: FormDataType) => {
+    if (!canvasRef.current) return;
+
+    canvasRef.current.toBlob(async (blob) => {
+      if (!blob) return;
+
+      const form = new FormData();
+
+      // 배열 데이터만 JSON으로 변환
+      Object.keys(data).forEach((key) => {
+        const typedKey = key as keyof FormDataType;
+
+        if (typedKey === 'pathImage') return; // pathImage는 이 단계에서 처리하지 않고 넘어감
+
+        const value = data[typedKey]; // 값을 안전하게 가져옴
+
+        if (Array.isArray(value)) form.append(key, JSON.stringify(data[key as keyof FormDataType]));
+        else form.append(key, data[key as keyof FormDataType] as string);
+      });
+
+      form.append('pathImage', blob, 'path-image.png');
+
+      //TODO(Woody):API연동
+      // 폼 데이터 콘솔에 출력
+      for (const pair of form.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+      }
+      // try {
+      //   const response = await axios.post('/api/walk', form, {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   });
+      //   console.log('Upload success:', response.data);
+      // } catch (error) {
+      //   console.error('Upload failed:', error);
+      // }
+    }, 'image/png');
+  };
 
   const onClose = () => {
     console.log('close');
     // navigate('/menu/walk/go');
   };
+
+  useEffect(() => {
+    const pathData = linePathRef.current.map((latLng) => ({
+      lat: latLng.getLat(),
+      lng: latLng.getLng(),
+    }));
+    setValue('path', pathData);
+  }, [linePathRef, setValue]);
+
+  useEffect(() => {
+    if (!map) return;
+    setValue('mapLevel', map?.getLevel() || 3);
+  }, [map, setValue]);
+
+  useEffect(() => {
+    if (!changedPosition) return;
+    setValue('centerPosition', [...changedPosition]);
+  }, [changedPosition, setValue]);
+
+  useEffect(() => {
+    if (!selectedBuddys) return;
+    setValue('buddysId', selectedBuddys);
+  }, [selectedBuddys, setValue]);
+
+  useEffect(() => {
+    if (!timeRef.current) return;
+    const { start, end, total } = timeRef.current;
+    setValue('startDate', start.day);
+    setValue('endDate', end.day);
+    setValue('startTime', start.time);
+    setValue('endTime', end.time);
+    setValue('totalTime', total);
+  }, [timeRef, setValue]);
+
+  useEffect(() => {});
 
   const defaultColor = theme.colorValues.special.textForce;
   const defaultGray = theme.colorValues.grayscale[200];
@@ -86,7 +163,7 @@ export default function WalkModal({
         </ModalHeader>
 
         <FormItemWrapper>
-          <WalkFormItem {...{ linePathRef, buddyList, selectedBuddys }}></WalkFormItem>
+          <WalkFormItem {...{ linePathRef, buddyList, selectedBuddys, setValue, getValues }}></WalkFormItem>
         </FormItemWrapper>
 
         <ButtonWrapper>
@@ -98,7 +175,7 @@ export default function WalkModal({
             <TrashIcon />
           </Button>
           <Button
-            onClick={() => console.log('등록')}
+            onClick={handleSubmit(onSubmit)}
             $bgColor={defaultColor}
             style={{ border: 'none', borderRadius: '1rem', color: 'white', fontSize: '1.2rem', fontWeight: 'bold' }}
           >

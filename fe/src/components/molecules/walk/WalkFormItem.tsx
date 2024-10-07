@@ -1,19 +1,29 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { UseFormSetValue, UseFormGetValues } from 'react-hook-form';
 import styled from 'styled-components';
 
-import { initTimeRef } from '@/components/pages/walk/GoWalk';
-import { BuddysType, SelectedBuddysType, TimeRef } from '@/types/map';
+import Image from '@/components/atoms/Image';
+import Input from '@/components/atoms/Input';
+import { FormDataType } from '@/components/organisms/walk/WalkModal';
+import { BuddysType, SelectedBuddysType } from '@/types/map';
 import { calculateTotalDistance } from '@/utils/mapUtils';
 
 interface WalkFormItemProps {
   linePathRef: React.MutableRefObject<kakao.maps.LatLng[]>;
   buddyList: BuddysType[];
   selectedBuddys: SelectedBuddysType;
+  setValue: UseFormSetValue<FormDataType>;
+  getValues: UseFormGetValues<FormDataType>;
 }
 
-export default function WalkFormItem({ linePathRef, buddyList, selectedBuddys }: WalkFormItemProps) {
-  const [dateTime, setDateTime] = useState<TimeRef>(initTimeRef);
-  const [totalDistance, setTotalDistance] = useState(0);
+export default function WalkFormItem({
+  linePathRef,
+  buddyList,
+  selectedBuddys,
+  setValue,
+  getValues,
+}: WalkFormItemProps) {
+  // const [totalDistance, setTotalDistance] = useState(0);
   const [filterdBuddys, setFilterdBuddys] = useState<BuddysType[]>([]);
   const [note, setNote] = useState<string>('');
 
@@ -27,8 +37,9 @@ export default function WalkFormItem({ linePathRef, buddyList, selectedBuddys }:
 
   useEffect(() => {
     if (!linePathRef.current) return;
-    setTotalDistance(() => calculateTotalDistance(linePathRef.current));
-  }, [linePathRef]);
+    const distance = calculateTotalDistance(linePathRef.current);
+    setValue('distance', distance);
+  }, [linePathRef, setValue]);
 
   useEffect(() => {
     setFilterdBuddys(filterBuddys(buddyList, selectedBuddys));
@@ -36,6 +47,7 @@ export default function WalkFormItem({ linePathRef, buddyList, selectedBuddys }:
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNote(e.target.value);
+    setValue('note', e.target.value);
   };
 
   // const updateFormData = (updatedData: any) => {
@@ -52,20 +64,20 @@ export default function WalkFormItem({ linePathRef, buddyList, selectedBuddys }:
     <>
       <InfoItem>
         <Label>날짜</Label>
-        <Value className="date">{dateTime.end.day}</Value>
+        <Value className="date">{getValues('startDate')}</Value>
       </InfoItem>
 
       <InfoItem>
         <Label>거리</Label>
-        <Value>{totalDistance}</Value>
+        <Value>{getValues('distance')}</Value>
         <SubValue>km</SubValue>
       </InfoItem>
 
       <InfoItem>
         <Label>시간</Label>
-        <Value>{dateTime.total}</Value>
+        <Value>{getValues('totalTime')}</Value>
         <SubValue>
-          {dateTime.start.time} ~ {dateTime.end.time}
+          {getValues('startTime')} ~ {getValues('endTime')}
         </SubValue>
       </InfoItem>
 
