@@ -28,7 +28,7 @@ export const setOverlay = ({
     return;
   }
 
-  if (!(isStarted && selectedBuddys.length && markerRef.current && mapInstance)) return;
+  if (!(isStarted === 'start' && selectedBuddys.length && markerRef.current && mapInstance)) return;
 
   const overlay = createCustomOverLay(customContents, markerRef.current, mapInstance);
   overlayRef.current = overlay;
