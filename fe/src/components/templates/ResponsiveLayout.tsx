@@ -71,12 +71,13 @@ const StyledDescriptionArea = styled.article`
   }
 `;
 
-const StyledMobileFrame = styled.div`
+export const StyledMobileFrame = styled.div`
   position: relative;
   width: 90vw;
   height: 90vh;
   max-width: 27.5rem;
   max-height: 59.75rem;
+  min-width: 17rem;
   margin: 0 auto;
   overflow: hidden;
 
