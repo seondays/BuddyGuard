@@ -26,7 +26,7 @@ export const initTimeRef: TimeRef = { start: { day: '', time: '' }, end: { day: 
 export type IsStartedType = 'ready' | 'start' | 'done';
 
 // TODO(Woody): API 연결
-const buddys: BuddysType[] = [
+export const buddys: BuddysType[] = [
   {
     id: 1,
     img: `${profile01}`,
@@ -179,7 +179,7 @@ const StyledPlayIcon = styled(PlayIcon)`
   transform: translateX(-50%);
 `;
 
-const StyledWalkWrapper = styled.div`
+export const StyledWalkWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;

@@ -4,6 +4,8 @@ interface ButtonStyleProps {
   $isClicked: boolean;
   $boxShadow?: string;
   $bgColor?: string;
+  $isFocus?: boolean;
+  $focusColor?: string;
   theme: DefaultTheme;
 }
 
@@ -11,6 +13,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   $isClicked?: boolean;
   $boxShadow?: string;
   $bgColor?: string;
+  $isFocus?: boolean;
+  $focusColor?: string;
   style?: React.CSSProperties;
   onClick?: () => void;
   children: React.ReactNode;
@@ -22,18 +26,20 @@ export default function Button({
   $bgColor = 'white',
   $isClicked = false,
   $boxShadow = defaultShadow,
+  $isFocus = true,
   onClick,
   style,
   ...rest
 }: ButtonProps) {
-  const theme = useTheme();
-  const defaultBorder = `${theme.themeValues.colorValues.special.textForce02} solid 0.1rem`;
+  const colorValues = useTheme().themeValues.colorValues;
+  const defaultBorder = `${colorValues.special.textForce02} solid 0.1rem`;
 
   return (
     <StyledButton
       $bgColor={$bgColor}
       $isClicked={$isClicked}
       $boxShadow={$boxShadow}
+      $isFocus={$isFocus}
       onClick={onClick}
       style={{ border: style?.border || defaultBorder, ...style }}
       {...rest}
@@ -64,8 +70,10 @@ const StyledButton = styled.button<ButtonStyleProps>`
   cursor: pointer;
   transition: all 0.3s ease;
 
-  &:hover,
+  ${({ $isFocus, $focusColor, theme }) =>
+    $isFocus &&
+    `&:hover,
   &:focus {
-    background-color: ${({ theme }) => theme.themeValues.colorValues.special.modalBg};
-  }
+    background-color: ${$focusColor ? $focusColor : theme.themeValues.colorValues.special.modalBg};
+  }`};
 `;
