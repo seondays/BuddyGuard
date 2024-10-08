@@ -3,6 +3,9 @@ FROM node:18 AS build
 
 WORKDIR /app
 
+# pnpm 설치
+RUN npm install -g pnpm
+
 # package.json과 package-lock.json 복사
 COPY package*.json ./
 
