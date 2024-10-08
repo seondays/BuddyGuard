@@ -13,7 +13,7 @@ COPY .npmrc .npmrc
 # 의존성 설치
 RUN pnpm install
 
-# 애플리케이션 복사
+# 애플리케이션 복사 (node_modules 제외)
 COPY . .
 
 # 빌드 - 오류를 무시하고 빌드를 진행
