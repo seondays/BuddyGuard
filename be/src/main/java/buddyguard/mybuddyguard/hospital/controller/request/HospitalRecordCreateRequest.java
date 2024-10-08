@@ -10,11 +10,13 @@ public record HospitalRecordCreateRequest(
         @NotNull
         Long petId,
         @NotNull
-        LocalDateTime visitDate,
+        LocalDateTime date,
         @NotNull
-        String hospitalName,
+        String title,
         @NotNull
         String description
+
 ) {
 
 }
+

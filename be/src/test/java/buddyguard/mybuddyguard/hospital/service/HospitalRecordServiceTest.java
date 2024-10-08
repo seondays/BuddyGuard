@@ -36,30 +36,38 @@ class HospitalRecordServiceTest {
 
     @BeforeEach
     void setUp() {
-        sampleHospitalRecord = new HospitalRecord(1L, 1L, 1L, LocalDateTime.now(), "병원", "정기 검진");
+        sampleHospitalRecord = new HospitalRecord(1L, 1L, LocalDateTime.now(), "병원", "정기 검진");
     }
 
     @Test
     void 모든_병원기록_조회_시_목록_반환() {
         // Given
-        Long userId = 1L;
         Long petId = 1L;
         List<HospitalRecord> expectedRecords = Arrays.asList(sampleHospitalRecord);
-        when(hospitalRecordRepository.findByUserIdAndPetId(userId, petId)).thenReturn(
+        when(hospitalRecordRepository.findByPetId(petId)).thenReturn(
                 expectedRecords);
 
         // When
         List<HospitalRecordResponse> actualRecords = hospitalRecordService.getAllHospitalRecords(
-                userId,
                 petId);
 
         // Then
+        List<HospitalRecordResponse> expectedResponses = expectedRecords.stream()
+                .map(record -> new HospitalRecordResponse(
+                        record.getId(),
+                        record.getPetId(),
+                        record.getDate(),
+                        "병원",  // 카테고리 추가
+                        record.getTitle(),
+                        record.getDescription()
+                )).toList();
+
         assertThat(actualRecords)
                 .isNotNull()
                 .hasSize(1)
                 .usingRecursiveFieldByFieldElementComparator()
-                .isEqualTo(expectedRecords.stream().map(HospitalRecordMapper::toResponse).toList());
-        verify(hospitalRecordRepository).findByUserIdAndPetId(userId, petId);
+                .isEqualTo(expectedResponses);
+        verify(hospitalRecordRepository).findByPetId(petId);
     }
 
     @Test
@@ -68,13 +76,12 @@ class HospitalRecordServiceTest {
         Long hospitalRecordId = 1L;
         Long userId = 1L;
         Long petId = 1L;
-        when(hospitalRecordRepository.findByIdAndUserIdAndPetId(hospitalRecordId, userId,
+        when(hospitalRecordRepository.findByIdAndPetId(hospitalRecordId,
                 petId)).thenReturn(
                 Optional.of(sampleHospitalRecord));
 
         // When
         HospitalRecordResponse result = hospitalRecordService.getHospitalRecord(hospitalRecordId,
-                userId,
                 petId);
 
         // Then
@@ -82,7 +89,7 @@ class HospitalRecordServiceTest {
                 .isNotNull()
                 .usingRecursiveComparison()
                 .isEqualTo(HospitalRecordMapper.toResponse(sampleHospitalRecord));
-        verify(hospitalRecordRepository).findByIdAndUserIdAndPetId(hospitalRecordId, userId, petId);
+        verify(hospitalRecordRepository).findByIdAndPetId(hospitalRecordId, petId);
     }
 
     @Test
@@ -109,26 +116,26 @@ class HospitalRecordServiceTest {
     @Test
     void 존재하는_병원기록_업데이트_시_업데이트된_목록_반환() {
         // Given
-        Long hospitalRecordId = 1L;
+        Long title = 1L;
         Long userId = 1L;
         Long petId = 1L;
 
         HospitalRecordUpdateRequest updateRequest = new HospitalRecordUpdateRequest(
                 LocalDateTime.now(), "업데이트된 병원", "후속 진료");
-        HospitalRecord updatedRecord = new HospitalRecord(hospitalRecordId, userId, petId,
-                updateRequest.visitDate(),
-                updateRequest.hospitalName(), updateRequest.description());
+        HospitalRecord updatedRecord = new HospitalRecord(title, petId,
+                updateRequest.date(),
+                updateRequest.title(), updateRequest.description());
 
-        when(hospitalRecordRepository.findByIdAndUserIdAndPetId(hospitalRecordId, userId,
+        when(hospitalRecordRepository.findByIdAndPetId(title,
                 petId)).thenReturn(
                 Optional.of(sampleHospitalRecord));
         when(hospitalRecordRepository.save(any(HospitalRecord.class))).thenReturn(updatedRecord);
 
         // When
-        hospitalRecordService.updateHospitalRecord(hospitalRecordId, userId, petId, updateRequest);
+        hospitalRecordService.updateHospitalRecord(title, petId, updateRequest);
 
         // Then
-        verify(hospitalRecordRepository).findByIdAndUserIdAndPetId(hospitalRecordId, userId, petId);
+        verify(hospitalRecordRepository).findByIdAndPetId(title,petId);
         verify(hospitalRecordRepository).save(any(HospitalRecord.class));
     }
 
@@ -136,16 +143,15 @@ class HospitalRecordServiceTest {
     void 병원기록_삭제_시_리포지토리_호출() {
         // Given
         Long hospitalRecordId = 1L;
-        Long userId = 1L;
         Long petId = 1L;
-        when(hospitalRecordRepository.findByIdAndUserIdAndPetId(hospitalRecordId, userId, petId))
+        when(hospitalRecordRepository.findByIdAndPetId(hospitalRecordId, petId))
                 .thenReturn(Optional.of(sampleHospitalRecord));
 
         // When
-        hospitalRecordService.deleteHospitalRecord(hospitalRecordId, userId, petId);
+        hospitalRecordService.deleteHospitalRecord(hospitalRecordId, petId);
 
         // Then
-        verify(hospitalRecordRepository).findByIdAndUserIdAndPetId(hospitalRecordId, userId, petId);
+        verify(hospitalRecordRepository).findByIdAndPetId(hospitalRecordId,petId);
         verify(hospitalRecordRepository).delete(sampleHospitalRecord);
     }
 }

@@ -22,16 +22,38 @@ public class HospitalRecordService {
 
     private final HospitalRecordRepository hospitalRecordRepository;
 
-    public List<HospitalRecordResponse> getAllHospitalRecords(Long userId, Long petId) {
-        List<HospitalRecord> records = hospitalRecordRepository.findByUserIdAndPetId(userId, petId);
+    public List<HospitalRecordResponse> getAllHospitalRecords(Long petId) {
+        List<HospitalRecord> records = hospitalRecordRepository.findByPetId(petId);
         return records.stream()
-                .map(HospitalRecordMapper::toResponse)
+                .map(record -> {
+                    HospitalRecordResponse response = HospitalRecordMapper.toResponse(record);
+                    // 카테고리 값 추가
+                    return new HospitalRecordResponse(
+                            response.id(),
+                            response.petId(),
+                            response.date(),
+                            "병원", // 기본 카테고리
+                            response.title(),
+                            response.description()
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
-    public HospitalRecordResponse getHospitalRecord(Long id, Long userId, Long petId) {
-        return hospitalRecordRepository.findByIdAndUserIdAndPetId(id, userId, petId)
-                .map(HospitalRecordMapper::toResponse)
+    public HospitalRecordResponse getHospitalRecord(Long id, Long petId) {
+        return hospitalRecordRepository.findByIdAndPetId(id, petId)
+                .map(record -> {
+                    HospitalRecordResponse response = HospitalRecordMapper.toResponse(record);
+                    // 카테고리 값 추가
+                    return new HospitalRecordResponse(
+                            response.id(),
+                            response.petId(),
+                            response.date(),
+                            "병원", // 기본 카테고리 설정
+                            response.title(),
+                            response.description()
+                    );
+                })
                 .orElseThrow(RecordNotFoundException::new);
     }
 
@@ -46,24 +68,23 @@ public class HospitalRecordService {
     }
 
     @Transactional
-    public void updateHospitalRecord(Long id, Long userId, Long petId,
+    public void updateHospitalRecord(Long id, Long petId,
             HospitalRecordUpdateRequest request) {
-        HospitalRecord hospitalRecord = hospitalRecordRepository.findByIdAndUserIdAndPetId(id,
-                        userId, petId)
+        HospitalRecord hospitalRecord = hospitalRecordRepository.findByIdAndPetId(id,
+                        petId)
                 .orElseThrow(RecordNotFoundException::new); // 예외 처리
 
         hospitalRecord.update(
                 request.description(),
-                request.hospitalName(),
-                request.visitDate()
+                request.title(),
+                request.date()
         );
         hospitalRecordRepository.save(hospitalRecord);
     }
 
     @Transactional
-    public void deleteHospitalRecord(Long id, Long userId, Long petId) {
-        HospitalRecord record = hospitalRecordRepository.findByIdAndUserIdAndPetId(id, userId,
-                        petId)
+    public void deleteHospitalRecord(Long id, Long petId) {
+        HospitalRecord record = hospitalRecordRepository.findByIdAndPetId(id, petId)
                 .orElseThrow(RecordNotFoundException::new); // 예외 처리
 
         hospitalRecordRepository.delete(record);
