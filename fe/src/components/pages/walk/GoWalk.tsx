@@ -140,11 +140,6 @@ export default function GoWalk() {
             map={map}
           />
         )}
-        {/* {capturedImage && ( */}
-        {/* <StyledBlockLayer2>
-          <img src={capturedImage || targetIcon} alt="Captured Map" style={{ width: '100%', maxWidth: '600px' }} />
-        </StyledBlockLayer2> */}
-        {/* )} */}
       </StyledWalkWrapper>
     </>
   );
