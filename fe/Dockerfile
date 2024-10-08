@@ -6,9 +6,9 @@ WORKDIR /app
 # pnpm 설치
 RUN npm install -g pnpm
 
-# package.json과 package-lock.json 복사
+# package.json과 .npmrc 복사
 COPY package*.json ./
-COPY .npmrc .npmrc  # .npmrc 파일을 복사하여 strict-peer-dependencies=false 설정 적용
+COPY .npmrc .npmrc
 
 # 의존성 설치
 RUN pnpm install
