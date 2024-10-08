@@ -41,7 +41,7 @@ jobs:
 
       # npm install - 의존성 설치
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
         working-directory: ./fe  # 프론트엔드 프로젝트 폴더로 이동
 
       # Docker 빌드 및 푸시
