@@ -9,6 +9,6 @@ public interface HospitalRecordRepository extends JpaRepository<HospitalRecord, 
 
     List<HospitalRecord> findByPetId(Long petId);
 
-    Optional<HospitalRecord> findByIdAndPetId(Long id, Long userId, Long petId);
+    Optional<HospitalRecord> findByIdAndPetId(Long id, Long petId);
 
 }

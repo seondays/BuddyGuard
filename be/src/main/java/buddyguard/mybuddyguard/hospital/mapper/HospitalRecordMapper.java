@@ -9,9 +9,9 @@ public class HospitalRecordMapper {
     public static HospitalRecordResponse toResponse(HospitalRecord hospitalRecord) {
         return new HospitalRecordResponse(
                 hospitalRecord.getId(),
-                hospitalRecord.getUserId(),
                 hospitalRecord.getPetId(),
                 hospitalRecord.getDate(),
+                "병원", // 카테고리 기본값 추가
                 hospitalRecord.getTitle(),
                 hospitalRecord.getDescription()
         );
@@ -19,10 +19,9 @@ public class HospitalRecordMapper {
 
     public static HospitalRecord toEntity(Long userId, Long petId, HospitalRecordCreateRequest request) {
         return HospitalRecord.builder()
-                .userId(userId)
                 .petId(petId)
-                .date(request.visitDate())
-                .title(request.hospitalName())
+                .date(request.date())
+                .title(request.title())
                 .description(request.description())
                 .build();
     }
