@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Button from '@/components/atoms/Button';
@@ -70,6 +71,7 @@ export default function WalkModal({
     defaultValues: initFormData,
   });
 
+  const navigate = useNavigate();
   const onSubmit = async (data: FormDataType) => {
     if (!canvasRef.current) return;
 
@@ -111,8 +113,9 @@ export default function WalkModal({
   };
 
   const onClose = () => {
-    console.log('close');
-    // navigate('/menu/walk/go');
+    // 임시 컨펌창
+    const isClose: boolean = confirm('저장을 취소하시겠습니까?');
+    if (isClose) navigate('/');
   };
 
   useEffect(() => {
