@@ -25,7 +25,11 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    "noEmitOnError": false,
+
+
   },
   "include": ["src", "src/svg.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
