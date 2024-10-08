@@ -76,8 +76,8 @@ public class HospitalRecordService {
 
         hospitalRecord.update(
                 request.description(),
-                request.hospitalName(),
-                request.visitDate()
+                request.title(),
+                request.date()
         );
         hospitalRecordRepository.save(hospitalRecord);
     }
