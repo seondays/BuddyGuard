@@ -10,7 +10,7 @@ RUN npm install -g pnpm
 COPY package*.json ./
 
 # 의존성 설치
-RUN pnpm install --legacy-peer-deps
+RUN pnpm install --strict-peer-dependencies
 
 # 애플리케이션 복사
 COPY . .
