@@ -4,13 +4,23 @@ import java.time.LocalDateTime;
 
 public record HospitalRecordResponse(
         Long id,
-        Long userId,
         Long petId,
-        LocalDateTime visitDate,
-        String hospitalName,
+        LocalDateTime date,
+        String category,
+        String title,
         String description
 
 ) {
 
+    @Override
+    public String toString() {
+        return "HospitalRecordResponse[" +
+                "id=" + id +
+                ", petId=" + petId +
+                ", date=" + date +
+                ", category: " + category +
+                ", title=" + title +
+                ", description=" + description +
+                ']';
+    }
 }
-
