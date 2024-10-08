@@ -23,7 +23,7 @@ RUN pnpm run build || true
 FROM nginx:alpine
 
 # 컨테이너 내부에서 사용할 포트를 공개
-EXPOSE 5173
+EXPOSE 80
 
 # 빌드된 파일을 Nginx의 정적 파일 경로로 복사
 COPY --from=build /app/dist /usr/share/nginx/html
