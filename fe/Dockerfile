@@ -21,8 +21,5 @@ FROM nginx:alpine
 # 빌드된 파일을 Nginx의 정적 파일 경로로 복사
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Nginx 설정 파일 덮어쓰기 (필요한 경우)
-COPY nginx.conf /etc/nginx/nginx.conf
-
 # 컨테이너가 실행될 때 Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
