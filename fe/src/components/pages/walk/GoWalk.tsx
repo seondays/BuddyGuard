@@ -1,3 +1,7 @@
+import targetIcon from '@public/assets/icons/targetIcon.png';
+import profile01 from '@public/images/profile01.png';
+import profile02 from '@public/images/profile02.png';
+import profile03 from '@public/images/profile03.png';
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
@@ -8,10 +12,6 @@ import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { BuddysType, CheckboxChangeHandler, SelectedBuddysType, StatusOfTime, TimeRef } from '@/types/map';
 import { getCurrentDate } from '@/utils/timeUtils';
-import targetIcon from '@public/assets/icons/targetIcon.png';
-import profile01 from '@public/images/profile01.png';
-import profile02 from '@public/images/profile02.png';
-import profile03 from '@public/images/profile03.png';
 
 const playIconStyle = {
   $stroke: 'white',
@@ -32,7 +32,7 @@ export default function GoWalk() {
   const [selectedBuddys, setSelectedBuddys] = useState<SelectedBuddysType>([]); // 클릭한 버디
   const [isTargetClicked, setIsTargetClicked] = useState(false);
   const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
-
+  console.log(capturedImage);
   // TODO(Woody): API 연결
   const buddys: BuddysType[] = [
     {

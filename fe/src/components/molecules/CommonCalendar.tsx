@@ -1,5 +1,6 @@
 import moment from 'moment';
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+import React from 'react';
 import { Calendar } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
@@ -26,14 +27,15 @@ interface CommonCalendarProps {
   onDateChange: (date: string) => void;
 }
 
-export const CommonCalendar: React.FC<CommonCalendarProps> = ({ schedules = [], onDateChange }) => {
-  const [date, setDate] = useState<Date | null>(null);
+// export const CommonCalendar: React.FC<CommonCalendarProps> = ({ schedules = [], onDateChange }) => {
+export const CommonCalendar: React.FC<CommonCalendarProps> = ({ schedules = [] }) => {
+  // const [date, setDate] = useState<Date | null>(null);
 
-  const handleDateChange = (newDate: Date) => {
-    const formattedDate = moment(newDate).format('YYYY-MM-DD');
-    setDate(newDate);
-    onDateChange(formattedDate);
-  };
+  // const handleDateChange = (newDate: Date) => {
+  //   const formattedDate = moment(newDate).format('YYYY-MM-DD');
+  //   setDate(newDate);
+  //   onDateChange(formattedDate);
+  // };
 
   // 캘린더에 일정이 있으면 점 표시
   const tileContent = ({ date, view }: { date: Date; view: string }) => {
@@ -45,12 +47,12 @@ export const CommonCalendar: React.FC<CommonCalendarProps> = ({ schedules = [], 
   return (
     <StyledCalendarWrapper>
       <StyledCalendar
-        value={date}
-        onChange={handleDateChange}
+        // value={date}
+        // onChange={handleDateChange}
         tileContent={tileContent}
-        formatDay={(locale, date) => moment(date).format('D')}
-        formatYear={(locale, date) => moment(date).format('YYYY')}
-        formatMonthYear={(locale, date) => moment(date).format('YYYY. MM')}
+        formatDay={(date) => moment(date).format('D')}
+        formatYear={(date) => moment(date).format('YYYY')}
+        formatMonthYear={(date) => moment(date).format('YYYY. MM')}
         calendarType="gregory"
         showNeighboringMonth={false}
         next2Label={null}

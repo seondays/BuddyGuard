@@ -1,6 +1,5 @@
-import React from 'react';
-import MenuList from '../organisms/MenuList';
 import BuddyInfoBar from '../organisms/BuddyInfoBar';
+import MenuList from '../organisms/MenuList';
 
 export default function Menu() {
   return (

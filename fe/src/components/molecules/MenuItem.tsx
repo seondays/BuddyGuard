@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import Span from '../atoms/Span';
+import styled from 'styled-components';
+
 import Image from '../atoms/Image';
+import Span from '../atoms/Span';
 
 export interface MenuItemProps {
   backgroundColor?: string;
@@ -46,7 +46,9 @@ const MenuItemWrapper = styled.div<{ backgroundColor?: string }>`
   background-color: ${({ backgroundColor }) => backgroundColor || '#ffffff'};
   padding: 1rem;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 6px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: center;
