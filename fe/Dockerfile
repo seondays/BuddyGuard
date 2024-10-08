@@ -8,9 +8,10 @@ RUN npm install -g pnpm
 
 # package.json과 package-lock.json 복사
 COPY package*.json ./
+COPY .npmrc .npmrc  # .npmrc 파일을 복사하여 strict-peer-dependencies=false 설정 적용
 
 # 의존성 설치
-RUN pnpm install --strict-peer-dependencies
+RUN pnpm install
 
 # 애플리케이션 복사
 COPY . .
