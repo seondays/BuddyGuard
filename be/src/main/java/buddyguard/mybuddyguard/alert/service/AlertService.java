@@ -1,22 +1,44 @@
 package buddyguard.mybuddyguard.alert.service;
 
+import buddyguard.mybuddyguard.login.entity.Users;
+import buddyguard.mybuddyguard.pet.entity.UserPet;
+import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AlertService {
 
-    //user-pet repository
+    private final UserPetRepository userPetRepository;
+    private final AlertTokenService alertTokenService;
 
-    public void sendAlert(Long petId, String title, String body) {
+    public void sendAlertToAllPetGroup(Long petId, String title, String body) {
         // pet id 로 해당 반려동물 그룹에 속해 있는 모든 user id를 찾는다.
-        // 모든 user들에 대해 각각 user의 fcm토큰을 찾는다.
-        // Message 객체를 빌드하고 알림을 보낸다.
+        List<Long> userIds = findUsers(petId);
+
+        List<String> tokens = userIds.stream()
+                .map(alertTokenService::getTokenByUserId)
+                .toList();
+
+        tokens.forEach(
+                token ->sendAlert(token, title, body)
+        );
+    }
+
+    private List<Long> findUsers(Long petId) {
+        List<UserPet> userPets = userPetRepository.getAllByPetId(petId);
+
+        return userPets.stream()
+                .map(UserPet::getUser)
+                .map(Users::getId)
+                .toList();
     }
 
     public void sendAlert(String fcmToken, String title, String body) {
@@ -35,11 +57,5 @@ public class AlertService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void sendAlertToUsers(List<String> fcmTokens, String title, String body) {
-        fcmTokens.forEach(
-                token -> sendAlert(token, title, body)
-        );
     }
 }
