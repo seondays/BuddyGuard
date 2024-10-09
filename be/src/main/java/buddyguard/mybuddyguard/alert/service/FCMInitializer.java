@@ -71,7 +71,5 @@ public class FCMInitializer {
                 .build();
 
         FirebaseApp.initializeApp(options);
-
-        System.out.println("FirebaseApp initialization complete");
     }
 }
