@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.weight.service;
 
+import buddyguard.mybuddyguard.alert.service.AlertService;
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.weight.entity.Weight;
 import buddyguard.mybuddyguard.weight.mapper.WeightMapper;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WeightService {
 
     private final WeightRepository weightRepository;
+    private final AlertService alertService;
 
     @Transactional
     public void createNewWeightRecord(WeightCreateRequest request) {
@@ -27,6 +29,11 @@ public class WeightService {
         Weight savedWeight = weightRepository.save(weight);
 
         log.info("SAVED WEIGHT : {}", savedWeight);
+
+        alertService.sendAlertToAllPetGroup(
+                request.petId(),
+                "체중생성완료",
+                savedWeight.getWeight().toString());
     }
 
     public List<WeightResponse> getAllWeightRecords(Long petId) {
