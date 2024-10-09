@@ -72,7 +72,7 @@ jobs:
 
       # 디렉토리 구조 확인 (디버깅용)
       - name: List directory contents
-        run: ls -R  # 전체 디렉토리 구조 출력
+        run: ls -R  # 디렉토리 구조 출력
 
       # docker build & push to production
       - name: Docker build & push to dev-be
