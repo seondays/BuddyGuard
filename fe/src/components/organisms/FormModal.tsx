@@ -5,12 +5,19 @@ import FormItem from '@/components/molecules/FormItem';
 
 interface FormModalProps {
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit?: (data: FormData) => void;
   titleLabel?: string;
   dateLabel?: string;
   timeLabel?: string;
   formTitle: string;
   categoryTitle: string;
+}
+
+interface FormData {
+  title: string;
+  date: string;
+  time: string;
+  category: string;
 }
 
 export default function FormModal({
@@ -22,7 +29,12 @@ export default function FormModal({
   formTitle,
   categoryTitle,
 }: FormModalProps) {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<FormData>({
+    title: '',
+    date: '',
+    time: '',
+    category: categoryTitle,
+  });
 
   return (
     <>
@@ -45,7 +57,7 @@ export default function FormModal({
 
         <ButtonWrapper>
           <CloseButton onClick={onClose}>닫기</CloseButton>
-          <SubmitButton onClick={() => onSubmit(formData)}>등록</SubmitButton> {/* 데이터를 제출 */}
+          <SubmitButton onClick={() => onSubmit && onSubmit(formData)}>등록</SubmitButton> {/* 데이터를 제출 */}
         </ButtonWrapper>
       </ModalContainer>
     </>

@@ -3,16 +3,23 @@ import { useState } from 'react';
 import CommonCard from '@/components/molecules/CommonCard';
 import NotificationPopup from '@/components/molecules/NotificationModal';
 
+// Notification 타입 정의
+interface Notification {
+  title: string;
+  time: string;
+  content: string;
+}
+
 export default function NotificationList() {
-  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null); // Notification 타입으로 지정
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const notifications = [
+  const notifications: Notification[] = [
     {
       title: '알림 1',
       time: '5분 전',
       content:
-        '이것은 알림 내용 예시입니다. 아주 긴 내용입니다. 긴 내용은 잘립니다. 이것은 알림 내용 예시입니다. 아주 긴 내용입니다. 긴 내용은 잘립니다. 이것은 알림 내용 예시입니다. 아주 긴 내용입니다. 긴 내용은 잘립니다.',
+        '이것은 알림 내용 예시입니다. 아주 긴 내용입니다. 긴 내용은 잘립니다. 이것은 알림 내용 예시입니다. 아주 긴 내용입니다. 긴 내용은 잘립니다.',
     },
     { title: '알림 2', time: '10분 전', content: '알림 내용 예시 2번' },
     {
@@ -33,7 +40,7 @@ export default function NotificationList() {
     },
   ];
 
-  const handleNotificationClick = (notification: any) => {
+  const handleNotificationClick = (notification: Notification) => {
     setSelectedNotification(notification);
     setIsPopupOpen(true);
   };

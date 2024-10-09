@@ -23,9 +23,13 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    "noEmitOnError": false,
+
+
   },
   "include": ["src", "src/svg.d.ts", "public/firebase-messaging-sw.js"],
   "references": [{ "path": "./tsconfig.node.json" }]

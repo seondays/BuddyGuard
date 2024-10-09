@@ -1,4 +1,3 @@
-import React from 'react';
 import Image from '../atoms/Image';
 import Span from '../atoms/Span';
 
