@@ -7,8 +7,8 @@ export default function Home() {
       <BuddyInfoBar />
       <div style={{ height: '75vh', overflowY: 'scroll', scrollbarWidth: 'none' }}>
         <DashBoardList />
-        {/* <button onclick=""></button> */}
-        {/* <a href="api/buddyguard.site/login"></a> */}
+
+        <a href="api/buddyguard.site/login">로그인</a>
       </div>
     </div>
   );
