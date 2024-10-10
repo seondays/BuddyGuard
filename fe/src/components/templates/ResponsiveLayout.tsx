@@ -86,6 +86,8 @@ export const StyledMobileFrame = styled.div`
   @media (min-width: 30rem) {
     border: 0.3rem solid ${({ theme }) => theme.themeValues.colorValues.grayscale[600]};
     border-radius: 1rem;
+    width: 95vw;
+    height: 95vh;
   }
 `;
 
