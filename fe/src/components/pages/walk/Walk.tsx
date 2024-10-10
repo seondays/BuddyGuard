@@ -1,5 +1,6 @@
 import PageTitleBar from '@/components/molecules/PageTitleBar';
 import PeriodFilter from '@/components/molecules/PeriodFilter';
+import Statistics from '@/components/molecules/Statistics';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 
 export default function Walk() {
@@ -8,6 +9,8 @@ export default function Walk() {
       <PageTitleBar title="산책 관리" />
       <BuddyInfoBar />
       <PeriodFilter />
+      <Statistics />
+
       <div style={{ height: '70vh', overflowY: 'scroll', scrollbarWidth: 'none' }}></div>
     </div>
   );
