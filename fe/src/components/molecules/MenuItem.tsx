@@ -5,13 +5,13 @@ import Image from '../atoms/Image';
 import Span from '../atoms/Span';
 
 export interface MenuItemProps {
-  backgroundColor?: string;
+  $backgroundColor?: string;
   src: string;
   title?: string;
   path?: string;
 }
 
-export default function MenuItem({ backgroundColor, src, title, path }: MenuItemProps) {
+export default function MenuItem({ $backgroundColor, src, title, path }: MenuItemProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -21,7 +21,7 @@ export default function MenuItem({ backgroundColor, src, title, path }: MenuItem
   };
 
   return (
-    <MenuItemWrapper backgroundColor={backgroundColor} onClick={handleClick}>
+    <MenuItemWrapper $backgroundColor={$backgroundColor} onClick={handleClick}>
       <Image src={src} style={{ width: '70%', height: '60%', marginBottom: '0.5rem' }} />
       {title && (
         <Span
@@ -40,10 +40,10 @@ export default function MenuItem({ backgroundColor, src, title, path }: MenuItem
   );
 }
 
-const MenuItemWrapper = styled.div<{ backgroundColor?: string }>`
+const MenuItemWrapper = styled.div<{ $backgroundColor?: string }>`
   width: 100%;
   height: 100%;
-  background-color: ${({ backgroundColor }) => backgroundColor || '#ffffff'};
+  background-color: ${({ $backgroundColor }) => $backgroundColor || '#ffffff'};
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow:

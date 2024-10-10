@@ -8,7 +8,7 @@ export default function Menu() {
   return (
     <StyledMenuContainer>
       <BuddyInfoBar />
-      <StyledMenuListWrapper navHeight={NAV_HEIGHT}>
+      <StyledMenuListWrapper $navHeight={NAV_HEIGHT}>
         <MenuList />
       </StyledMenuListWrapper>
     </StyledMenuContainer>
@@ -21,7 +21,7 @@ const StyledMenuContainer = styled.div`
   padding: 1rem;
 `;
 
-const StyledMenuListWrapper = styled.div<{ navHeight: string }>`
+const StyledMenuListWrapper = styled.div<{ $navHeight: string }>`
   margin-top: 1.5rem;
-  height: ${({ navHeight }) => `calc(85% - ${navHeight})`};
+  height: ${({ $navHeight }) => `calc(85% - ${$navHeight})`};
 `;

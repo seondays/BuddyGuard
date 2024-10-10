@@ -23,7 +23,7 @@ export default function MenuList() {
       {menuItems.map((item) => (
         <MenuItem
           key={item.id}
-          backgroundColor={item.backgroundColor}
+          $backgroundColor={item.backgroundColor}
           src={item.src}
           title={item.title}
           path={item.path}
