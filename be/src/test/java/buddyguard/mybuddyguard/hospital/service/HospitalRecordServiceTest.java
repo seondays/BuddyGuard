@@ -57,6 +57,7 @@ class HospitalRecordServiceTest {
                         record.getId(),
                         record.getPetId(),
                         record.getDate(),
+                        "건강",
                         "병원",  // 카테고리 추가
                         record.getTitle(),
                         record.getDescription()
@@ -102,7 +103,7 @@ class HospitalRecordServiceTest {
         HospitalRecordCreateRequest request = new HospitalRecordCreateRequest(
                 userId, petId,
                 LocalDateTime.now(), "병원", "정기 검진");
-        HospitalRecord hospitalRecord = HospitalRecordMapper.toEntity(userId,
+        HospitalRecord hospitalRecord = HospitalRecordMapper.toEntity(
                 petId, request);
         when(hospitalRecordRepository.save(any(HospitalRecord.class))).thenReturn(hospitalRecord);
 
