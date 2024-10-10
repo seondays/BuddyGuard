@@ -32,7 +32,8 @@ public class HospitalRecordService {
                             response.id(),
                             response.petId(),
                             response.date(),
-                            "병원", // 기본 카테고리
+                            "건강",
+                            "병원", //카테고리 설정
                             response.title(),
                             response.description()
                     );
@@ -49,7 +50,8 @@ public class HospitalRecordService {
                             response.id(),
                             response.petId(),
                             response.date(),
-                            "병원", // 기본 카테고리 설정
+                            "건강",
+                            "병원", // 카테고리 설정
                             response.title(),
                             response.description()
                     );
@@ -59,7 +61,7 @@ public class HospitalRecordService {
 
     @Transactional
     public void createHospitalRecord(HospitalRecordCreateRequest request) {
-        HospitalRecord hospitalRecord = HospitalRecordMapper.toEntity(request.userId(),
+        HospitalRecord hospitalRecord = HospitalRecordMapper.toEntity(
                 request.petId(), request);
 
         HospitalRecord saveHospitalRecord = hospitalRecordRepository.save(hospitalRecord);
