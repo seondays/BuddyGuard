@@ -20,6 +20,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh', 'import'],
   rules: {
+    'import/no-unresolved': ['error', { ignore: ['^msw/'] }],
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'import/order': [
