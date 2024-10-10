@@ -8,8 +8,8 @@ import Menu from '@/components/pages/Menu';
 import MyPage from '@/components/pages/MyPage';
 import Notification from '@/components/pages/Notification';
 import Schedule from '@/components/pages/Schedule';
-import Walk from '@/components/pages/Walk';
 import GoWalk from '@/components/pages/walk/GoWalk';
+import Walk from '@/components/pages/walk/Walk';
 import Weight from '@/components/pages/Weight';
 import ResponsiveLayout from '@/components/templates/ResponsiveLayout';
 
