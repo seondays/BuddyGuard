@@ -11,7 +11,7 @@ export default function PageTitleBar({ title }: { title: string }) {
   const handleClick = () => navigate('/menu');
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start;', position: 'relative', padding: '1rem' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', position: 'relative', padding: '1rem' }}>
       <div onClick={handleClick}>
         <StyledArrowBack />
       </div>
