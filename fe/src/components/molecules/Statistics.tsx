@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { flexRow } from '@/styles/layoutStyles';
+import { flexRowCenter } from '@/styles/layoutStyles';
 
 export default function Statistics() {
   return (
@@ -24,26 +24,27 @@ export default function Statistics() {
 }
 
 const StatisticsWrapper = styled.div`
-  ${flexRow}
+  ${flexRowCenter}
   justify-content: space-between;
   margin: 1.5rem 0;
 `;
 const Item = styled.div`
-  ${flexRow}
+  ${flexRowCenter}
   align-items: flex-end;
 `;
 const Label = styled.span`
   max-width: 4.5rem;
   color: ${({ theme }) => theme.currentTheme.textSecondary};
+  font-size: 0.7rem;
   margin-right: 0.5rem;
 `;
 const Value = styled.span`
   font-weight: 600;
   color: ${({ theme }) => theme.currentTheme.textPrimary};
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 `;
 const SubValue = styled.span`
   margin-left: 0.2rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: ${({ theme }) => theme.currentTheme.textSecondary};
 `;
