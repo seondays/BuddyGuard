@@ -9,6 +9,9 @@ export default function WalkList() {
 
       <ListBox />
       <ListBox />
+      <ListBox />
+      <ListBox />
+      <ListBox />
     </StyledWalkListContainer>
   );
 }

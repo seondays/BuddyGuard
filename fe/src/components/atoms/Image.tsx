@@ -4,6 +4,8 @@ export interface ImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElemen
   $borderRadius?: string;
   $boxShadow?: boolean;
   $isClicked?: boolean;
+  $position?: string;
+  $left?: string;
   $isTextHidden?: boolean;
   src: string;
   text?: string;
@@ -15,11 +17,15 @@ export default function Image({
   $borderRadius = 'none',
   $boxShadow = false,
   $isClicked = false,
+  $position,
+  $left,
   src,
   style,
   ...rest
 }: ImageProps) {
-  return <StyledImage {...{ className, $borderRadius, $boxShadow, $isClicked, src, style, ...rest }} />;
+  return (
+    <StyledImage {...{ className, $borderRadius, $boxShadow, $isClicked, $position, $left, src, style, ...rest }} />
+  );
 }
 
 const StyledImage = styled.img<ImageProps & { $isClicked: boolean }>`
@@ -33,6 +39,22 @@ const StyledImage = styled.img<ImageProps & { $isClicked: boolean }>`
     `;
   }}
 
+  ${({ $position }) => {
+    return (
+      $position &&
+      `
+    position: ${$position};`
+    );
+  }}
+
+  ${({ $left }) => {
+    return (
+      $left &&
+      `
+    left:${$left};`
+    );
+  }}
+  
   border-radius: ${({ $borderRadius }) => $borderRadius || '0'};
   background: transparent;
   cursor: pointer;
