@@ -33,6 +33,10 @@ public class WeightService {
 
         List<Weight> weights = weightRepository.findAllByPetId(petId);
 
+        if (weights.isEmpty()) {
+            throw new RecordNotFoundException();
+        }
+
         return WeightMapper.toResponseList(weights);
     }
 
