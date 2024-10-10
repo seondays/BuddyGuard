@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public record HospitalRecordCreateRequest(
 
         @NotNull
-        Long userId,
+        Long id,
         @NotNull
         Long petId,
         @NotNull

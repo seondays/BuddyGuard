@@ -11,13 +11,14 @@ public class HospitalRecordMapper {
                 hospitalRecord.getId(),
                 hospitalRecord.getPetId(),
                 hospitalRecord.getDate(),
-                "병원", // 카테고리 기본값 추가
+                "건강",
+                "병원", // 카테고리 추가
                 hospitalRecord.getTitle(),
                 hospitalRecord.getDescription()
         );
     }
 
-    public static HospitalRecord toEntity(Long userId, Long petId, HospitalRecordCreateRequest request) {
+    public static HospitalRecord toEntity(Long petId, HospitalRecordCreateRequest request) {
         return HospitalRecord.builder()
                 .petId(petId)
                 .date(request.date())

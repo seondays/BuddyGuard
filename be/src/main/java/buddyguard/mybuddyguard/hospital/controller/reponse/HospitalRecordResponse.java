@@ -6,10 +6,10 @@ public record HospitalRecordResponse(
         Long id,
         Long petId,
         LocalDateTime date,
-        String category,
+        String mainCategory,   // 대카테고리
+        String subCategory,    // 중카테고리
         String title,
         String description
-
 ) {
 
     @Override
@@ -18,7 +18,8 @@ public record HospitalRecordResponse(
                 "id=" + id +
                 ", petId=" + petId +
                 ", date=" + date +
-                ", category: " + category +
+                ", mainCategory=" + mainCategory +
+                ", subCategory=" + subCategory +
                 ", title=" + title +
                 ", description=" + description +
                 ']';
