@@ -26,7 +26,6 @@ export default function Nav() {
         height: NAV_HEIGHT,
         justifyContent: 'space-around',
         alignItems: 'center',
-        borderTop: '0.1rem solid black',
         backgroundColor: navBgColor,
         color: navTextColor,
       }}

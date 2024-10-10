@@ -92,10 +92,12 @@ export const StyledMobileFrame = styled.div`
 `;
 
 const StyledNavWrapper = styled.div`
-  z-index: 999;
+  z-index: 9999;
   position: absolute;
   bottom: 0;
   width: 100%;
+  min-width: 17rem;
+  border-top: solid 0.2rem ${({ theme }) => theme.themeValues.colorValues.grayscale[600]};
 `;
 
 const StyledContentWrapper = styled.div`
