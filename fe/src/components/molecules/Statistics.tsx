@@ -26,7 +26,7 @@ export default function Statistics() {
 const StatisticsWrapper = styled.div`
   ${flexRowCenter}
   justify-content: space-between;
-  margin: 1.5rem 0;
+  margin: 1rem 0;
 `;
 const Item = styled.div`
   ${flexRowCenter}

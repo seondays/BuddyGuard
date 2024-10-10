@@ -4,7 +4,7 @@ import Button from '@/components/atoms/Button';
 import { flexRowCenter } from '@/styles/layoutStyles';
 
 export default function PeriodFilter() {
-  const commonStyles = { borderRadius: '3rem', height: '3rem' };
+  const commonStyles = { borderRadius: '3rem', height: '2.5rem' };
   return (
     <FilterWrapper>
       <Button style={commonStyles}>주</Button>
@@ -17,5 +17,5 @@ export default function PeriodFilter() {
 const FilterWrapper = styled.div`
   ${flexRowCenter}
   gap: 1rem;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 `;
