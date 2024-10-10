@@ -66,5 +66,15 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           source: "./fe/dist/*"  # 빌드된 파일들을 전송
           target: "/var/www/buddyguard-frontend"  # EC2 서버의 프론트엔드 파일 경로
-          strip_components: 1  # 불필요한 경로 제거
           tar: false           # tar 압축을 사용하지 않음
+
+     # 배포 후 타겟 경로의 권한 설정
+      - name: Set correct permissions on target directory after deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_PROD }}
+          username: ubuntu
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+              sudo chown -R www-data:www-data /var/www/buddyguard-frontend
+              sudo chmod -R 755 /var/www/buddyguard-frontend
