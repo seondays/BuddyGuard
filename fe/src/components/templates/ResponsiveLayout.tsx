@@ -48,7 +48,7 @@ const StyledToggleTheme = styled.button`
   width: 3rem;
   height: 3rem;
 
-  @media (max-width: 37.5rem) {
+  @media (max-width: 60rem) {
     display: none;
   }
 `;
@@ -66,30 +66,26 @@ const StyledDescriptionArea = styled.article`
     color: ${({ theme }) => theme.currentTheme.textPrimary};
   }
 
-  @media (max-width: 37.5rem) {
+  // 화면 너비가 60rem(960px) 이하일 때 이 조건 적용
+  @media (max-width: 60rem) {
     display: none;
   }
 `;
 
 export const StyledMobileFrame = styled.div`
   position: relative;
-  width: 90vw;
-  height: 90vh;
-  max-width: 27.5rem;
-  max-height: 59.75rem;
+  width: 100vw;
+  height: 100vh;
+  max-width: 30rem; //480px
+  max-height: 60rem; //960px
+
   margin: 0 auto;
   overflow: hidden;
 
-  @media (min-width: 27.5rem) {
+  // 화면 너비가 30rem(480px) 이상일 때 조건 적용
+  @media (min-width: 30rem) {
     border: 0.3rem solid ${({ theme }) => theme.themeValues.colorValues.grayscale[600]};
     border-radius: 1rem;
-  }
-
-  @media (max-width: 37.5rem) {
-    width: 100vw;
-    height: 100vh;
-    max-width: none;
-    max-height: none;
   }
 `;
 

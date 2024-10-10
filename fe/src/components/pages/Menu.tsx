@@ -1,13 +1,25 @@
-import BuddyInfoBar from '../organisms/BuddyInfoBar';
-import MenuList from '../organisms/MenuList';
+import styled from 'styled-components';
+
+import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
+import MenuList from '@/components/organisms/MenuList';
 
 export default function Menu() {
   return (
-    <div style={{ padding: '1rem' }}>
+    <StyledMenuContainer>
       <BuddyInfoBar />
-      <div style={{ height: '75vh' }}>
+      <StyledMenuListWrapper>
         <MenuList />
-      </div>
-    </div>
+      </StyledMenuListWrapper>
+    </StyledMenuContainer>
   );
 }
+
+const StyledMenuContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+`;
+
+const StyledMenuListWrapper = styled.div`
+  height: 80%;
+`;
