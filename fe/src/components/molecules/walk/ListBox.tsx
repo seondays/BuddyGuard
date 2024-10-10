@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import Image from '@/components/atoms/Image';
 import { flexColumn, flexRowCenter } from '@/styles/layoutStyles';
 import testProfile01 from '@public/images/profile01.png';
-import testProfile02 from '@public/images/profile01.png';
-import testProfile03 from '@public/images/profile01.png';
+import testProfile02 from '@public/images/profile02.png';
+import testProfile03 from '@public/images/profile03.png';
 import testWalkPath from '@public/images/testWalkPath.png';
 
 export interface ListBoxProps {}
@@ -106,7 +106,6 @@ const StyledMainInfo = styled.div`
     width: 100%;
     height: 0.1rem;
     background-color: ${({ theme }) => theme.currentTheme.grayLighter};
-    z-index: 1000;
   }
 `;
 
@@ -122,10 +121,12 @@ const StyledListBoxWrapper = styled.div`
   ${flexRowCenter}
   justify-content: space-between;
   width: 100%;
+  min-width: 19rem;
   height: 5.5rem;
   padding: 0.6rem 1rem;
   box-shadow: 0rem 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
   margin-bottom: 0.8rem;
   background-color: ${({ theme }) => theme.currentTheme.backgroundPrimary};
+  cursor: pointer;
 `;
