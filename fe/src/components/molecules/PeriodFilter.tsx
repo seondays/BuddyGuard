@@ -17,4 +17,5 @@ export default function PeriodFilter() {
 const FilterWrapper = styled.div`
   ${flexRow}
   gap: 1rem;
+  margin: 1rem 0;
 `;
