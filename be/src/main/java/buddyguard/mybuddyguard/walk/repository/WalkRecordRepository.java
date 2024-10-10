@@ -6,10 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class WalkRecordRepository extends JpaRepository<WalkRecord, Long> {
+public interface WalkRecordRepository extends JpaRepository<WalkRecord, Long> {
 
-    List<WalkRecord> findByPetId(Long petId);
-
-    Optional<WalkRecord> findByIdAndPetId(Long id, Long petId);
+    Optional<WalkRecord> findById(Long id);
 
 }
