@@ -1,6 +1,6 @@
 package buddyguard.mybuddyguard.walk.controller.request;
 
-import buddyguard.mybuddyguard.s3.entity.S3Images;
+//import buddyguard.mybuddyguard.s3.entity.S3Images;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -15,6 +15,6 @@ public record WalkRecordUpdateRequest(
         String centerPosition, // 중심 위치 (위도, 경도)
         Integer mapLevel,      // 지도 레벨
         String path,           // 산책 경로 (위도, 경도 배열)
-        S3Images pathImage,
+        String pathImage,
         Double distance        // 총 거리 (km 단위)
 ) {}

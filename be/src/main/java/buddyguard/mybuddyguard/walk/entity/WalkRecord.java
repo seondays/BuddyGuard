@@ -1,6 +1,6 @@
 package buddyguard.mybuddyguard.walk.entity;
 
-import buddyguard.mybuddyguard.s3.entity.S3Images;
+//import buddyguard.mybuddyguard.s3.entity.S3Images;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -70,9 +70,9 @@ public class WalkRecord {
     private String path;
 
     // 산책 경로 이미지를 파일 경로로 저장 (이미지 업로드는 별도의 로직에서 처리)
-    @OneToOne(fetch = FetchType.LAZY)
+//    @OneToOne(fetch = FetchType.LAZY)
     @Column(name = "path_image", nullable = false)
-    private S3Images pathImage;
+    private String pathImage;
 
     // 총 거리 (km), 최대 소수점 3자리까지
     @Column(name = "distance", nullable = false)
@@ -91,7 +91,7 @@ public class WalkRecord {
 
     public void update(LocalDate startDate, LocalDate endDate, LocalTime startTime,
             LocalTime endTime, String totalTime, String buddyIds, String note,
-            String centerPosition, Integer mapLevel, String path, S3Images pathImage,
+            String centerPosition, Integer mapLevel, String path, String pathImage,
             Double distance) {
 
         this.startDate = startDate;
