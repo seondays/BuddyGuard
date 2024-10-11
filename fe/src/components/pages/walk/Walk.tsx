@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import Chart from '@/components/molecules/Chart';
@@ -7,23 +7,20 @@ import PeriodFilter from '@/components/molecules/PeriodFilter';
 import Statistics from '@/components/molecules/Statistics';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import WalkList from '@/components/organisms/WalkList';
-import { useWalkMutation } from '@/hooks/mutaionHooks';
+import { useWalkQuery } from '@/hooks/useWalkAPI';
 import { clickedFilterType } from '@/types/walk';
 
 export default function Walk() {
   const [clickedFilter, setClickedFilter] = useState<clickedFilterType>({ weekly: true, monthly: false, all: false });
-  const handleSuccess = () => {
-    console.log('Walk records fetched successfully!');
-  };
-  const { fetchWalkRecord } = useWalkMutation({ successFn: handleSuccess });
 
-  const filterClickedKey = (clickedFilter: clickedFilterType) =>
-    Object.entries(clickedFilter).filter(([, value]) => value)?.[0][0];
+  const filterKey =
+    (Object.entries(clickedFilter).find(([, value]) => value)?.[0] as keyof clickedFilterType) || 'weekly';
 
-  useEffect(() => {
-    const clickedKey = filterClickedKey(clickedFilter);
-    fetchWalkRecord(clickedKey === 'all' ? 'monthly' : clickedKey);
-  }, [clickedFilter, fetchWalkRecord]);
+  const { data, isLoading } = useWalkQuery(filterKey);
+
+  if (isLoading) return <p>Loading...</p>;
+
+  console.log(data);
 
   return (
     <StyledWalkContainer>

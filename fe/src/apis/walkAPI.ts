@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import apiClient from '@/apis/axiosInstance';
+import { clickedFilterType } from '@/types/walk';
 
 /*
 GET
@@ -21,7 +22,7 @@ POST
 
 const WALK_BASE_URL = '/walkRecords';
 
-export const getWalkRecords = async (filterType: string) => {
+export const getWalkRecords = async (filterType: keyof clickedFilterType) => {
   try {
     // const response = await apiClient.get(`${WALK_BASE_URL}/${filterType}`);
     const response = await axios.get(`${WALK_BASE_URL}/${filterType}`);
