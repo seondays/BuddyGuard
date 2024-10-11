@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import Chart from '@/components/molecules/Chart';
@@ -8,41 +7,28 @@ import PeriodFilter from '@/components/molecules/PeriodFilter';
 import Statistics from '@/components/molecules/Statistics';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import WalkList from '@/components/organisms/WalkList';
-import { clickedFilterType, WalkMockData } from '@/types/walk';
+import { useWalkMutation } from '@/hooks/mutaionHooks';
+import { clickedFilterType } from '@/types/walk';
 
 export default function Walk() {
-  const [clickedFilter, setClickedFilter] = useState<clickedFilterType>({ week: true, month: false, all: false });
-  // const [walks, setWalks] = useState<Walk[]>([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
+  const [clickedFilter, setClickedFilter] = useState<clickedFilterType>({ weekly: true, monthly: false, all: false });
 
-  // useEffect(() => {
-  //   const fetchWalks = async () => {
-  //     try {
-  //       const filterKey = Object.entries(clickedFilter).filter(([, value]) => value)?.[0][0];
-  //       console.log(filterKey);
-  //       // setLoading(true);
-  //       const response = await axios.get<WalkMockData>(`/api/walks/${filterKey}`);
-  //       // setWalks(response.data.data);
-  //       console.log(response.data.data);
-  //       // setError(null);
-  //     } catch (err) {
-  //       // setError('Failed to fetch walks data');
-  //       console.error('Error fetching walks:', err);
-  //     } finally {
-  //       // setLoading(false);
-  //     }
-  //   };
+  const handleSuccess = () => {
+    console.log('Walk records fetched successfully!');
+  };
 
-  //   fetchWalks();
-  // }, [clickedFilter]);
+  const { fetchWalkRecord } = useWalkMutation({ successFn: handleSuccess });
 
   return (
     <StyledWalkContainer>
       <div style={{ padding: `1rem` }}>
         <PageTitleBar title="산책 관리" />
         <BuddyInfoBar />
-        <PeriodFilter clickedFilter={clickedFilter} setClickedFilter={setClickedFilter} />
+        <PeriodFilter
+          clickedFilter={clickedFilter}
+          setClickedFilter={setClickedFilter}
+          fetchWalkRecord={fetchWalkRecord}
+        />
         <Statistics />
         <Chart />
       </div>
