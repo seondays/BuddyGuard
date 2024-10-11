@@ -9,7 +9,7 @@ export default {
 } as Meta;
 
 // 템플릿 생성
-const Template: StoryFn<ListBoxProps> = (args) => {
+const Template: StoryFn<ListBoxProps> = () => {
   return <ListBox />;
 };
 
