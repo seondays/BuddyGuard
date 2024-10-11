@@ -44,6 +44,7 @@ public class WalkRecordService {
     public void createWalkRecord(WalkRecordCreateRequest request) {
         WalkRecord walkRecord = WalkRecordMapper.toEntity(request, null);  // S3Images는 별도로 처리
         WalkRecord savedWalkRecord = walkRecordRepository.save(walkRecord);
+
         log.info("SAVED WALK RECORD: {}", savedWalkRecord);
     }
 

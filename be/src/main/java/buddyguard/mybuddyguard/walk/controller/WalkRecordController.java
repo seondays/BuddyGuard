@@ -49,30 +49,6 @@ public class WalkRecordController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 주간 산책 기록 조회
-    @GetMapping("/{petId}/weekly")
-    public ResponseEntity<List<WalkRecordResponse>> getWeeklyRecords(
-            @PathVariable("petId") Long petId,
-            @RequestParam(value = "date", required = false) LocalDate requestedDate) {
-        if (requestedDate == null) {
-            requestedDate = LocalDate.now(); // 요청된 날짜가 없으면 오늘 날짜 사용
-        }
-        List<WalkRecordResponse> records = walkRecordService.getWeeklyRecords(petId, requestedDate);
-        return ResponseEntity.ok(records);
-    }
-
-    // 월간 산책 기록 조회
-    @GetMapping("/{petId}/monthly")
-    public ResponseEntity<List<WalkRecordResponse>> getMonthlyRecords(
-            @PathVariable("petId") Long petId,
-            @RequestParam(value = "date", required = false) LocalDate requestedDate) {
-        if (requestedDate == null) {
-            requestedDate = LocalDate.now(); // 요청된 날짜가 없으면 오늘 날짜 사용
-        }
-        List<WalkRecordResponse> records = walkRecordService.getMonthlyRecords(petId, requestedDate);
-        return ResponseEntity.ok(records);
-    }
-
     // 산책 기록 업데이트
     @PutMapping("{petId}/detail/{id}")
     public ResponseEntity<Void> updateWalkRecord(
