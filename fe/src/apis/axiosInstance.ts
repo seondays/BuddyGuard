@@ -4,6 +4,7 @@ import axios from 'axios';
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
   timeout: 10000,
+  withCredentials: true, // 쿠키를 포함하도록 설정
 });
 
 // 요청 인터셉터: 요청마다 Authorization 헤더에 accessToken 자동 추가
