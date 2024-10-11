@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/walkRecords")
+@RequestMapping("/api/walkRecords")
 public class WalkRecordController {
 
     private final WalkRecordService walkRecordService;
@@ -50,7 +50,7 @@ public class WalkRecordController {
     }
 
     // 주간 산책 기록 조회
-    @GetMapping("/weekly/{petId}")
+    @GetMapping("/{petId}/weekly")
     public ResponseEntity<List<WalkRecordResponse>> getWeeklyRecords(
             @PathVariable("petId") Long petId,
             @RequestParam(value = "date", required = false) LocalDate requestedDate) {
@@ -62,7 +62,7 @@ public class WalkRecordController {
     }
 
     // 월간 산책 기록 조회
-    @GetMapping("/monthly/{petId}")
+    @GetMapping("/{petId}/monthly")
     public ResponseEntity<List<WalkRecordResponse>> getMonthlyRecords(
             @PathVariable("petId") Long petId,
             @RequestParam(value = "date", required = false) LocalDate requestedDate) {
