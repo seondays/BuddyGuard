@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import apiClient from '@/apis/axiosInstance';
+import { delay } from '@/utils/utils';
 
 const fetchAccessToken = async () => {
   const response = await apiClient.post('/reissue');
@@ -13,9 +14,10 @@ export const useAuthMutation = () => {
     onSuccess: (newAccessToken) => {
       localStorage.setItem('accessToken', newAccessToken);
     },
-    onError: () => {
-      window.location.href = '/join';
+    onError: async () => {
+      await delay(5000);
       localStorage.removeItem('accessToken');
+      window.location.href = '/join';
     },
   });
 
