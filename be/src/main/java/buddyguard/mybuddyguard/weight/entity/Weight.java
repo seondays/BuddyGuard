@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.weight.entity;
 
 import buddyguard.mybuddyguard.exception.InvalidRequestException;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,8 +26,10 @@ public class Weight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "pet_id")
     private Long petId;
 
+    @Column(name = "recorded_at")
     private LocalDateTime recordedAt;
 
     private Double weight;
