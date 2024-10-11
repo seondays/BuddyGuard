@@ -5,12 +5,17 @@ import DashBoardList from '@/components/organisms/DashBoardList';
 import { useAuthMutation } from '@/hooks/useAuthQuery';
 
 export default function Home() {
-  const { getAccessToken, isPending, status } = useAuthMutation();
+  const { getAccessToken, status } = useAuthMutation();
+
+  console.log(status);
 
   useEffect(() => {
     getAccessToken();
   }, [getAccessToken]);
-  if (isPending) return <div>로그인 중입니다...</div>;
+
+  if (status === 'pending') return <div>로그인 중입니다...</div>;
+
+  if (status === 'error') return null;
 
   return (
     <div style={{ padding: '1rem' }}>

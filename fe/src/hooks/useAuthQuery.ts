@@ -8,11 +8,7 @@ const fetchAccessToken = async () => {
 };
 
 export const useAuthMutation = () => {
-  const {
-    mutate: getAccessToken,
-    isPending,
-    status,
-  } = useMutation({
+  const { mutate: getAccessToken, status } = useMutation({
     mutationFn: fetchAccessToken,
     onSuccess: (newAccessToken) => {
       localStorage.setItem('accessToken', newAccessToken);
@@ -23,5 +19,5 @@ export const useAuthMutation = () => {
     },
   });
 
-  return { getAccessToken, isPending, status };
+  return { getAccessToken, status };
 };
