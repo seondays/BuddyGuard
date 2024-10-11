@@ -2,30 +2,27 @@ import styled from 'styled-components';
 
 import Button from '@/components/atoms/Button';
 import Checkbox from '@/components/atoms/Checkbox';
-// import { LOGIN_API_SRC } from '@/constants/urlConstants';
+import { LOGIN_API_SRC } from '@/constants/urlConstants';
 import KakaoLogo from '@/svg/kakao_logo.svg';
 import Logo from '@/svg/logo.svg';
 
 export default function Login() {
   const KAKAO_BG_COLOR = '#FEE500';
   const KAKAO_LOGO_COLOR = '#391d1d';
-  const handleOnclick = () => {
-    // window.location.href = LOGIN_API_SRC;
-    window.location.href = 'api/buddyguard.site/login';
-  };
 
   return (
     <div style={{ padding: '2rem', height: '100%', alignContent: 'center', backgroundColor: 'white' }}>
       <StyledLogo />
       <div>
-        <Button
-          $bgColor={KAKAO_BG_COLOR}
-          style={{ border: 'none', borderRadius: '0.5rem', minWidth: '12rem', marginBottom: '1rem' }}
-          onClick={handleOnclick}
-        >
-          <StyledKakaoLogo $color={KAKAO_LOGO_COLOR} />
-          <StyledButtonText style={{ width: '70%', fontSize: '1.2rem' }}>카카오 로그인</StyledButtonText>
-        </Button>
+        <a href={LOGIN_API_SRC}>
+          <Button
+            $bgColor={KAKAO_BG_COLOR}
+            style={{ border: 'none', borderRadius: '0.5rem', minWidth: '12rem', marginBottom: '1rem' }}
+          >
+            <StyledKakaoLogo $color={KAKAO_LOGO_COLOR} />
+            <StyledButtonText style={{ width: '70%', fontSize: '1.2rem' }}>카카오 로그인</StyledButtonText>
+          </Button>
+        </a>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Checkbox size="medium" label="로그인 유지" />
         </div>
