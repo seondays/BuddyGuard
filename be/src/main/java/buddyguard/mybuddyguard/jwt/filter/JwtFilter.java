@@ -33,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         // 헤더에서 토큰 추출
-        String accessToken = request.getHeader("access");
+        String accessToken = deletePrefixToken(request.getHeader("Authorization"));
 
         if (accessToken == null) {
             filterChain.doFilter(request, response);
@@ -45,14 +45,12 @@ public class JwtFilter extends OncePerRequestFilter {
                 // 토큰이 만료된 상황
                 throw new TokenExpiredException(HttpStatus.UNAUTHORIZED, "unauthorized token");
             }
-
             TokenType type = tokenService.getTokenType(accessToken);
             if (!type.equals(TokenType.ACCESS)) {
                 // 엑세스 토큰이 아닌 상황
                 throw new NotAccessTokenException(HttpStatus.UNAUTHORIZED, "unauthorized token");
             }
-        }
-        catch (FilterException exception) {
+        } catch (FilterException exception) {
             authenticationEntryPoint.commence(request, response, exception);
             return;
         }
@@ -71,5 +69,15 @@ public class JwtFilter extends OncePerRequestFilter {
                 customOAuth2User.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);
+    }
+
+    private String deletePrefixToken(String token) {
+        if (token == null) {
+            return null;
+        }
+        if (token.startsWith("Bearer ")) {
+            return token.substring(7);
+        }
+        return null;
     }
 }
