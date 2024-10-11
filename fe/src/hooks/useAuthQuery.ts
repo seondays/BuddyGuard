@@ -14,8 +14,8 @@ export const useAuthMutation = () => {
       localStorage.setItem('accessToken', newAccessToken);
     },
     onError: () => {
-      window.location.href = '/join';
-      localStorage.removeItem('accessToken');
+      // window.location.href = '/join';
+      // localStorage.removeItem('accessToken');
     },
   });
 
