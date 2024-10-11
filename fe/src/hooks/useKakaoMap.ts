@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { IsStartedType } from '@/components/pages/walk/GoWalk';
 import { DEFAULT_MAP_LEVEL, DEFAULT_MAP_POSITION } from '@/constants/map';
 import { convertImageAndSave, drawPath } from '@/helper/drawHelpers';
 import {
@@ -21,21 +22,28 @@ import { BuddysType, PositionPair, PositionType, SelectedBuddysType, StatusOfTim
 import { drawGrid, fillBackground, initCanvas } from '@/utils/canvasUtils';
 import { calculateTotalDistance } from '@/utils/mapUtils';
 import { getCurrentDate } from '@/utils/timeUtils';
+import { delay } from '@/utils/utils';
 
 export interface UseKakaoMapProps {
   mapRef: React.RefObject<HTMLDivElement>;
-  buddys: BuddysType[];
+  buddyList: BuddysType[];
   selectedBuddys: SelectedBuddysType;
   isTargetClicked: boolean;
   setIsTargetClicked: React.Dispatch<React.SetStateAction<boolean>>;
-  isStarted: boolean;
+  isStarted: IsStartedType;
+  setIsStarted: React.Dispatch<React.SetStateAction<IsStartedType>>;
   walkStatus: StatusOfTime;
   setCapturedImage: React.Dispatch<React.SetStateAction<string | null>>;
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+  linePathRef: React.MutableRefObject<kakao.maps.LatLng[]>;
+  changedPosition: PositionType | null;
+  setChangedPosition: React.Dispatch<React.SetStateAction<PositionType | null>>;
+  map: kakao.maps.Map | null;
+  setMap: React.Dispatch<React.SetStateAction<kakao.maps.Map | null>>;
 }
 
 export interface SetOverlayProps {
-  isStarted: boolean;
+  isStarted: IsStartedType;
   selectedBuddys: SelectedBuddysType;
   markerRef: React.MutableRefObject<kakao.maps.Marker | null>;
   overlayRef: React.MutableRefObject<kakao.maps.CustomOverlay | null>;
@@ -46,21 +54,26 @@ export interface SetOverlayProps {
 
 export const useKakaoMap = ({
   mapRef,
-  buddys,
+  buddyList,
   selectedBuddys,
   isTargetClicked,
   setIsTargetClicked,
   isStarted,
+  setIsStarted,
   walkStatus,
   setCapturedImage,
   canvasRef,
+  linePathRef,
+  changedPosition,
+  setChangedPosition,
+  map,
+  setMap,
 }: UseKakaoMapProps) => {
   const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
-  const linePathRef = useRef<kakao.maps.LatLng[]>([]);
+
   const markerRef = useRef<kakao.maps.Marker | null>(null);
   const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
-  const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
+
   const [positions, setPositions] = useState<PositionPair>({
     previous: null, // 초기에는 이전 위치가 없으므로 null
     current: DEFAULT_MAP_POSITION, // 기본 위치를 현재 위치로 설정
@@ -78,24 +91,27 @@ export const useKakaoMap = ({
     overlayRef.current.setPosition(markerRef.current.getPosition());
   };
 
-  const updatePosition = useCallback((prev: PositionPair): PositionPair => {
-    const currentPosition = prev.current;
-    const updatedPosition: PositionType = [
-      currentPosition[0] + Math.random() * 0.001,
-      currentPosition[1] + Math.random() * 0.001,
-    ];
+  const updatePosition = useCallback(
+    (prev: PositionPair): PositionPair => {
+      const currentPosition = prev.current;
+      const updatedPosition: PositionType = [
+        currentPosition[0] + Math.random() * 0.001,
+        currentPosition[1] + Math.random() * 0.001,
+      ];
 
-    const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
+      const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
-    // linePath에 좌표 추가
-    linePathRef.current.push(newLatLng);
+      // linePath에 좌표 추가
+      linePathRef.current.push(newLatLng);
 
-    // 마커+오버레이 위치 변경
-    markerRef.current?.setPosition(newLatLng);
-    overlayRef.current?.setPosition(newLatLng);
+      // 마커+오버레이 위치 변경
+      markerRef.current?.setPosition(newLatLng);
+      overlayRef.current?.setPosition(newLatLng);
 
-    return { previous: currentPosition, current: updatedPosition };
-  }, []);
+      return { previous: currentPosition, current: updatedPosition };
+    },
+    [linePathRef]
+  );
 
   /** 선을 지도에 그리는 함수 */
   const handleDrawPolyline = useCallback(() => {
@@ -103,7 +119,7 @@ export const useKakaoMap = ({
       const polyline = createPolyline(linePathRef.current);
       drawPolylineOnMap(map, polyline);
     }
-  }, [map]);
+  }, [map, linePathRef]);
 
   /** 임의의 위치 업데이트 함수 */
   const simulateLocationUpdate = useCallback(() => {
@@ -130,26 +146,28 @@ export const useKakaoMap = ({
     setChangedPosition([positions.current[0], positions.current[1]]);
     if (!map) return;
     moveMapTo(map, moveLatLon, DEFAULT_MAP_LEVEL);
-  }, [map, setIsTargetClicked, positions]);
+  }, [map, setIsTargetClicked, positions, setChangedPosition]);
 
   // 마커의 새로운 위치로 오버레이 이동
   useEffect(() => {
-    if (isStarted && map && selectedBuddys.length) {
+    if (isStarted === 'start' && map && selectedBuddys.length) {
       replaceCustomOverLay({ overlayRef, markerRef });
     }
-  }, [isStarted, map, selectedBuddys, buddys]);
+  }, [isStarted, map, selectedBuddys, buddyList]);
 
   // 오버레이 설정
   useEffect(() => {
-    if (!(isStarted && map && selectedBuddys.length && markerRef.current)) return;
-    const { customContents, closeButton } = createOverLayElement(selectedBuddys, buddys);
+    if (!(isStarted === 'start' && map && selectedBuddys.length && markerRef.current)) return;
+    const { customContents, closeButton } = createOverLayElement(selectedBuddys, buddyList);
     setOverlay({ isStarted, selectedBuddys, overlayRef, markerRef, map, customContents, closeButton });
-  }, [isStarted, map, selectedBuddys, buddys]);
+  }, [isStarted, map, selectedBuddys, buddyList]);
 
   // 산책 종료 후 경로 그리고 이미지 저장
   useEffect(() => {
-    if (!canvasRef.current) return;
-    if (changedPosition && walkStatus === 'stop' && mapRef.current) {
+    const donelogic = async () => {
+      if (!canvasRef.current) return;
+      if (!(changedPosition && walkStatus === 'stop' && mapRef.current)) return;
+
       const canvas = canvasRef.current;
       const ctx = initCanvas(canvas, canvasWidth, canvasHeight);
       if (!ctx) return;
@@ -168,7 +186,24 @@ export const useKakaoMap = ({
 
       const endDate = getCurrentDate(true, false);
       console.log(`🏃‍♀️💦 End Date: ${endDate}`);
-    }
+
+      await delay(1500);
+      setIsStarted('done');
+
+      console.log('map Level : ', map?.getLevel());
+
+      console.log('center Position : ', changedPosition);
+      console.log('center Position.getLat() : ', changedPosition[0]);
+      console.log('center Position.getLng() : ', changedPosition[1]);
+      const pathData = linePathRef.current.map((latLng) => ({
+        lat: latLng.getLat(),
+        lng: latLng.getLng(),
+      }));
+      console.log('pathData : ', pathData);
+    };
+
+    // 산책 종료 후 경로 그리고 이미지 저장
+    donelogic();
   }, [canvasPaddingX, canvasPaddingY, canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
 
   // 종료 버튼
@@ -178,6 +213,7 @@ export const useKakaoMap = ({
 
       // 지도 범위가 설정된 후 중심 좌표 및 레벨 저장
       const newCenter = map.getCenter();
+
       setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
 
       overlayRef.current.setMap(null);
@@ -193,7 +229,7 @@ export const useKakaoMap = ({
 
   // 위치 업데이트 인터벌 관리
   useEffect(() => {
-    if (!isStarted) return;
+    if (isStarted !== 'start') return;
     if (walkStatus === 'stop' || walkStatus === 'pause') return;
     simulateIntervalID.current = simulateLocationUpdate();
 
@@ -255,7 +291,7 @@ export const useKakaoMap = ({
           centerChangedEventListener(map, setChangedPosition)
         );
     };
-  }, [mapRef, map, selectedBuddys, buddys]);
+  }, [mapRef, map, selectedBuddys, buddyList]);
 
   useEffect(() => {
     const handleResize = () => {

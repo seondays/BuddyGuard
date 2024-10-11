@@ -41,6 +41,7 @@ export default function WalkBuddySelectBar({ buddys, selectedBuddys, handleOnCha
               <Image
                 style={{ width: '50%', color: spanColor, marginTop: '1rem' }}
                 $borderRadius={'50%'}
+                $isHover={false}
                 src={img}
               ></Image>
               <StyledText style={{ color: spanColor }}>{`${name}sfsfsd${id}더긴이름이름이름`}</StyledText>
