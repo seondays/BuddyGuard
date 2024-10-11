@@ -7,7 +7,6 @@ import lombok.Builder;
 @Builder
 public record WalkRecordResponse(
         Long id,
-        String petId,          // 선택한 반려동물 ID
         LocalDate startDate,   // 산책 시작 날짜
         LocalDate endDate,     // 산책 종료 날짜
         LocalTime startTime,   // 산책 시작 시간
