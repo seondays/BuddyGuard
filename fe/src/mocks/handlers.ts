@@ -72,7 +72,8 @@ const walkMockDataMonth: WalkMockData = {
 };
 
 export const handlers = [
-  http.get('/api/walks/week', () => HttpResponse.json(walkMockDataWeek)),
-  http.get('/api/walks/month/10', () => HttpResponse.json(walkMockDataMonth)),
-  http.get('/api/walks/month/10', () => HttpResponse.json(walkMockDataMonth)),
+  // http.get('http://api.buddyguard.site/walkRecords/weekly', () => HttpResponse.json(walkMockDataWeek)),
+  http.get('/walkRecords/weekly', () => HttpResponse.json(walkMockDataWeek)),
+  http.get('/walkRecords/monthly ', () => HttpResponse.json(walkMockDataMonth)),
+  http.get('/walkRecords/monthly ', () => HttpResponse.json(walkMockDataMonth)),
 ];

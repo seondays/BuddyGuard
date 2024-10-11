@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import apiClient from '@/apis/axiosInstance';
 
 /*
@@ -21,7 +23,8 @@ const WALK_BASE_URL = '/walkRecords';
 
 export const getWalkRecords = async (filterType: string) => {
   try {
-    const response = await apiClient.get(`${WALK_BASE_URL}/${filterType}`);
+    // const response = await apiClient.get(`${WALK_BASE_URL}/${filterType}`);
+    const response = await axios.get(`${WALK_BASE_URL}/${filterType}`);
     return response.data; // 응답 데이터 반환
   } catch (error) {
     console.error(error);
