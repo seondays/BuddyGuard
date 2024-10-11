@@ -17,3 +17,9 @@ export interface WalkMockData {
   averageTime: string;
   data: WalkData[];
 }
+
+export interface clickedFilterType {
+  week: boolean;
+  month: boolean;
+  all: boolean;
+}
