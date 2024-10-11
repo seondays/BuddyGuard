@@ -55,7 +55,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/login',
+    path: '/join',
     element: (
       <ResponsiveLayout>
         <Login />

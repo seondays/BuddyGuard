@@ -4,4 +4,4 @@ export const KAKAOMAP_API_SRC = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
 
 export const STATIC_KAKAOMAP_API_SRC = `https://dapi.kakao.com/v2/maps/staticmap?&appkey=${import.meta.env.VITE_KAKAOMAP_API_KEY}`;
 
-export const LOGIN_API_SRC = `//buddyguard.site:8081/login`;
+export const LOGIN_API_SRC = `//api/buddyguard.site/login`;

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import Button from '@/components/atoms/Button';
 import Checkbox from '@/components/atoms/Checkbox';
-import { LOGIN_API_SRC } from '@/constants/urlConstants';
+// import { LOGIN_API_SRC } from '@/constants/urlConstants';
 import KakaoLogo from '@/svg/kakao_logo.svg';
 import Logo from '@/svg/logo.svg';
 
@@ -10,7 +10,8 @@ export default function Login() {
   const KAKAO_BG_COLOR = '#FEE500';
   const KAKAO_LOGO_COLOR = '#391d1d';
   const handleOnclick = () => {
-    window.location.href = LOGIN_API_SRC;
+    // window.location.href = LOGIN_API_SRC;
+    window.location.href = 'api/buddyguard.site/login';
   };
 
   return (
