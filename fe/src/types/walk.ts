@@ -19,7 +19,7 @@ export interface WalkMockData {
 }
 
 export interface clickedFilterType {
-  week: boolean;
-  month: boolean;
+  weekly: boolean;
+  monthly: boolean;
   all: boolean;
 }

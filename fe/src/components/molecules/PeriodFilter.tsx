@@ -7,24 +7,28 @@ import { clickedFilterType } from '@/types/walk';
 interface PeriodFilterProps {
   clickedFilter: clickedFilterType;
   setClickedFilter: React.Dispatch<React.SetStateAction<clickedFilterType>>;
+  fetchWalkRecord: (type: keyof clickedFilterType) => void;
 }
-export default function PeriodFilter({ clickedFilter, setClickedFilter }: PeriodFilterProps) {
+export default function PeriodFilter({ clickedFilter, setClickedFilter, fetchWalkRecord }: PeriodFilterProps) {
   const commonStyles = { borderRadius: '3rem', height: '2.5rem' };
 
   const handleClick = (type: keyof clickedFilterType) => {
     setClickedFilter({
-      week: false,
-      month: false,
+      weekly: false,
+      monthly: false,
       all: false,
       [type]: true,
     });
+
+    fetchWalkRecord(type === 'all' ? 'monthly' : type);
   };
+
   return (
     <FilterWrapper>
-      <Button style={commonStyles} $isClicked={clickedFilter.week} onClick={() => handleClick('week')}>
+      <Button style={commonStyles} $isClicked={clickedFilter.weekly} onClick={() => handleClick('weekly')}>
         주
       </Button>
-      <Button style={commonStyles} $isClicked={clickedFilter.month} onClick={() => handleClick('month')}>
+      <Button style={commonStyles} $isClicked={clickedFilter.monthly} onClick={() => handleClick('monthly')}>
         월
       </Button>
       <Button style={commonStyles} $isClicked={clickedFilter.all} onClick={() => handleClick('all')}>
