@@ -7,9 +7,8 @@ import { clickedFilterType } from '@/types/walk';
 interface PeriodFilterProps {
   clickedFilter: clickedFilterType;
   setClickedFilter: React.Dispatch<React.SetStateAction<clickedFilterType>>;
-  fetchWalkRecord: (type: keyof clickedFilterType) => void;
 }
-export default function PeriodFilter({ clickedFilter, setClickedFilter, fetchWalkRecord }: PeriodFilterProps) {
+export default function PeriodFilter({ clickedFilter, setClickedFilter }: PeriodFilterProps) {
   const commonStyles = { borderRadius: '3rem', height: '2.5rem' };
 
   const handleClick = (type: keyof clickedFilterType) => {
@@ -19,8 +18,6 @@ export default function PeriodFilter({ clickedFilter, setClickedFilter, fetchWal
       all: false,
       [type]: true,
     });
-
-    fetchWalkRecord(type === 'all' ? 'monthly' : type);
   };
 
   return (
