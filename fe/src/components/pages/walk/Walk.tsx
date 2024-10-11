@@ -20,8 +20,6 @@ export default function Walk() {
 
   if (isLoading) return <p>Loading...</p>;
 
-  console.log(data);
-
   return (
     <StyledWalkContainer>
       <div style={{ padding: `1rem` }}>
