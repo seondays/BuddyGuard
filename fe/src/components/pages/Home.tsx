@@ -7,10 +7,8 @@ import { useAuthMutation } from '@/hooks/useAuthQuery';
 export default function Home() {
   const { getAccessToken, status } = useAuthMutation();
 
-  console.log(status);
-
   useEffect(() => {
-    getAccessToken();
+    if (!localStorage.getItem('accessToken')) getAccessToken();
   }, [getAccessToken]);
 
   if (status === 'pending') return <div>로그인 중입니다...</div>;
