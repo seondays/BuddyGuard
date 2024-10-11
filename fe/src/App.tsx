@@ -6,7 +6,7 @@ import { GlobalStyles } from './styles/globalStyles';
 import { ResetStyles } from './styles/resetStyles';
 
 function App() {
-  useFirebaseMessaging();
+  // useFirebaseMessaging();
 
   return (
     <>
