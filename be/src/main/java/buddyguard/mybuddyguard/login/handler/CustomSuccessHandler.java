@@ -50,7 +50,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = authority.getAuthority();
 
         String refreshToken = tokenService.createJwt(userId, role, TokenType.REFRESH, 7 * 24 * 60 * 60L);
-        String accessToken = tokenService.createJwt(userId, role, TokenType.ACCESS, 10 * 60L);
+        String accessToken = tokenService.createJwt(userId, role, TokenType.ACCESS, 1000000000 * 60L);
 
         // refresh 토큰 저장
         saveRefreshToken(userId, refreshToken, 7 * 24 * 60 * 60L);
