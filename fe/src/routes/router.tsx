@@ -6,12 +6,14 @@ import Home from '@/components/pages/Home';
 import Login from '@/components/pages/login/Login';
 import Menu from '@/components/pages/Menu';
 import MyPage from '@/components/pages/MyPage';
+import NotFound from '@/components/pages/NotFound';
 import Notification from '@/components/pages/Notification';
 import Schedule from '@/components/pages/Schedule';
 import GoWalk from '@/components/pages/walk/GoWalk';
 import Walk from '@/components/pages/walk/Walk';
 import Weight from '@/components/pages/Weight';
 import ResponsiveLayout from '@/components/templates/ResponsiveLayout';
+import RequireAuth from '@/routes/requireAuth';
 
 export const router = createBrowserRouter([
   {
@@ -25,33 +27,41 @@ export const router = createBrowserRouter([
   {
     path: '/menu/walk',
     element: (
-      <ResponsiveLayout>
-        <Walk />
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <Walk />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
   {
     path: '/menu',
     element: (
-      <ResponsiveLayout>
-        <Menu />
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <Menu />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
   {
     path: '/notification',
     element: (
-      <ResponsiveLayout>
-        <Notification />
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <Notification />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
   {
     path: '/MyPage',
     element: (
-      <ResponsiveLayout>
-        <MyPage />
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <MyPage />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
   {
@@ -65,56 +75,72 @@ export const router = createBrowserRouter([
   {
     path: '/menu/walk/go',
     element: (
-      <ResponsiveLayout>
-        <GoWalk />
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <GoWalk />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
-  // { path: '*', element: <Root /> },
   {
     path: '/menu/schedule',
     element: (
-      <ResponsiveLayout>
-        {' '}
-        <Schedule />{' '}
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <Schedule />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
   {
     path: '/menu/health',
     element: (
-      <ResponsiveLayout>
-        {' '}
-        <Health />{' '}
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <Health />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
   {
     path: '/menu/walk',
     element: (
-      <ResponsiveLayout>
-        {' '}
-        <Walk />{' '}
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <Walk />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
 
   {
     path: '/menu/food',
     element: (
-      <ResponsiveLayout>
-        {' '}
-        <Food />{' '}
-      </ResponsiveLayout>
+      <RequireAuth>
+        <ResponsiveLayout>
+          <Food />
+        </ResponsiveLayout>
+      </RequireAuth>
     ),
   },
   {
     path: '/menu/weight',
     element: (
+      <RequireAuth>
+        <ResponsiveLayout>
+          <Weight />
+        </ResponsiveLayout>
+      </RequireAuth>
+    ),
+  },
+  {
+    path: '*',
+    element: (
+      // <RequireAuth>
       <ResponsiveLayout>
-        {' '}
-        <Weight />{' '}
+        <NotFound />
       </ResponsiveLayout>
+      // </RequireAuth>
     ),
   },
 ]);
