@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.jwt.controller;
 
 import buddyguard.mybuddyguard.jwt.service.TokenService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,9 @@ public class TokenController {
 
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
-        String refresh = request.getHeader("refresh");
-        String newAccess = service.reissueAccessToken(refresh);
-        response.setHeader("access", newAccess);
+        Cookie[] cookies = request.getCookies();
+        String newAccess = service.reissueAccessToken(cookies);
+        response.setHeader("Authorization", newAccess);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
