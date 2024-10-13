@@ -21,7 +21,7 @@ public class TokenController {
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         String newAccess = service.reissueAccessToken(cookies);
-        response.setHeader("Authorization", "Bearer" + newAccess);
+        response.setHeader("Authorization", "Bearer " + newAccess);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
