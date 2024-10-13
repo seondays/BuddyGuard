@@ -4,7 +4,8 @@ import apiClient from '@/apis/axiosInstance';
 import { delay } from '@/utils/utils';
 
 const fetchAccessToken = async () => {
-  const response = await apiClient.post('/reissue');
+  const response = await apiClient.post('/reissue', { withCredentials: true });
+  console.log(response);
   return response.data.accessToken;
 };
 
