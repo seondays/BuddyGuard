@@ -40,7 +40,7 @@ public class HospitalRecordController {
     public ResponseEntity<Void> createHospitalRecord(
             @Valid @RequestBody HospitalRecordCreateRequest request) {
         hospitalRecordService.createHospitalRecord(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/detail/{id}")

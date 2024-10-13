@@ -41,7 +41,7 @@ public class WalkRecordController {
     public ResponseEntity<Void> createWalkRecord(
             @Valid @RequestBody WalkRecordCreateRequest request) {
         walkRecordService.createWalkRecord(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // 산책 기록 업데이트
