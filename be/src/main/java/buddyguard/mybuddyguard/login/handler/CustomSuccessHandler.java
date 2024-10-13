@@ -58,7 +58,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(createCookie("refresh", refreshToken));
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 
-        response.sendRedirect("http://buddyguard.site/");
+        response.sendRedirect("https://buddyguard.site/");
     }
 
     /**

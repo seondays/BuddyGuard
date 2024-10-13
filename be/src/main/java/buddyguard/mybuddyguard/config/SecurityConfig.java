@@ -79,9 +79,9 @@ public class SecurityConfig {
                     CorsConfiguration config = new CorsConfiguration();
 
                     config.setAllowedOrigins(Arrays.asList(
-                            "http://buddyguard.site:5173",
+                            "https://buddyguard.site:5173",
                             "http://localhost:5173",
-                            "http://buddyguard.site"
+                            "https://buddyguard.site"
                     ));
                     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowCredentials(true);
