@@ -5,7 +5,6 @@ import buddyguard.mybuddyguard.walk.service.WalkRecordStatsService;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +23,7 @@ public class WalkRecordStatsController {
     public ResponseEntity<WalkStatsWithRecordsResponse> getWeeklyRecords(
             @PathVariable("petId") Long petId,
             @RequestParam(value = "date", required = false) LocalDate requestedDate) {
-        if (requestedDate == null) {
-            requestedDate = LocalDate.now();
-        }
+
         WalkStatsWithRecordsResponse records = walkRecordStatsService.getWeeklyRecords(petId, requestedDate);
         return ResponseEntity.ok(records);
     }

@@ -27,6 +27,11 @@ public class WalkRecordStatsService {
 
     // 특정 반려동물의 주간 산책 기록을 조회하고 통계와 상세기록 응답
     public WalkStatsWithRecordsResponse getWeeklyRecords(Long petId, LocalDate requestedDate) {
+        //요청된 날짜 없으면 오늘 날짜 사용
+        if (requestedDate == null) {
+            requestedDate = LocalDate.now();
+        }
+
         // 현재 주의 시작일 (일요일)로 계산
         LocalDate startOfWeek = requestedDate.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
         LocalDate endOfWeek = startOfWeek.plusDays(6);
