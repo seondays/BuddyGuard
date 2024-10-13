@@ -4,6 +4,7 @@ import buddyguard.mybuddyguard.walk.controller.response.WalkStatsWithRecordsResp
 import buddyguard.mybuddyguard.walk.service.WalkRecordStatsService;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,15 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/walkRecords")
 public class WalkRecordStatsController {
 
     private final WalkRecordStatsService walkRecordStatsService;
-
-    @Autowired
-    public WalkRecordStatsController(WalkRecordStatsService walkRecordStatsService) {
-        this.walkRecordStatsService = walkRecordStatsService;
-    }
 
     @GetMapping("/{petId}/weekly")
     public ResponseEntity<WalkStatsWithRecordsResponse> getWeeklyRecords(

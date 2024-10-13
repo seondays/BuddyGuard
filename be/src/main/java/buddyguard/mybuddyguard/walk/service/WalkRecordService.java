@@ -7,8 +7,6 @@ import buddyguard.mybuddyguard.walk.controller.request.WalkRecordUpdateRequest;
 import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 import buddyguard.mybuddyguard.walk.mapper.WalkRecordMapper;
 import buddyguard.mybuddyguard.walk.repository.WalkRecordRepository;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,45 +45,6 @@ public class WalkRecordService {
 
         log.info("SAVED WALK RECORD: {}", savedWalkRecord);
     }
-
-    // 특정 반려동물의 주간 산책 기록을 조회하는 메서드
-    public List<WalkRecordResponse> getWeeklyRecords(Long petId, LocalDate requestedDate) {
-        // 해당 주의 시작일 (일요일)
-        LocalDate startOfWeek = requestedDate.with(java.time.DayOfWeek.SUNDAY);
-        // 해당 주의 종료일 (토요일)
-        LocalDate endOfWeek = startOfWeek.plusDays(6);
-
-        // 주간 범위 내의 산책 기록 조회
-        return walkRecordRepository.findAll().stream()
-                .filter(record -> record.hasBuddy(petId)) // buddyIds에서 해당 petId 확인
-                .filter(record -> isWithinRange(record.getStartDate(), startOfWeek,
-                        endOfWeek)) // 주간 범위 내에 있는지 확인
-                .map(WalkRecordMapper::toResponse) // WalkRecordResponse로 변환
-                .collect(Collectors.toList());
-    }
-
-    // 특정 반려동물의 월간 산책 기록을 조회하는 메서드
-    public List<WalkRecordResponse> getMonthlyRecords(Long petId, LocalDate requestedDate) {
-        // 해당 월의 시작일 (1일)
-        LocalDate startOfMonth = requestedDate.withDayOfMonth(1);
-        // 해당 월의 마지막 날 계산
-        LocalDate endOfMonth = requestedDate.with(TemporalAdjusters.lastDayOfMonth());
-
-        // 월간 범위 내의 산책 기록 조회
-        return walkRecordRepository.findAll().stream()
-                .filter(record -> record.hasBuddy(petId)) // buddyIds에서 해당 petId 확인
-                .filter(record -> isWithinRange(record.getStartDate(), startOfMonth,
-                        endOfMonth)) // 월간 범위 내에 있는지 확인
-                .map(WalkRecordMapper::toResponse) // WalkRecordResponse로 변환
-                .collect(Collectors.toList());
-    }
-
-    // 주어진 날짜가 특정 범위 내에 있는지 확인하는 메서드
-    private boolean isWithinRange(LocalDate recordDate, LocalDate startDate, LocalDate endDate) {
-        return (recordDate.isEqual(startDate) || recordDate.isAfter(startDate)) &&
-                (recordDate.isEqual(endDate) || recordDate.isBefore(endDate));
-    }
-
 
     @Transactional
     public void updateWalkRecord(Long id, Long petId, WalkRecordUpdateRequest request) {
