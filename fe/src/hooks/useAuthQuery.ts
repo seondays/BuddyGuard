@@ -6,7 +6,7 @@ import { delay } from '@/utils/utils';
 const fetchAccessToken = async () => {
   const response = await apiClient.post('/reissue', { withCredentials: true });
   console.log(response);
-  return response.data.accessToken;
+  return response.headers.authorization;
 };
 
 export const useAuthMutation = () => {
