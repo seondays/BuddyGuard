@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 
 import Image from '../atoms/Image';
 import Span from '../atoms/Span';
@@ -8,19 +9,13 @@ export default function BuddyInfoBar() {
 
   const isHome = location.pathname === '/';
 
+  const handleChangeBuddy = () => {};
   return (
-    <div
-      style={{
-        margin: '1rem 0rem',
-        padding: '1rem',
-        backgroundColor: '#FFEEA9',
-        borderRadius: '1rem',
-      }}
-    >
+    <StyledBarWrapper onClick={handleChangeBuddy}>
       <div id="top-info" style={{ display: 'flex', alignItems: 'center' }}>
         <Image
           src="/assets/icons/defaultBuddy.png"
-          style={{ width: '2rem', borderRadius: '50%', marginRight: '1rem' }}
+          style={{ width: '2.2rem', borderRadius: '50%', marginRight: '1rem', border: '0.2rem solid white' }}
         />
         <Span>버디 이름</Span>
       </div>
@@ -35,6 +30,13 @@ export default function BuddyInfoBar() {
           <Span>식사량</Span>
         </div>
       )}
-    </div>
+    </StyledBarWrapper>
   );
 }
+
+const StyledBarWrapper = styled.div`
+  margin: 1rem 0rem;
+  padding: 0.6rem 1rem;
+  background-color: ${({ theme }) => theme.themeValues.colorValues.special.modalBg};
+  border-radius: 1rem;
+`;
