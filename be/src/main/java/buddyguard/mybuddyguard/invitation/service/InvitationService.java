@@ -13,6 +13,7 @@ import buddyguard.mybuddyguard.invitation.utils.InvitationLinkGenerator;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
 import buddyguard.mybuddyguard.jwt.utils.TokenPreprocessor;
 import buddyguard.mybuddyguard.login.entity.Users;
+import buddyguard.mybuddyguard.login.exception.TokenNotFoundException;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.pet.entity.UserPet;
@@ -20,6 +21,7 @@ import buddyguard.mybuddyguard.pet.exception.InvalidPetRegisterException;
 import buddyguard.mybuddyguard.pet.repository.PetRepository;
 import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -57,6 +59,10 @@ public class InvitationService {
 
     public void register(String uuid, String token) {
         String accessToken = TokenPreprocessor.deletePrefixToken(token);
+
+        if (accessToken == null) {
+            throw new TokenNotFoundException(HttpStatus.UNAUTHORIZED, "unauthorized token");
+        }
 
         Users user = userRepository.findById(tokenService.getUserId(accessToken))
                 .orElseThrow(UserInformationNotFoundException::new);
