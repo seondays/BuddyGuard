@@ -11,6 +11,7 @@ import buddyguard.mybuddyguard.invitation.exception.UserPetGroupNotFound;
 import buddyguard.mybuddyguard.invitation.repository.InvitationRepository;
 import buddyguard.mybuddyguard.invitation.utils.InvitationLinkGenerator;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
+import buddyguard.mybuddyguard.jwt.utils.TokenPreprocessor;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.entity.Pet;
@@ -55,7 +56,9 @@ public class InvitationService {
     }
 
     public void register(String uuid, String token) {
-        Users user = userRepository.findById(tokenService.getUserId(token))
+        String accessToken = TokenPreprocessor.deletePrefixToken(token);
+
+        Users user = userRepository.findById(tokenService.getUserId(accessToken))
                 .orElseThrow(UserInformationNotFoundException::new);
 
         InvitationInformation invitation = invitationRepository.findById(uuid).orElseThrow(
