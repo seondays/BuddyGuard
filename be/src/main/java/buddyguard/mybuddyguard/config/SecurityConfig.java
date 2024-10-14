@@ -7,12 +7,14 @@ import buddyguard.mybuddyguard.login.filter.CustomLogoutFilter;
 import buddyguard.mybuddyguard.login.exception.CustomAuthenticationEntryPoint;
 import buddyguard.mybuddyguard.login.handler.CustomSuccessHandler;
 import buddyguard.mybuddyguard.login.service.OAuth2UserService;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -53,12 +55,15 @@ public class SecurityConfig {
                         userInfoEndpointConfig.userService(oAuth2UserService))
                 .successHandler(customSuccessHandler));
 
-        http.authorizeHttpRequests(
-                auth -> auth.requestMatchers("/", "/login", "/oauth2**", "/swagger-ui/**",
-                                "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs",
-                                "/reissue")
-                        .permitAll()
-                        .anyRequest().authenticated());
+//        http.authorizeHttpRequests(
+//                auth -> auth.requestMatchers("/", "/login", "/oauth2**", "/swagger-ui/**",
+//                                "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs",
+//                                "/reissue")
+//                        .permitAll()
+//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                        .anyRequest().authenticated());
+
+        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -69,20 +74,24 @@ public class SecurityConfig {
         http.addFilterBefore(new CustomLogoutFilter(tokenService, repository, entryPoint),
                 LogoutFilter.class);
 
-        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
-                new CorsConfigurationSource() {
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                        CorsConfiguration config = new CorsConfiguration();
+        http.oauth2Login(oauth2 -> oauth2.loginPage("/oauth2/authorization/kakao"));
 
-                        config.setAllowedOrigins(Collections.singletonList("*"));
-                        config.setAllowedMethods(Collections.singletonList("*"));
-                        config.setAllowCredentials(true);
-                        config.setAllowedHeaders(Collections.singletonList("*"));
-                        config.setExposedHeaders(Collections.singletonList("Authorization"));
-                        config.setMaxAge(60 * 60L);
-                        return config;
-                    }
+        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
+                request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+
+                    config.setAllowedOrigins(Arrays.asList(
+                            "https://buddyguard.site:5173",
+                            "http://localhost:5173",
+                            "https://buddyguard.site"
+                    ));
+                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowCredentials(true);
+                    config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
+                    config.setMaxAge(60 * 60L);
+
+                    return config;
                 }));
         return http.build();
     }

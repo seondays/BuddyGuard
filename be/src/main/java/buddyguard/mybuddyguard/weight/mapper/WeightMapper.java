@@ -13,6 +13,7 @@ public class WeightMapper {
                 weight.getPetId(),
                 weight.getWeight(),
                 weight.getRecordedAt(),
+                "체중",
                 weight.getDescription()
         );
     }

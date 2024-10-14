@@ -9,20 +9,20 @@ public class HospitalRecordMapper {
     public static HospitalRecordResponse toResponse(HospitalRecord hospitalRecord) {
         return new HospitalRecordResponse(
                 hospitalRecord.getId(),
-                hospitalRecord.getUserId(),
                 hospitalRecord.getPetId(),
-                hospitalRecord.getVisitDate(),
-                hospitalRecord.getHospitalName(),
+                hospitalRecord.getDate(),
+                "건강",
+                "병원", // 카테고리 추가
+                hospitalRecord.getTitle(),
                 hospitalRecord.getDescription()
         );
     }
 
-    public static HospitalRecord toEntity(Long userId, Long petId, HospitalRecordCreateRequest request) {
+    public static HospitalRecord toEntity(Long petId, HospitalRecordCreateRequest request) {
         return HospitalRecord.builder()
-                .userId(userId)
                 .petId(petId)
-                .visitDate(request.visitDate())
-                .hospitalName(request.hospitalName())
+                .date(request.date())
+                .title(request.title())
                 .description(request.description())
                 .build();
     }

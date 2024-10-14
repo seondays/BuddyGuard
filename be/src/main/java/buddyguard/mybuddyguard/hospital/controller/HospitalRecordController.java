@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/hospitalRecords/{userId}/{petId}")
+@RequestMapping("/hospitalRecords/{petId}")
 public class HospitalRecordController {
 
     private final HospitalRecordService hospitalRecordService;
@@ -25,19 +25,17 @@ public class HospitalRecordController {
 
     @GetMapping
     public ResponseEntity<List<HospitalRecordResponse>> getAllHospitalRecords(
-            @PathVariable("userId") Long userId,
             @PathVariable("petId") Long petId) {
-        List<HospitalRecordResponse> records = hospitalRecordService.getAllHospitalRecords(userId,
+        List<HospitalRecordResponse> records = hospitalRecordService.getAllHospitalRecords(
                 petId);
         return ResponseEntity.ok(records);
     }
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<HospitalRecordResponse> getHospitalRecord(
-            @PathVariable("userId") Long userId,
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id) {
-        HospitalRecordResponse record = hospitalRecordService.getHospitalRecord(id, userId, petId);
+        HospitalRecordResponse record = hospitalRecordService.getHospitalRecord(id, petId);
         return ResponseEntity.ok(record);
     }
 
@@ -50,23 +48,21 @@ public class HospitalRecordController {
 
     @PutMapping("/detail/{id}")
     public ResponseEntity<Void> updateHospitalRecord(
-            @PathVariable Long userId,
             @PathVariable Long petId,
             @PathVariable Long id,
             @Valid @RequestBody HospitalRecordUpdateRequest request) {
 
-        hospitalRecordService.updateHospitalRecord(userId, petId, id, request);
+        hospitalRecordService.updateHospitalRecord(petId, id, request);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/detail/{id}")
     public ResponseEntity<Void> deleteHospitalRecord(
-            @PathVariable Long userId,
             @PathVariable Long petId,
             @PathVariable Long id) {
 
-        hospitalRecordService.deleteHospitalRecord(userId, petId, id);
+        hospitalRecordService.deleteHospitalRecord(petId, id);
 
         return ResponseEntity.noContent().build();
     }

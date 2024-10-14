@@ -8,6 +8,7 @@ import buddyguard.mybuddyguard.login.exception.TokenNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
+import jakarta.servlet.http.Cookie;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TokenService {
+
     private final SecretKey secretKey;
     private final RefreshTokenRepository repository;
 
@@ -49,6 +51,7 @@ public class TokenService {
 
     /**
      * 토큰의 유효기간이 만료되었는지 확인합니다
+     *
      * @param token
      * @return
      */
@@ -62,13 +65,15 @@ public class TokenService {
     }
 
     public TokenType getTokenType(String token) {
-        String stringTokens = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+        String stringTokens = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
+                .getPayload()
                 .get("tokenType", String.class);
         return TokenType.valueOf(stringTokens);
     }
 
     /**
      * JWT 토큰을 생성합니다
+     *
      * @param userId
      * @param role
      * @param expiredSeconds
@@ -86,11 +91,14 @@ public class TokenService {
     }
 
     /**
-     * 엑세스 토큰을 재발급합니다
-     * @param refresh
+     * 엑세스 토큰을 발급합니다.
+     *
+     * @param cookies
      * @return
      */
-    public String reissueAccessToken(String refresh) {
+    public String reissueAccessToken(Cookie[] cookies) {
+        String refresh = getRefreshToken(cookies);
+
         if (refresh == null) {
             throw new TokenNotFoundException(HttpStatus.UNAUTHORIZED, "unauthorized token");
         }
@@ -112,5 +120,21 @@ public class TokenService {
         String userRole = getRole(refresh);
 
         return createJwt(userId, userRole, TokenType.ACCESS, 10 * 60L);
+    }
+
+    /**
+     * 쿠키에서 refresh 토큰을 추출합니다
+     */
+    private String getRefreshToken(Cookie[] cookies) {
+        String refresh = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refresh".equals(cookie.getName())) {
+                    refresh = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        return refresh;
     }
 }

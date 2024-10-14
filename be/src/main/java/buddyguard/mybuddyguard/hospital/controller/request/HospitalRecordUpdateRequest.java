@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 public record HospitalRecordUpdateRequest(
 
         @NotNull
-        LocalDateTime visitDate,
+        LocalDateTime date,
         @NotBlank
-        String hospitalName,
+        String title,
         @NotBlank
         String description
 ) {

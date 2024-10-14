@@ -14,9 +14,8 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -51,20 +50,15 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = authority.getAuthority();
 
         String refreshToken = tokenService.createJwt(userId, role, TokenType.REFRESH, 7 * 24 * 60 * 60L);
-        String accessToken = tokenService.createJwt(userId, role, TokenType.ACCESS, 10 * 60L);
 
         // refresh 토큰 저장
         saveRefreshToken(userId, refreshToken, 7 * 24 * 60 * 60L);
 
-        // body에 토큰 저장
-        Map<String, String> bodyMap = new HashMap<>();
-        bodyMap.put("refresh", refreshToken);
-        bodyMap.put("access", accessToken);
+        // 쿠키에 토큰 저장
+        response.addCookie(createCookie("refresh", refreshToken));
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 
-        ObjectMapper mapper = new ObjectMapper();
-        String body = mapper.writeValueAsString(bodyMap);
-
-        response.getWriter().write(body);
+        response.sendRedirect("https://buddyguard.site/");
     }
 
     /**
