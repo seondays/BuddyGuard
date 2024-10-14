@@ -10,6 +10,6 @@ CREATE TABLE WALK_RECORDS (
                               center_position VARCHAR(255) NOT NULL,
                               map_level INT NOT NULL,
                               path TEXT NOT NULL,
-                              path_image_id BIGINT NOT NULL,
+                              path_image VARCHAR NOT NULL,
                               distance DOUBLE(10, 3) NOT NULL
 );
