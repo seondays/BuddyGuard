@@ -30,7 +30,7 @@ public class InvitationController {
     @GetMapping("/{uuid}")
     public ResponseEntity<Void> registerInvitation(@PathVariable("uuid") String uuid,
             HttpServletRequest request) {
-        String token = request.getHeader("access");
+        String token = request.getHeader("Authorization");
         invitationService.register(uuid, token);
         return new ResponseEntity<>(HttpStatus.OK);
     }
