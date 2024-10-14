@@ -5,24 +5,19 @@ import buddyguard.mybuddyguard.walk.controller.request.WalkRecordUpdateRequest;
 import buddyguard.mybuddyguard.walk.controller.response.WalkRecordResponse;
 import buddyguard.mybuddyguard.walk.service.WalkRecordService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/walkRecords")
 public class WalkRecordController {
 
     private final WalkRecordService walkRecordService;
-
-    @Autowired
-    public WalkRecordController(WalkRecordService walkRecordService) {
-        this.walkRecordService = walkRecordService;
-    }
 
     // 전체 산책 기록 조회
     @GetMapping("/{petId}")
@@ -46,7 +41,7 @@ public class WalkRecordController {
     public ResponseEntity<Void> createWalkRecord(
             @Valid @RequestBody WalkRecordCreateRequest request) {
         walkRecordService.createWalkRecord(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // 산책 기록 업데이트
