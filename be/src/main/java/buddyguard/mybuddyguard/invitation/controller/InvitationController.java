@@ -2,6 +2,7 @@ package buddyguard.mybuddyguard.invitation.controller;
 
 import buddyguard.mybuddyguard.invitation.controller.response.InvitationLinkResponse;
 import buddyguard.mybuddyguard.invitation.service.InvitationService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class InvitationController {
         this.invitationService = invitationService;
     }
 
+    @Operation(summary = "초대 링크를 생성하는 api", description = "펫 id를 이용해서 사용자-펫 그룹 게스트 초대를 위한 초대 링크를 생성합니다")
     @GetMapping("/{userId}/{petId}")
     public ResponseEntity<InvitationLinkResponse> makeInvitationLink(
             @PathVariable("userId") Long userId, @PathVariable("petId") Long petId) {
@@ -27,6 +29,7 @@ public class InvitationController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "초대 링크를 통해 그룹에 가입하는 api", description = "초대 링크를 통해 유저는 기존 사용자-펫 그룹에 게스트로 가입합니다")
     @GetMapping("/{uuid}")
     public ResponseEntity<Void> registerInvitation(@PathVariable("uuid") String uuid,
             HttpServletRequest request) {
