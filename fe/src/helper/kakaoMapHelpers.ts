@@ -191,7 +191,8 @@ export const createOverLayElement = (SelectedBuddys: SelectedBuddysType, buddys:
 };
 
 export const loadKakaoMapScript = (): Promise<void> => {
-  console.log('Kakao Map Key:', import.meta.env.VITE_KAKAOMAP_JS_KEY);
+  console.log('VITE_SERVER_URL:', import.meta.env.VITE_SERVER_URL);
+  console.log('VITE_KAKAOMAP_JS_KEY:', import.meta.env.VITE_KAKAOMAP_JS_KEY);
   console.log('Script URL:', KAKAOMAP_API_SRC);
 
   return new Promise((resolve, reject) => {
