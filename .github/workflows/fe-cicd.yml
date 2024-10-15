@@ -23,14 +23,15 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Create .env file
-        working-directory: ./fe
-        run: |
-          touch .env
-          echo "REACT_APP_ENV=${{ secrets.REACT_APP_ENV }}" >> .env.production
-
+     # 캐시 지우고 빌드 추가 
       - name: Clear npm cache
         run: npm cache clean --force
+
+      - name: Create .env.production file
+        working-directory: ./fe
+        run: |
+          touch .env.production
+          echo "REACT_APP_ENV=${{ secrets.REACT_APP_ENV }}" >> .env.production
 
       - name: Clean and install dependencies
         working-directory: ./fe
