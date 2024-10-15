@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class InvitationLinkGenerator {
 
-    @Value("${app.base-url}")
+    @Value("${app.invitation-link-base-url}")
     private String baseUrlInstance;
     private static String baseUrl;
 
