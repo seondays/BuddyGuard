@@ -2,6 +2,7 @@ package buddyguard.mybuddyguard.jwt.service;
 
 import buddyguard.mybuddyguard.jwt.utils.TokenType;
 import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
+import buddyguard.mybuddyguard.jwt.utils.TokenUtility;
 import buddyguard.mybuddyguard.login.exception.NotAccessTokenException;
 import buddyguard.mybuddyguard.login.exception.TokenExpiredException;
 import buddyguard.mybuddyguard.login.exception.TokenNotFoundException;
@@ -97,7 +98,7 @@ public class TokenService {
      * @return
      */
     public String reissueAccessToken(Cookie[] cookies) {
-        String refresh = getRefreshToken(cookies);
+        String refresh = TokenUtility.getRefreshToken(cookies);
 
         if (refresh == null) {
             throw new TokenNotFoundException(HttpStatus.UNAUTHORIZED, "unauthorized token");
@@ -120,21 +121,5 @@ public class TokenService {
         String userRole = getRole(refresh);
 
         return createJwt(userId, userRole, TokenType.ACCESS, 10 * 60L);
-    }
-
-    /**
-     * 쿠키에서 refresh 토큰을 추출합니다
-     */
-    private String getRefreshToken(Cookie[] cookies) {
-        String refresh = null;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("refresh".equals(cookie.getName())) {
-                    refresh = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        return refresh;
     }
 }
