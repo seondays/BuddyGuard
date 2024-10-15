@@ -29,8 +29,8 @@ jobs:
 
       - name: Create .env.production file in nginx-vol/fe
         run: |
-          mkdir -p /home/ubuntu/nginx-vol/fe
-          touch /home/ubuntu/nginx-vol/fe/.env.production
+          sudo mkdir -p /home/ubuntu/nginx-vol/fe
+          sudo touch /home/ubuntu/nginx-vol/fe/.env.production
           echo "REACT_APP_ENV=${{ secrets.REACT_APP_ENV }}" >> /home/ubuntu/nginx-vol/fe/.env.production
 
       - name: Clean and install dependencies
