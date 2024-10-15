@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.jwt.controller;
 
 import buddyguard.mybuddyguard.jwt.service.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ public class TokenController {
         this.service = service;
     }
 
+    @Operation(summary = "액세스 토큰 발급하는 api", description = "리프레시 토큰을 이용하여 액세스 토큰을 새로 발급받습니다")
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
