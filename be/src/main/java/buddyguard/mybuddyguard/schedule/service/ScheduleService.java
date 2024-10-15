@@ -16,6 +16,7 @@ import buddyguard.mybuddyguard.exception.PetNotFoundException;
 import buddyguard.mybuddyguard.exception.UserInformationNotFoundException;
 import buddyguard.mybuddyguard.weight.mapper.WeightMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -57,13 +58,11 @@ public class ScheduleService {
         List<HospitalRecord> hospitals = scheduleRepository.findHospitalRecordAllByYearAndMonth(
                 petId, year, month);
 
-        if (weights.isEmpty() || hospitals.isEmpty()) {
-            throw new RecordNotFoundException();
-        }
+        List<WeightResponse> weightResponses = weights.isEmpty()
+                ? new ArrayList<>() : WeightMapper.toResponseList(weights);
 
-        List<WeightResponse> weightResponses = WeightMapper.toResponseList(weights);
-        List<HospitalRecordResponse> hospitalResponses = HospitalRecordMapper.toResponseList(
-                hospitals);
+        List<HospitalRecordResponse> hospitalResponses = hospitals.isEmpty()
+                ? new ArrayList<>() : HospitalRecordMapper.toResponseList(hospitals);
 
         return new ScheduleMonthlyResponse(weightResponses, hospitalResponses);
     }
