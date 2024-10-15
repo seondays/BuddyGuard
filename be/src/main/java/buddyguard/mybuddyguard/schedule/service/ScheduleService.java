@@ -12,8 +12,8 @@ import buddyguard.mybuddyguard.schedule.controller.response.ScheduleMonthlyRespo
 import buddyguard.mybuddyguard.schedule.repository.ScheduleRepository;
 import buddyguard.mybuddyguard.weight.contoller.response.WeightResponse;
 import buddyguard.mybuddyguard.weight.entity.Weight;
-import buddyguard.mybuddyguard.weight.exception.PetNotFoundException;
-import buddyguard.mybuddyguard.weight.exception.UserInformationNotFoundException;
+import buddyguard.mybuddyguard.exception.PetNotFoundException;
+import buddyguard.mybuddyguard.exception.UserInformationNotFoundException;
 import buddyguard.mybuddyguard.weight.mapper.WeightMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
