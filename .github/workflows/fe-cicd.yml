@@ -27,7 +27,7 @@ jobs:
         working-directory: ./fe
         run: |
           touch .env
-          echo "REACT_APP_ENV=${{ secrets.REACT_APP_ENV }}" >> .env
+          echo "REACT_APP_ENV=${{ secrets.REACT_APP_ENV }}" >> .env.production
 
       - name: Clear npm cache
         run: npm cache clean --force
