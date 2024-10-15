@@ -23,15 +23,15 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-     # 캐시 지우고 빌드 추가 
+      # 캐시 지우고 빌드 추가
       - name: Clear npm cache
         run: npm cache clean --force
 
-      - name: Create .env.production file
-        working-directory: ./fe
+      - name: Create .env.production file in nginx-vol/fe
         run: |
-          touch .env.production
-          echo "REACT_APP_ENV=${{ secrets.REACT_APP_ENV }}" >> .env.production
+          mkdir -p /home/ubuntu/nginx-vol/fe
+          touch /home/ubuntu/nginx-vol/fe/.env.production
+          echo "REACT_APP_ENV=${{ secrets.REACT_APP_ENV }}" >> /home/ubuntu/nginx-vol/fe/.env.production
 
       - name: Clean and install dependencies
         working-directory: ./fe
