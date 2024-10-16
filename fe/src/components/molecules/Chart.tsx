@@ -6,7 +6,7 @@ export default function Chart() {
 
 const StyledGraphContainer = styled.div`
   width: 100%;
-  height: 10rem;
+  height: 100%;
   /* background-color: ${({ theme }) => theme.currentTheme.backgroundPrimary}; */
   background-color: aliceblue;
 `;
