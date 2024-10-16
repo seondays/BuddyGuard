@@ -23,28 +23,21 @@ public class SwaggerConfig {
 
         // SecuritySecheme명
         String jwtSchemeName = "jwtAccess";
-        String jwtRefreshSchemeName = "jwtRefresh";
 
         // API 요청헤더에 인증정보 포함
         SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
-        SecurityRequirement securityRefreshRequirement = new SecurityRequirement().addList(jwtRefreshSchemeName);
+
         // SecuritySchemes 등록
         Components components = new Components()
                 .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
                         .name(jwtSchemeName)
                         .type(SecurityScheme.Type.APIKEY)
                         .in(In.HEADER)
-                        .name("access"))
-                .addSecuritySchemes(jwtRefreshSchemeName, new SecurityScheme()
-                        .name(jwtRefreshSchemeName)
-                        .type(Type.APIKEY)
-                        .in(In.HEADER)
-                        .name("refresh"));
+                        .name("Authorization"));
 
         return new OpenAPI()
                 .info(info)
                 .addSecurityItem(securityRequirement)
-                .addSecurityItem(securityRefreshRequirement)
                 .components(components);
     }
 }
