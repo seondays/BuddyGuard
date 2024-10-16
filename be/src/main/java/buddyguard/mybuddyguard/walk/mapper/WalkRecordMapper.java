@@ -31,6 +31,7 @@ public class WalkRecordMapper {
     public static WalkRecordResponse toResponse(WalkRecord walkRecord) {
         return WalkRecordResponse.builder()
                 .id(walkRecord.getId())  // 산책 기록 ID
+                .buddyIds((walkRecord.getBuddyIds()))
                 .startDate(walkRecord.getStartDate())  // 산책 시작 날짜
                 .endDate(walkRecord.getEndDate())      // 산책 종료 날짜
                 .startTime(walkRecord.getStartTime())  // 산책 시작 시간
