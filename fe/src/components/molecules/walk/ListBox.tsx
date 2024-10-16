@@ -23,7 +23,9 @@ export default function ListBox({ record }: ListBoxProps) {
 
       <StyledInfoWrapper>
         <StyledMainInfo>
-          <div className="title">{getCurrentDate({ isDay: true, isTime: false, dateString: record.endDate })} 산책</div>
+          <div className="title">
+            {getCurrentDate({ isDay: true, isTime: false, dateString: record.startDate })} 산책
+          </div>
           <div className="timeRange">
             {record.startTime} ~ {record.endTime}
           </div>
