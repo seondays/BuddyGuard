@@ -9,7 +9,7 @@ interface PeriodFilterProps {
   setClickedFilter: React.Dispatch<React.SetStateAction<clickedFilterType>>;
 }
 export default function PeriodFilter({ clickedFilter, setClickedFilter }: PeriodFilterProps) {
-  const commonStyles = { borderRadius: '3rem', height: '2.5rem' };
+  const commonStyles = { borderRadius: '3rem', height: '2.3rem' };
 
   const handleClick = (type: keyof clickedFilterType) => {
     setClickedFilter({
@@ -39,4 +39,8 @@ const FilterWrapper = styled.div`
   ${flexRowCenter}
   gap: 1rem;
   margin: 0.5rem 0;
+  padding: 0.3rem;
+  & * {
+    font-size: 0.8rem;
+  }
 `;
