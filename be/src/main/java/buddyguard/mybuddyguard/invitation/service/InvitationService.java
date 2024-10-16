@@ -95,7 +95,7 @@ public class InvitationService {
             throw new UserPetGroupNotFound();
         }
         if (userPetRepository.findByUserIdAndPetId(userId, petId).isPresent()) {
-            throw new InvalidPetRegisterException();
+            throw new AlreadyInGroupException();
         }
     }
 }
