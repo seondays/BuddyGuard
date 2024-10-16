@@ -5,15 +5,13 @@ import buddyguard.mybuddyguard.walk.util.JsonArrayConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +33,7 @@ public class WalkRecord {
     // 선택한 버디들의 ID 배열을 문자열로 저장
     @Column(name = "buddy_ids", nullable = false)
     @Convert(converter = JsonArrayConverter.class)
-    private List<Integer> buddyIds;
+    private List<String> buddyIds;
 
     // 산책 시작 날짜 (예: 2024년 10월 7일)
     @Column(name = "start_date", nullable = false)
@@ -47,11 +45,11 @@ public class WalkRecord {
 
     // 산책 시작 시간 (예: 23:40)
     @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+    private String startTime;
 
     // 산책 종료 시간 (예: 23:41)
     @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+    private String endTime;
 
     // 총 산책 시간 (예: 00:00:46)
     @Column(name = "total_time", nullable = false)
@@ -64,7 +62,7 @@ public class WalkRecord {
     // 산책 경로의 중심 위치 (위도, 경도), JSON 문자열로 저장
     @Column(name = "center_position", nullable = false)
     @Convert(converter = JsonArrayConverter.class)
-    private List<Double> centerPosition;
+    private List<String> centerPosition;
 
     // 지도 레벨
     @Column(name = "map_level", nullable = false)
@@ -73,10 +71,10 @@ public class WalkRecord {
     // 산책 경로 (위도, 경도 배열), JSON 문자열로 저장
     @Column(name = "path", nullable = false, columnDefinition = "TEXT")
     @Convert(converter = JsonArrayConverter.class)
-    private List<String> path;
+    private List<Map<String, Double>>  path;
 
     // 산책 경로 이미지를 파일 경로로 저장 (이미지 업로드는 별도의 로직에서 처리)
-//    @OneToOne(fetch = FetchType.LAZY)
+    // @OneToOne(fetch = FetchType.LAZY)
     @Column(name = "path_image", nullable = false)
     private String pathImage;
 
@@ -84,14 +82,14 @@ public class WalkRecord {
     @Column(name = "distance", nullable = false)
     private Double distance;
 
-    // 반려동물 ID 리스트에서 특정 반려동물이 산책에 참여했는지 확인
     public boolean hasBuddy(Long petId) {
-        return buddyIds.contains(petId.intValue());
+        return buddyIds.stream()
+                .anyMatch(buddyId -> Long.parseLong(buddyId) == petId);
     }
 
-    public void update(LocalDate startDate, LocalDate endDate, LocalTime startTime,
-            LocalTime endTime, String totalTime, List<Integer> buddyIds, String note,
-            List<Double> centerPosition, Integer mapLevel, List<String> path, String pathImage,
+    public void update(LocalDate startDate, LocalDate endDate, String startTime,
+            String endTime, String totalTime, List<String> buddyIds, String note,
+            List<String> centerPosition, Integer mapLevel, List<Map<String, Double>>  path, String pathImage,
             Double distance) {
 
         this.startDate = startDate;
