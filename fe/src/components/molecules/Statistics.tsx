@@ -16,7 +16,7 @@ export default function Statistics({ stats }: StatisticsProps) {
       </Item>
       <Item>
         <Label>평균 거리</Label>
-        <Value>{stats?.averageDistance || 0}</Value>
+        <Value>{stats?.averageDistance.toFixed(3) || 0}</Value>
         <SubValue>km</SubValue>
       </Item>
       <Item>
