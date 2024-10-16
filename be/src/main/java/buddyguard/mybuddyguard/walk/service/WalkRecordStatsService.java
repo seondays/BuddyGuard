@@ -8,7 +8,6 @@ import buddyguard.mybuddyguard.walk.mapper.WalkRecordMapper;
 import buddyguard.mybuddyguard.walk.repository.WalkRecordRepository;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.List;
@@ -32,9 +31,10 @@ public class WalkRecordStatsService {
             requestedDate = LocalDate.now();
         }
 
-        // 현재 주의 시작일 (일요일)로 계산
-        LocalDate startOfWeek = requestedDate.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
-        LocalDate endOfWeek = startOfWeek.plusDays(6);
+        // 현재 주의 첫 번째 날 (일요일)과 마지막 날 (토요일) 계산
+        WeekFields weekFields = WeekFields.of(Locale.KOREA); // 한국 기준으로 주 시작일 설정
+        LocalDate startOfWeek = requestedDate.with(weekFields.dayOfWeek(), 1); // 일요일 시작
+        LocalDate endOfWeek = startOfWeek.plusDays(6); // 토요일 종료
 
         log.info("petId 별 주간 기록 조회: {}, startOfWeek: {}, endOfWeek: {}", petId, startOfWeek, endOfWeek);
 
@@ -43,10 +43,16 @@ public class WalkRecordStatsService {
 
     // 특정 반려동물의 월간 산책 기록을 조회하고 통계와 상세기록 응답
     public WalkStatsWithRecordsResponse getMonthlyRecords(Long petId, LocalDate requestedDate) {
+        // 요청된 날짜 없으면 오늘 날짜 사용
+        if (requestedDate == null) {
+            requestedDate = LocalDate.now();
+        }
+
+        // 요청된 달의 첫번째 날과 마지막 날 계산
         LocalDate startOfMonth = requestedDate.withDayOfMonth(1);
         LocalDate endOfMonth = requestedDate.with(TemporalAdjusters.lastDayOfMonth());
 
-        log.info("petId 별 월간 기록 조회: {}, startOfMonth: {}, endOfMonth: {}", petId, startOfMonth, endOfMonth);
+        log.info("월간 기록 조회: petId: {}, startOfMonth: {}, endOfMonth: {}", petId, startOfMonth, endOfMonth);
 
         return getStatsWithRecordsForPeriod(petId, startOfMonth, endOfMonth);
     }
