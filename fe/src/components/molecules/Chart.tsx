@@ -40,15 +40,17 @@ export default function Chart({ records }: ChartProps) {
     setChartData(updatedData);
   }, [records]);
 
-  const chartColor = useTheme().themeValues.colorValues.special.modalBg;
+  const theme = useTheme();
+  const chartColor = theme.themeValues.colorValues.special.modalBg;
+  const axisFontColor = theme.currentTheme.textPrimary;
 
   return (
     <StyledGraphContainer>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="2 5" />
-          <XAxis dataKey="name" />
-          <YAxis tickFormatter={(value) => `${value}km`} />
+          <XAxis dataKey="name" tick={{ fill: axisFontColor }} />
+          <YAxis tickFormatter={(value) => `${value}km`} tick={{ fill: axisFontColor }} />
           <Tooltip formatter={(value) => `${value}km`} />
           <Bar dataKey="distance" fill={chartColor} />
         </BarChart>
