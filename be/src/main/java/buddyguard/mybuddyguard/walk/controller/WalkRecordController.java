@@ -4,6 +4,7 @@ import buddyguard.mybuddyguard.walk.controller.request.WalkRecordCreateRequest;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordUpdateRequest;
 import buddyguard.mybuddyguard.walk.controller.response.WalkRecordResponse;
 import buddyguard.mybuddyguard.walk.service.WalkRecordService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class WalkRecordController {
     private final WalkRecordService walkRecordService;
 
     // 전체 산책 기록 조회
+    @Operation(summary = "전체 산책 기록 조회", description = "petid 별 전체 산책 기록 조회")
     @GetMapping("/{petId}")
     public ResponseEntity<List<WalkRecordResponse>> getAllWalkRecords(
             @PathVariable("petId") Long petId) {
@@ -28,6 +30,7 @@ public class WalkRecordController {
     }
 
     // 특정 산책 기록 조회
+    @Operation(summary = "특정 산책 조회", description = "특정 산책 id를 이용해 특정날 산책 상세 조회")
     @GetMapping("{petId}/detail/{id}")
     public ResponseEntity<WalkRecordResponse> getWalkRecord(
             @PathVariable("petId") Long petId,
@@ -37,6 +40,7 @@ public class WalkRecordController {
     }
 
     // 산책 기록 생성
+    @Operation(summary = "산책 기록 생성", description = "pet id별 산책 기록 생성")
     @PostMapping
     public ResponseEntity<Void> createWalkRecord(
             @Valid @RequestBody WalkRecordCreateRequest request) {
@@ -45,6 +49,7 @@ public class WalkRecordController {
     }
 
     // 산책 기록 업데이트
+    @Operation(summary = "산책 기록 업데이트", description = "petid와 산책 기록id를 이용하여 특정 산책 기록 업데이트")
     @PutMapping("{petId}/detail/{id}")
     public ResponseEntity<Void> updateWalkRecord(
             @PathVariable("petId") Long petId,
@@ -56,6 +61,7 @@ public class WalkRecordController {
     }
 
     // 산책 기록 삭제
+    @Operation(summary = "산책 기록 삭제", description = "petid와 산책 기록id를 이용하여 특정 산책 기록 삭제")
     @DeleteMapping("{petId}/detail/{id}")
     public ResponseEntity<Void> deleteWalkRecord(
             @PathVariable("petId") Long petId,
