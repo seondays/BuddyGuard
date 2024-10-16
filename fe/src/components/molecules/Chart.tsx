@@ -17,7 +17,7 @@ interface ChartType {
 const getCurrentWeekRange = (): ChartType[] => {
   const startOfWeek = dayjs().startOf('week'); // 일요일 시작
   return Array.from({ length: 7 }).map((_, index) => ({
-    name: startOfWeek.add(index, 'day').format('YYYY-MM-DD'),
+    name: startOfWeek.add(index, 'day').format('YY-MM-DD'),
     distance: 0,
   }));
 };
@@ -30,7 +30,7 @@ export default function Chart({ records }: ChartProps) {
 
     // 주간 데이터와 매칭되는 데이터를 병합
     const updatedData = getCurrentWeekRange().map(({ name }) => {
-      const recordForDay = records.find((record) => dayjs(record.startDate).format('YYYY-MM-DD') === name);
+      const recordForDay = records.find((record) => dayjs(record.startDate).format('YY-MM-DD') === name);
       return {
         name: name,
         distance: recordForDay ? recordForDay.distance : 0,
@@ -49,7 +49,7 @@ export default function Chart({ records }: ChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="2 5" />
-          <XAxis dataKey="name" tick={{ fill: axisFontColor }} />
+          <XAxis dataKey="name" tick={{ fill: axisFontColor, fontSize: 10 }} angle={-30} dy={10} />
           <YAxis tickFormatter={(value) => `${value}km`} tick={{ fill: axisFontColor }} />
           <Tooltip formatter={(value) => `${value}km`} />
           <Bar dataKey="distance" fill={chartColor} />
