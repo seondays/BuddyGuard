@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
 import styled, { useTheme } from 'styled-components';
 
+import { useFilterStore } from '@/stores/useFilterStore';
 import { record } from '@/types/walk';
 
 interface ChartProps {
@@ -14,6 +15,16 @@ interface ChartType {
   distance: number;
 }
 
+const getCurrentMonthRange = (): ChartType[] => {
+  const startOfMonth = dayjs().startOf('month'); // 월의 시작
+  const endOfMonth = dayjs().endOf('month'); // 월의 끝
+  const daysInMonth = endOfMonth.date(); // 월에 있는 총 일 수
+  return Array.from({ length: daysInMonth }).map((_, index) => ({
+    name: startOfMonth.add(index, 'day').format('YY-MM-DD'),
+    distance: 0,
+  }));
+};
+
 const getCurrentWeekRange = (): ChartType[] => {
   const startOfWeek = dayjs().startOf('week'); // 일요일 시작
   return Array.from({ length: 7 }).map((_, index) => ({
@@ -23,13 +34,16 @@ const getCurrentWeekRange = (): ChartType[] => {
 };
 
 export default function Chart({ records }: ChartProps) {
-  const [chartData, setChartData] = useState<ChartType[]>(getCurrentWeekRange);
+  const { type } = useFilterStore();
+
+  const [chartData, setChartData] = useState<ChartType[]>(
+    type === 'monthly' ? getCurrentMonthRange() : getCurrentWeekRange()
+  );
 
   useEffect(() => {
-    if (!(records && records.length !== 0)) return;
+    const dataRange = type === 'monthly' ? getCurrentMonthRange() : getCurrentWeekRange();
 
-    // 주간 데이터와 매칭되는 데이터를 병합
-    const updatedData = getCurrentWeekRange().map(({ name }) => {
+    const updatedData = dataRange.map(({ name }) => {
       const recordForDay = records.find((record) => dayjs(record.startDate).format('YY-MM-DD') === name);
       return {
         name: name,
@@ -38,7 +52,7 @@ export default function Chart({ records }: ChartProps) {
     });
 
     setChartData(updatedData);
-  }, [records]);
+  }, [records, type]);
 
   const theme = useTheme();
   const chartColor = theme.themeValues.colorValues.special.modalBg;
@@ -47,7 +61,7 @@ export default function Chart({ records }: ChartProps) {
   return (
     <StyledGraphContainer>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData}>
+        <BarChart data={chartData} margin={{ top: 10, right: 15, left: 0, bottom: 10 }}>
           <CartesianGrid strokeDasharray="2 5" />
           <XAxis dataKey="name" tick={{ fill: axisFontColor, fontSize: 10 }} angle={-30} dy={10} />
           <YAxis tickFormatter={(value) => `${value}km`} tick={{ fill: axisFontColor }} />
