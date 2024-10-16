@@ -1,3 +1,5 @@
+export type FilterType = 'weekly' | 'monthly' | 'all';
+
 export type path = { lat: number; lng: number };
 
 export type record = {
@@ -33,10 +35,4 @@ export interface WalkMockData {
   averageDistance: number;
   averageTime: string;
   data: WalkData[];
-}
-
-export interface clickedFilterType {
-  weekly: boolean;
-  monthly: boolean;
-  all: boolean;
 }
