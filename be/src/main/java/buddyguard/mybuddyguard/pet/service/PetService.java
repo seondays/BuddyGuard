@@ -100,6 +100,7 @@ public class PetService {
         userPetRepository.delete(userPetInfo);
 
         if (role.equals(UserPetRole.HOST)) {
+            repository.deleteById(petId);
             List<UserPet> guests = userPetRepository.getAllByPetId(petId);
             if (!guests.isEmpty()) {
                 userPetRepository.deleteAll(guests);
