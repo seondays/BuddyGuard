@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Image from '../atoms/Image';
-import Span from '../atoms/Span';
+import Image from '@/components/atoms/Image';
+import Span from '@/components/atoms/Span';
 
 export default function BuddyInfoBar() {
   const location = useLocation();
@@ -15,7 +15,13 @@ export default function BuddyInfoBar() {
       <div id="top-info" style={{ display: 'flex', alignItems: 'center' }}>
         <Image
           src="/assets/icons/defaultBuddy.png"
-          style={{ width: '2.2rem', borderRadius: '50%', marginRight: '1rem', border: '0.2rem solid white' }}
+          style={{
+            width: '2.2rem',
+            height: '2.2rem',
+            borderRadius: '50%',
+            marginRight: '1rem',
+            border: '0.2rem solid white',
+          }}
         />
         <Span>버디 이름</Span>
       </div>
