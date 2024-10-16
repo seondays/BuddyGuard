@@ -2,6 +2,7 @@ package buddyguard.mybuddyguard.walk.controller;
 
 import buddyguard.mybuddyguard.walk.controller.response.WalkStatsWithRecordsResponse;
 import buddyguard.mybuddyguard.walk.service.WalkRecordStatsService;
+import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class WalkRecordStatsController {
 
     private final WalkRecordStatsService walkRecordStatsService;
 
+    @Operation(summary = "주간 산책 기록 조회", description = "특정 pet의 주간 산책 기록 조회")
     @GetMapping("/{petId}/weekly")
     public ResponseEntity<WalkStatsWithRecordsResponse> getWeeklyRecords(
             @PathVariable("petId") Long petId,
@@ -28,6 +30,7 @@ public class WalkRecordStatsController {
         return ResponseEntity.ok(records);
     }
 
+    @Operation(summary = "월간 산책 기록 조회", description = "특정 pet의 월간 산책 기록 조회")
     @GetMapping("/{petId}/monthly/{month}")
     public ResponseEntity<WalkStatsWithRecordsResponse> getMonthlyRecords(
             @PathVariable("petId") Long petId,
