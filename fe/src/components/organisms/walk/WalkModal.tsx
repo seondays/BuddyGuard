@@ -9,6 +9,7 @@ import WalkFormItem from '@/components/molecules/walk/WalkFormItem';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
 import { BuddysType, PositionType, SelectedBuddysType, TimeRef } from '@/types/map';
+import { path } from '@/types/walk';
 
 import { NAV_HEIGHT } from '../Nav';
 export interface WalkModalProps {
@@ -34,7 +35,7 @@ export interface FormDataType {
   note: string;
   centerPosition: number[];
   mapLevel: number;
-  path: { lat: number; lng: number }[];
+  path: path[];
   pathImage: string; // 이미지 URL 또는 base64
   distance: number;
 }
