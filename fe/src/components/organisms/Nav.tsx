@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import Span from '@/components/atoms/Span';
@@ -20,45 +20,55 @@ const navItems = [
 
 export default function Nav() {
   const theme = useTheme();
-  const { backgroundPrimary: navBgColor, textPrimary: navTextColor } = theme.currentTheme;
+  const {
+    backgroundPrimary: navBgColor,
+    textPrimary: navTextColor,
+    textAccentSecondary: activeColor,
+  } = theme.currentTheme;
+  const location = useLocation();
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        width: '100%',
-        height: NAV_HEIGHT,
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        backgroundColor: navBgColor,
-        color: navTextColor,
-      }}
-    >
-      {navItems.map(({ to, Icon, label }) => (
-        <Link
-          key={to}
-          to={to}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '0.5rem',
-            flexBasis: '20%',
-          }}
-        >
-          <StyledIcon as={Icon} />
-          <Span $color={navTextColor}>{label}</Span>
-        </Link>
-      ))}
-    </div>
+    <StyledNavContainer style={{ backgroundColor: navBgColor, color: navTextColor }}>
+      {navItems.map(({ to, Icon, label }) => {
+        const isActive = location.pathname === to;
+        return (
+          <StyledNavLink key={to} to={to}>
+            <StyledIcon as={Icon} $isActive={isActive} $activeColor={activeColor} />
+            <StyledNavText $color={isActive ? activeColor : navTextColor}>{label}</StyledNavText>
+          </StyledNavLink>
+        );
+      })}
+    </StyledNavContainer>
   );
 }
 
-const StyledIcon = styled.svg`
+const StyledNavText = styled(Span)<{ $color: string }>`
+  font-size: 0.9rem;
+  color: ${({ $color }) => $color};
+`;
+
+const StyledNavLink = styled(Link)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex-basis: 20%;
+  text-decoration: none;
+`;
+
+const StyledNavContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: ${NAV_HEIGHT};
+  justify-content: space-around;
+  align-items: center;
+`;
+
+const StyledIcon = styled.svg<{ $isActive: boolean; $activeColor: string }>`
   width: 1.7rem;
   height: 1.7rem;
 
   & path {
-    fill: ${({ theme }) => theme.currentTheme.textPrimary};
+    fill: ${({ theme, $isActive, $activeColor }) => ($isActive ? $activeColor : theme.currentTheme.textPrimary)};
   }
 `;
