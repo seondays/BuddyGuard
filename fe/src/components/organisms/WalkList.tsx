@@ -2,20 +2,21 @@ import styled from 'styled-components';
 
 import ListBox from '@/components/molecules/walk/ListBox';
 import { flexColumn } from '@/styles/layoutStyles';
+import { record } from '@/types/walk';
 
-export default function WalkList() {
+interface WalkListProps {
+  records: record[];
+}
+
+export default function WalkList({ records }: WalkListProps) {
   return (
     <StyledWalkListContainer>
       <StyledTitle>산책 리스트</StyledTitle>
 
       <StyledListWrapper>
-        <ListBox />
-        <ListBox />
-        <ListBox />
-        <ListBox />
-        <ListBox />
-        <ListBox />
-        <ListBox />
+        {records.map((record, idx) => (
+          <ListBox record={record} key={`record-${idx}`} />
+        ))}
       </StyledListWrapper>
     </StyledWalkListContainer>
   );

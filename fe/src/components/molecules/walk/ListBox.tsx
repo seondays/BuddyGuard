@@ -2,16 +2,15 @@ import styled from 'styled-components';
 
 import Image from '@/components/atoms/Image';
 import { flexColumn, flexRowCenter } from '@/styles/layoutStyles';
+import { record } from '@/types/walk';
+import { getCurrentDate } from '@/utils/timeUtils';
 import testProfile01 from '@public/images/profile01.png';
-import testProfile02 from '@public/images/profile02.png';
-import testProfile03 from '@public/images/profile03.png';
-import testWalkPath from '@public/images/testWalkPath.png';
 
-export interface ListBoxProps {}
+export interface ListBoxProps {
+  record: record;
+}
 
-const testProfileImage = [testProfile01, testProfile02, testProfile03];
-
-export default function ListBox() {
+export default function ListBox({ record }: ListBoxProps) {
   const pathImageStyle = { width: `3rem`, borderRadius: `0.5rem`, marginRight: `1rem` };
   const buddyImageStyle = {
     width: ` 1.5rem`,
@@ -20,28 +19,31 @@ export default function ListBox() {
   };
   return (
     <StyledListBoxWrapper>
-      <Image src={testWalkPath} style={pathImageStyle} />
+      <Image src={record.pathImage} style={pathImageStyle} $isHover={false} />
 
       <StyledInfoWrapper>
         <StyledMainInfo>
-          <div className="title">2024년 8월 30일 금요일 산책</div>
-          <div className="timeRange">16:00 ~ 16:30</div>
+          <div className="title">{getCurrentDate({ isDay: true, isTime: false, dateString: record.endDate })} 산책</div>
+          <div className="timeRange">
+            {record.startTime} ~ {record.endTime}
+          </div>
         </StyledMainInfo>
 
         <StyledSubInfo>
           <Item>
-            <Value>2.8</Value>
+            <Value>{record.distance}</Value>
             <SubValue>km</SubValue>
           </Item>
           <Item>
-            <Value>00:30:00</Value>
+            <Value>{record.totalTime}</Value>
           </Item>
 
           <ImageItem>
-            {testProfileImage.map((image, idx) => (
+            {record.buddyIds.map((buddyId, idx) => (
               <Image
                 key={`listbox${idx}`}
-                src={image}
+                // TODO: 프로필 연동
+                src={testProfile01}
                 $position="absolute"
                 style={{ ...buddyImageStyle, left: `${idx}rem` }}
               ></Image>
