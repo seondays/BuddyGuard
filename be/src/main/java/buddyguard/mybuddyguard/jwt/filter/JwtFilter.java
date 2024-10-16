@@ -1,9 +1,9 @@
 package buddyguard.mybuddyguard.jwt.filter;
 
 import buddyguard.mybuddyguard.exception.FilterException;
-import buddyguard.mybuddyguard.jwt.utils.TokenPreprocessor;
 import buddyguard.mybuddyguard.jwt.utils.TokenType;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
+import buddyguard.mybuddyguard.jwt.utils.TokenUtility;
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
 import buddyguard.mybuddyguard.login.dto.UserDto;
 import buddyguard.mybuddyguard.login.exception.NotAccessTokenException;
@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         // 헤더에서 토큰 추출
-        String accessToken = TokenPreprocessor.deletePrefixToken(request.getHeader("Authorization"));
+        String accessToken = TokenUtility.deletePrefixToken(request.getHeader("Authorization"));
 
         if (accessToken == null) {
             filterChain.doFilter(request, response);

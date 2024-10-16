@@ -24,39 +24,17 @@ public class HospitalRecordService {
 
     public List<HospitalRecordResponse> getAllHospitalRecords(Long petId) {
         List<HospitalRecord> records = hospitalRecordRepository.findByPetId(petId);
-        return records.stream()
-                .map(record -> {
-                    HospitalRecordResponse response = HospitalRecordMapper.toResponse(record);
-                    // 카테고리 값 추가
-                    return new HospitalRecordResponse(
-                            response.id(),
-                            response.petId(),
-                            response.date(),
-                            "건강",
-                            "병원", //카테고리 설정
-                            response.title(),
-                            response.description()
-                    );
-                })
-                .collect(Collectors.toList());
+
+        if (records.isEmpty()) {
+            throw new RecordNotFoundException();
+        }
+
+        return HospitalRecordMapper.toResponseList(records);
     }
 
     public HospitalRecordResponse getHospitalRecord(Long id, Long petId) {
-        return hospitalRecordRepository.findByIdAndPetId(id, petId)
-                .map(record -> {
-                    HospitalRecordResponse response = HospitalRecordMapper.toResponse(record);
-                    // 카테고리 값 추가
-                    return new HospitalRecordResponse(
-                            response.id(),
-                            response.petId(),
-                            response.date(),
-                            "건강",
-                            "병원", // 카테고리 설정
-                            response.title(),
-                            response.description()
-                    );
-                })
-                .orElseThrow(RecordNotFoundException::new);
+        HospitalRecord record = hospitalRecordRepository.findByIdAndPetId(id, petId).orElseThrow(RecordNotFoundException::new);
+        return HospitalRecordMapper.toResponse(record);
     }
 
     @Transactional

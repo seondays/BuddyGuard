@@ -11,7 +11,7 @@ import buddyguard.mybuddyguard.invitation.exception.UserPetGroupNotFound;
 import buddyguard.mybuddyguard.invitation.repository.InvitationRepository;
 import buddyguard.mybuddyguard.invitation.utils.InvitationLinkGenerator;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
-import buddyguard.mybuddyguard.jwt.utils.TokenPreprocessor;
+import buddyguard.mybuddyguard.jwt.utils.TokenUtility;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.exception.TokenNotFoundException;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
@@ -58,7 +58,7 @@ public class InvitationService {
     }
 
     public void register(String uuid, String token) {
-        String accessToken = TokenPreprocessor.deletePrefixToken(token);
+        String accessToken = TokenUtility.deletePrefixToken(token);
 
         if (accessToken == null) {
             throw new TokenNotFoundException(HttpStatus.UNAUTHORIZED, "unauthorized token");
