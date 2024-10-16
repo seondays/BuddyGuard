@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.pet.service;
 
+import buddyguard.mybuddyguard.exception.UserPetGroupException;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.contoller.request.PetRegisterRequest;
@@ -40,10 +41,11 @@ public class PetService {
      * 펫을 등록한다.
      *
      * @param petRegisterRequest
+     * @param userId
      */
     @Transactional
-    public void register(PetRegisterRequest petRegisterRequest) {
-        Users user = userRepository.findById(petRegisterRequest.userId()).orElseThrow(
+    public void register(PetRegisterRequest petRegisterRequest, Long userId) {
+        Users user = userRepository.findById(userId).orElseThrow(
                 UserInformationNotFoundException::new);
         if (!validateUser(user)) {
             throw new InvalidPetRegisterException();
@@ -52,14 +54,14 @@ public class PetService {
         Pet toPet = PetMapper.toEntity(petRegisterRequest);
         Pet pet = repository.save(toPet);
 
-        // todo : 유저가 게스트인지 호스트인지에 따라 값이 달라져야 함
         UserPet userPet = UserPet.builder()
                 .user(user)
                 .pet(pet)
-                .role(UserPetRole.GUEST).build();
+                .role(UserPetRole.HOST).build();
+
         userPetRepository.save(userPet);
 
-        log.info("REGISTER PET : {}번 {} 등록", pet.getId(), pet.getName());
+        log.info("REGISTER PET : {}번 {} 펫 등록", pet.getId(), pet.getName());
         log.info("REGISTER USER_PET : 유저 {}에게 {}번 펫 등록", user.getId(), pet.getId());
     }
 
@@ -79,7 +81,7 @@ public class PetService {
 
     public PetWithUserListResponse getOnePetWithUser(Long userId, Long petId) {
         UserPet userPetInfo = userPetRepository.findByUserIdAndPetId(userId, petId)
-                .orElseThrow(UserInformationNotFoundException::new);
+                .orElseThrow(UserPetGroupException::new);
 
         return UserPetMapper.toResponse(userPetInfo.getUser(), userPetInfo.getPet());
     }
@@ -93,12 +95,13 @@ public class PetService {
     @Transactional
     public void delete(Long userId, Long petId) {
         UserPet userPetInfo = userPetRepository.findByUserIdAndPetId(userId, petId)
-                .orElseThrow(UserInformationNotFoundException::new);
+                .orElseThrow(UserPetGroupException::new);
         UserPetRole role = userPetInfo.getRole();
 
         userPetRepository.delete(userPetInfo);
 
         if (role.equals(UserPetRole.HOST)) {
+            repository.deleteById(petId);
             List<UserPet> guests = userPetRepository.getAllByPetId(petId);
             if (!guests.isEmpty()) {
                 userPetRepository.deleteAll(guests);
@@ -110,7 +113,7 @@ public class PetService {
     public void update(Long userId, Long petId,
             PetUpdateInformationRequest petUpdateInformationRequest) {
         if (!userPetRepository.existsByUserIdAndPetId(userId, petId)) {
-            throw new UserInformationNotFoundException();
+            throw new UserPetGroupException();
         }
         Pet pet = repository.findById(petId).orElseThrow(PetNotFoundException::new);
 
@@ -130,9 +133,6 @@ public class PetService {
      * @return
      */
     private boolean validateUser(Users user) {
-        if (userPetRepository.existsByUserExceedPetCount(user.getId())) {
-            return false;
-        }
-        return true;
+        return !userPetRepository.existsByUserExceedPetCount(user.getId());
     }
 }
