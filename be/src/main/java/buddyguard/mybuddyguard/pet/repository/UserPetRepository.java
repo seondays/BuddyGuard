@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserPetRepository extends JpaRepository<UserPet, Long> {
-    @Query("SELECT count(*) >= 3 FROM UserPet u where u.id = :userId")
+    @Query("SELECT CASE WHEN COUNT(u) >= 3 THEN TRUE ELSE FALSE END FROM UserPet u WHERE u.user.id = :userId")
     boolean existsByUserExceedPetCount(@Param("userId") Long userId);
 
     List<UserPet> findByUserId(Long userId);
