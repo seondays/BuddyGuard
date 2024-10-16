@@ -52,11 +52,6 @@ public class InvitationServiceTest {
 
     @Mock
     private UserPetRepository userPetRepository;
-
-    @Mock
-    private TokenService tokenService;
-
-    private final String token = "eyJhbGciOiJIUzI1NiJ9";
     private final String uuid = "69988103-4bea-4def-8391-ecc8ac9804da";
     private Users user;
     private Pet pet;
@@ -66,21 +61,19 @@ public class InvitationServiceTest {
         // 직접 객체를 주입하여 service 생성
         MockitoAnnotations.openMocks(this);
         invitationService = new InvitationService(userRepository, petRepository, userPetRepository,
-                invitationRepository, tokenService);
+                invitationRepository);
 
         user = new Users();
         user.setId(1L);
         user.setName("tester");
 
         pet = Pet.builder().id(1L).build();
-
     }
 
     @AfterEach
     void finish() {
         invitationRepository.deleteById(uuid);
     }
-
 
     @Test
     void 정상적으로_링크_생성() {
@@ -176,7 +169,6 @@ public class InvitationServiceTest {
 
         invitationRepository.save(invitation);
 
-        when(tokenService.getUserId(token)).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(petRepository.findById(pet.getId())).thenReturn(Optional.of(pet));
         when(userPetRepository.save(any(UserPet.class))).thenReturn(userPet);
@@ -187,7 +179,7 @@ public class InvitationServiceTest {
                 Optional.empty());
 
         // WHEN
-        invitationService.register(uuid, token);
+        invitationService.register(uuid, user.getId());
 
         // THEN
         verify(userPetRepository).save(any(UserPet.class));
@@ -199,7 +191,7 @@ public class InvitationServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
         // WHEN, THEN
-        assertThatThrownBy(() -> invitationService.register(uuid, token)).isInstanceOf(
+        assertThatThrownBy(() -> invitationService.register(uuid, user.getId())).isInstanceOf(
                 UserInformationNotFoundException.class);
     }
 
@@ -209,18 +201,17 @@ public class InvitationServiceTest {
         when(petRepository.findById(pet.getId())).thenReturn(Optional.empty());
 
         // WHEN, THEN
-        assertThatThrownBy(() -> invitationService.register(uuid, token)).isInstanceOf(
+        assertThatThrownBy(() -> invitationService.register(uuid, user.getId())).isInstanceOf(
                 UserInformationNotFoundException.class);
     }
 
     @Test
     void 링크가_만료된_경우_초대_링크로_그룹_가입_시_예외_발생() {
         // GIVEN
-        when(tokenService.getUserId(token)).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         // WHEN, THEN
-        assertThatThrownBy(() -> invitationService.register(uuid, token)).isInstanceOf(
+        assertThatThrownBy(() -> invitationService.register(uuid, user.getId())).isInstanceOf(
                 InvitationLinkExpiredException.class);
     }
 
@@ -232,13 +223,12 @@ public class InvitationServiceTest {
 
         invitationRepository.save(invitation);
 
-        when(tokenService.getUserId(token)).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(petRepository.findById(pet.getId())).thenReturn(Optional.of(pet));
         when(userPetRepository.existsByUserExceedPetCount(user.getId())).thenReturn(true);
 
         // WHEN, THEN
-        assertThatThrownBy(() -> invitationService.register(uuid, token)).isInstanceOf(
+        assertThatThrownBy(() -> invitationService.register(uuid, user.getId())).isInstanceOf(
                 InvalidPetRegisterException.class);
     }
 
@@ -250,7 +240,6 @@ public class InvitationServiceTest {
 
         invitationRepository.save(invitation);
 
-        when(tokenService.getUserId(token)).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(petRepository.findById(pet.getId())).thenReturn(Optional.of(pet));
         when(userPetRepository.existsByUserExceedPetCount(user.getId())).thenReturn(false);
@@ -260,7 +249,7 @@ public class InvitationServiceTest {
                 false);
 
         // WHEN, THEN
-        assertThatThrownBy(() -> invitationService.register(uuid, token)).isInstanceOf(
+        assertThatThrownBy(() -> invitationService.register(uuid, user.getId())).isInstanceOf(
                 UserPetGroupNotFound.class);
     }
 
@@ -277,7 +266,6 @@ public class InvitationServiceTest {
 
         invitationRepository.save(invitation);
 
-        when(tokenService.getUserId(token)).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(petRepository.findById(pet.getId())).thenReturn(Optional.of(pet));
         when(userPetRepository.existsByUserExceedPetCount(user.getId())).thenReturn(false);
@@ -287,7 +275,7 @@ public class InvitationServiceTest {
                 Optional.of(userPet));
 
         // WHEN, THEN
-        assertThatThrownBy(() -> invitationService.register(uuid, token)).isInstanceOf(
+        assertThatThrownBy(() -> invitationService.register(uuid, user.getId())).isInstanceOf(
                 InvalidPetRegisterException.class);
     }
 }

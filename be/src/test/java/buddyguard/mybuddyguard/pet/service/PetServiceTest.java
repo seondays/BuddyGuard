@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import buddyguard.mybuddyguard.exception.PetNotFoundException;
 import buddyguard.mybuddyguard.exception.UserInformationNotFoundException;
+import buddyguard.mybuddyguard.exception.UserPetGroupException;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.contoller.request.PetRegisterRequest;
@@ -63,7 +64,7 @@ public class PetServiceTest {
     @Test
     void 정상적으로_펫_등록() {
         // GIVEN
-        PetRegisterRequest petRegisterRequest = new PetRegisterRequest(user.getId(), "toto",
+        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto",
                 "www.naver.com", PetType.DOG, LocalDate.now());
 
         Pet insertPet = Pet.builder().id(1L).birth(petRegisterRequest.birth())
@@ -78,7 +79,7 @@ public class PetServiceTest {
         when(userPetRepository.save(any(UserPet.class))).thenReturn(userPet);
 
         // WHEN
-        petService.register(petRegisterRequest);
+        petService.register(petRegisterRequest, user.getId());
 
         // THEN
         verify(petRepository).save(any(Pet.class));
@@ -88,7 +89,7 @@ public class PetServiceTest {
     @Test
     void 펫_3마리_이상_유저_펫_등록시_예외_발생() {
         // GIVEN
-        PetRegisterRequest petRegisterRequest = new PetRegisterRequest(user.getId(), "toto",
+        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto",
                 "www.naver.com", PetType.DOG, LocalDate.now());
 
         Pet insertPet = Pet.builder().id(1L).birth(petRegisterRequest.birth())
@@ -99,7 +100,7 @@ public class PetServiceTest {
         when(userPetRepository.existsByUserExceedPetCount(user.getId())).thenReturn(true);
 
         // WHEN, THEN
-        assertThatThrownBy(() -> petService.register(petRegisterRequest)).isInstanceOf(
+        assertThatThrownBy(() -> petService.register(petRegisterRequest, user.getId())).isInstanceOf(
                 InvalidPetRegisterException.class);
 
     }
@@ -107,7 +108,7 @@ public class PetServiceTest {
     @Test
     void 유저가_존재하지_않는_경우_펫_등록시_예외_발생() {
         // GIVEN
-        PetRegisterRequest petRegisterRequest = new PetRegisterRequest(user.getId(), "toto",
+        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto",
                 "www.naver.com", PetType.DOG, LocalDate.now());
 
         Pet insertPet = Pet.builder().id(1L).birth(petRegisterRequest.birth())
@@ -117,7 +118,7 @@ public class PetServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
         // WHEN, THEN
-        assertThatThrownBy(() -> petService.register(petRegisterRequest)).isInstanceOf(
+        assertThatThrownBy(() -> petService.register(petRegisterRequest, user.getId())).isInstanceOf(
                 UserInformationNotFoundException.class);
 
     }
@@ -193,7 +194,7 @@ public class PetServiceTest {
 
         // WHEN, THEN
         assertThatThrownBy(() -> petService.getOnePetWithUser(user.getId(), 3L))
-                .isInstanceOf(UserInformationNotFoundException.class);
+                .isInstanceOf(UserPetGroupException.class);
     }
 
     @Test
@@ -257,7 +258,7 @@ public class PetServiceTest {
 
         // WHEN, THEN
         assertThatThrownBy(() -> petService.delete(user.getId(), pet.getId())).isInstanceOf(
-                UserInformationNotFoundException.class);
+                UserPetGroupException.class);
 
     }
 
@@ -293,11 +294,11 @@ public class PetServiceTest {
                 "new name", "www.example.com", LocalDate.now());
 
         when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenThrow(
-                UserInformationNotFoundException.class);
+                UserPetGroupException.class);
 
         // WHEN, THEN
         assertThatThrownBy(() -> petService.update(user.getId(), pet.getId(),
-                updateInformationRequest)).isInstanceOf(UserInformationNotFoundException.class);
+                updateInformationRequest)).isInstanceOf(UserPetGroupException.class);
 
     }
 
