@@ -3,10 +3,11 @@ package buddyguard.mybuddyguard.walk.controller.request;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public record WalkRecordCreateRequest(
         @NotNull
-        String buddyIds,      // 선택한 반려동물들의 ID 배열 (문자열)
+        List<Integer> buddyIds,      // 선택한 반려동물들의 ID 배열 (문자열)
         @NotNull
         LocalDate startDate,  // 산책 시작 날짜
         @NotNull
@@ -20,11 +21,11 @@ public record WalkRecordCreateRequest(
         @NotNull
         String note,          // 산책에 대한 메모
         @NotNull
-        String centerPosition, // 중심 위치 (위도, 경도)
+        List<Double> centerPosition, // 중심 위치 (위도, 경도)
         @NotNull
         Integer mapLevel,     // 지도 레벨
         @NotNull
-        String path,          // 산책 경로 (위도, 경도 배열)
+        List<String> path,          // 산책 경로 (위도, 경도 배열)
         @NotNull
         Double distance       // 총 거리 (km 단위)
 ) {}
