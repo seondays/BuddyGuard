@@ -39,7 +39,7 @@ export default function Walk() {
           <Statistics stats={data?.stats} />
         </StyledSection>
 
-        <StyledSection $height={55} $responsiveHeight={50}>
+        <StyledSection $height={55} $responsiveHeight={55}>
           <Chart records={data?.records} />
         </StyledSection>
       </StyledStaticWrapper>
