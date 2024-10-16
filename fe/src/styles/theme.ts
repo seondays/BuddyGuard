@@ -62,6 +62,7 @@ const lightTheme = {
   grayDark: colorValues.grayscale[600], // 어두운 회색 (보조 텍스트에 사용) #6E7191
   black: colorValues.grayscale[900], // 검정 #14142B
   white: colorValues.grayscale[50], // 흰색 #FEFEFE
+  shadow: 'rgba(0, 0, 0, 0.3)',
 };
 
 const darkTheme = {
@@ -85,6 +86,7 @@ const darkTheme = {
   grayDark: colorValues.grayscale[900], // 거의 검정 #14142B
   black: colorValues.grayscale[900], // 검정 (기본 검정) #14142B
   white: colorValues.grayscale[50], // 흰색 #FEFEFE
+  shadow: 'rgba(255, 255, 255, 0.3)',
 };
 
 const radius = {
