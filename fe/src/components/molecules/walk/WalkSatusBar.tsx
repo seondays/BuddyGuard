@@ -19,8 +19,8 @@ export default function WalkSatusBar({ walkStatus, setWalkStatus, timeRef }: Wal
   const pauseHandler = () => setWalkStatus('pause');
   const stopHandler = () => {
     setWalkStatus('stop');
-    timeRef.current.end.time = getCurrentDate(false, true);
-    timeRef.current.end.day = getCurrentDate(true, false);
+    timeRef.current.end.time = getCurrentDate({ isDay: false, isTime: true });
+    timeRef.current.end.day = getCurrentDate({ isDay: true, isTime: false });
   };
   const playHandler = () => setWalkStatus('start');
 
