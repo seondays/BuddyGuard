@@ -120,6 +120,6 @@ public class TokenService {
         Long userId = getUserId(refresh);
         String userRole = getRole(refresh);
 
-        return createJwt(userId, userRole, TokenType.ACCESS, 10 * 60L);
+        return createJwt(userId, userRole, TokenType.ACCESS, 1000000000 * 60L);
     }
 }
