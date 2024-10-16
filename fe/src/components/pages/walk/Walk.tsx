@@ -12,11 +12,15 @@ import { clickedFilterType } from '@/types/walk';
 
 export default function Walk() {
   const [clickedFilter, setClickedFilter] = useState<clickedFilterType>({ weekly: true, monthly: false, all: false });
+  const [buddyId, setBuddyId] = useState(0);
 
   const filterKey =
     (Object.entries(clickedFilter).find(([, value]) => value)?.[0] as keyof clickedFilterType) || 'weekly';
 
-  const { data, isLoading } = useWalkQuery(filterKey);
+  const { data, isLoading } = useWalkQuery(filterKey, 2);
+
+  console.log(data?.stats);
+  console.log(data?.records);
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -26,10 +30,10 @@ export default function Walk() {
         <PageTitleBar title="산책 관리" />
         <BuddyInfoBar />
         <PeriodFilter clickedFilter={clickedFilter} setClickedFilter={setClickedFilter} />
-        <Statistics />
+        <Statistics stats={data?.stats} />
         <Chart />
       </div>
-      <WalkList />
+      <WalkList records={data?.records} />
     </StyledWalkContainer>
   );
 }
