@@ -17,7 +17,7 @@ function App() {
       <GlobalStyles />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        {import.meta.env.MODE === 'development' && <ReactQueryDevtools initialIsOpen={true} position="left" />}
+        {import.meta.env.MODE === 'development' && <ReactQueryDevtools initialIsOpen={false} position="left" />}
       </QueryClientProvider>
     </>
   );
