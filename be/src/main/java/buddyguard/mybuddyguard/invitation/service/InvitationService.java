@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.invitation.service;
 
+import buddyguard.mybuddyguard.exception.AlreadyInGroupException;
 import buddyguard.mybuddyguard.exception.PetNotFoundException;
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.exception.UserInformationNotFoundException;
@@ -10,10 +11,7 @@ import buddyguard.mybuddyguard.invitation.exception.InvitationLinkExpiredExcepti
 import buddyguard.mybuddyguard.invitation.exception.UserPetGroupNotFound;
 import buddyguard.mybuddyguard.invitation.repository.InvitationRepository;
 import buddyguard.mybuddyguard.invitation.utils.InvitationLinkGenerator;
-import buddyguard.mybuddyguard.jwt.service.TokenService;
-import buddyguard.mybuddyguard.jwt.utils.TokenUtility;
 import buddyguard.mybuddyguard.login.entity.Users;
-import buddyguard.mybuddyguard.login.exception.TokenNotFoundException;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.pet.entity.UserPet;
@@ -21,8 +19,8 @@ import buddyguard.mybuddyguard.pet.exception.InvalidPetRegisterException;
 import buddyguard.mybuddyguard.pet.repository.PetRepository;
 import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class InvitationService {
@@ -31,16 +29,13 @@ public class InvitationService {
     private final PetRepository petRepository;
     private final UserPetRepository userPetRepository;
     private final InvitationRepository invitationRepository;
-    private final TokenService tokenService;
 
     public InvitationService(UserRepository userRepository, PetRepository petRepository,
-            UserPetRepository userPetRepository, InvitationRepository invitationRepository,
-            TokenService tokenService) {
+            UserPetRepository userPetRepository, InvitationRepository invitationRepository) {
         this.userRepository = userRepository;
         this.petRepository = petRepository;
         this.userPetRepository = userPetRepository;
         this.invitationRepository = invitationRepository;
-        this.tokenService = tokenService;
     }
 
     public InvitationLinkResponse makeInvitationLink(Long userId, Long petId) {
@@ -57,14 +52,9 @@ public class InvitationService {
         return new InvitationLinkResponse(link);
     }
 
-    public void register(String uuid, String token) {
-        String accessToken = TokenUtility.deletePrefixToken(token);
-
-        if (accessToken == null) {
-            throw new TokenNotFoundException(HttpStatus.UNAUTHORIZED, "unauthorized token");
-        }
-
-        Users user = userRepository.findById(tokenService.getUserId(accessToken))
+    @Transactional
+    public void register(String uuid, Long userId) {
+        Users user = userRepository.findById(userId)
                 .orElseThrow(UserInformationNotFoundException::new);
 
         InvitationInformation invitation = invitationRepository.findById(uuid).orElseThrow(

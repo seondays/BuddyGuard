@@ -40,10 +40,11 @@ public class PetService {
      * 펫을 등록한다.
      *
      * @param petRegisterRequest
+     * @param userId
      */
     @Transactional
-    public void register(PetRegisterRequest petRegisterRequest) {
-        Users user = userRepository.findById(petRegisterRequest.userId()).orElseThrow(
+    public void register(PetRegisterRequest petRegisterRequest, Long userId) {
+        Users user = userRepository.findById(userId).orElseThrow(
                 UserInformationNotFoundException::new);
         if (!validateUser(user)) {
             throw new InvalidPetRegisterException();

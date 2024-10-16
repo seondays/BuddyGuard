@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record PetRegisterRequest(
-        @JsonProperty("user_id") @NotNull Long userId,
         @NotNull String name,
         @JsonProperty("profile_image") @NotNull String profileImage,
         @NotNull PetType type,
