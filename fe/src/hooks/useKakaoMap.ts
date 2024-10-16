@@ -184,7 +184,7 @@ export const useKakaoMap = ({
       const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
       console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
 
-      const endDate = getCurrentDate(true, false);
+      const endDate = getCurrentDate({ isDay: true, isTime: false });
       console.log(`🏃‍♀️💦 End Date: ${endDate}`);
 
       await delay(1500);

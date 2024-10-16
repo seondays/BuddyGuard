@@ -103,8 +103,8 @@ export default function GoWalk() {
       return;
     }
     setIsStarted('start');
-    timeRef.current.start.day = getCurrentDate(true, false);
-    timeRef.current.start.time = getCurrentDate(false, true);
+    timeRef.current.start.day = getCurrentDate({ isDay: true, isTime: false });
+    timeRef.current.start.time = getCurrentDate({ isDay: false, isTime: true });
   };
 
   const selectBuddy: CheckboxChangeHandler = (selectId: number, isSelect) =>
