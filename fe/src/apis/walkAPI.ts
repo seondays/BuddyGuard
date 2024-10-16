@@ -20,12 +20,11 @@ POST
 /api/walkRecords
 */
 
-const WALK_BASE_URL = '/walkRecords';
-
-export const getWalkRecords = async (filterType: keyof clickedFilterType) => {
+const WALK_BASE_URL = '/api/walkRecords';
+export const getWalkRecords = async (filterType: keyof clickedFilterType, buddyId: number) => {
   try {
-    // const response = await apiClient.get(`${WALK_BASE_URL}/${filterType}`);
-    const response = await axios.get(`${WALK_BASE_URL}/${filterType}`);
+    const response = await apiClient.get(`${WALK_BASE_URL}/${buddyId}/${filterType}`);
+    // const response = await axios.get(`${WALK_BASE_URL}/${filterType}`);
     return response.data; // 응답 데이터 반환
   } catch (error) {
     console.error(error);
