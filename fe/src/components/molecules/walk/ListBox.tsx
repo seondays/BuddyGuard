@@ -41,7 +41,7 @@ export default function ListBox({ record }: ListBoxProps) {
           </Item>
 
           <ImageItem>
-            {record.buddyIds.map((buddyId, idx) => (
+            {record.buddyIds.map((_, idx) => (
               <Image
                 key={`listbox${idx}`}
                 // TODO: 프로필 연동
