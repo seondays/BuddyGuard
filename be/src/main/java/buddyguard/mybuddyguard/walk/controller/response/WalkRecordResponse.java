@@ -11,8 +11,8 @@ public record WalkRecordResponse(
         List<Integer> buddyIds,
         LocalDate startDate,   // 산책 시작 날짜
         LocalDate endDate,     // 산책 종료 날짜
-        LocalTime startTime,   // 산책 시작 시간
-        LocalTime endTime,     // 산책 종료 시간
+        String startTime,   // 산책 시작 시간
+        String endTime,     // 산책 종료 시간
         String totalTime,      // 총 산책 시간 (00:00:46 형식의 문자열)
         String note,           // 산책에 대한 메모
         List<Double> centerPosition, // 중심 위치 (위도, 경도)

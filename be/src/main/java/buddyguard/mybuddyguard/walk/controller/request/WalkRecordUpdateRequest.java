@@ -14,9 +14,9 @@ public record WalkRecordUpdateRequest(
         @NotNull
         LocalDate endDate,     // 산책 종료 날짜
         @NotNull
-        LocalTime startTime,   // 산책 시작 시간
+        String startTime,   // 산책 시작 시간
         @NotNull
-        LocalTime endTime,     // 산책 종료 시간
+        String endTime,     // 산책 종료 시간
         @NotNull
         String totalTime,      // 총 산책 시간 (00:00:46 형식의 문자열)
         @NotNull

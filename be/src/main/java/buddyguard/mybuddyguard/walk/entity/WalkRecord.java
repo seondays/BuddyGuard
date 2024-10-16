@@ -47,11 +47,11 @@ public class WalkRecord {
 
     // 산책 시작 시간 (예: 23:40)
     @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+    private String startTime;
 
     // 산책 종료 시간 (예: 23:41)
     @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+    private String endTime;
 
     // 총 산책 시간 (예: 00:00:46)
     @Column(name = "total_time", nullable = false)
@@ -89,8 +89,8 @@ public class WalkRecord {
         return buddyIds.contains(petId.intValue());
     }
 
-    public void update(LocalDate startDate, LocalDate endDate, LocalTime startTime,
-            LocalTime endTime, String totalTime, List<Integer> buddyIds, String note,
+    public void update(LocalDate startDate, LocalDate endDate, String startTime,
+            String endTime, String totalTime, List<Integer> buddyIds, String note,
             List<Double> centerPosition, Integer mapLevel, List<String> path, String pathImage,
             Double distance) {
 

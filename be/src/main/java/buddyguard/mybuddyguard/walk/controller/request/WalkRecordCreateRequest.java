@@ -7,15 +7,17 @@ import java.util.List;
 
 public record WalkRecordCreateRequest(
         @NotNull
+        Long id,
+        @NotNull
         List<Integer> buddyIds,      // 선택한 반려동물들의 ID 배열 (문자열)
         @NotNull
         LocalDate startDate,  // 산책 시작 날짜
         @NotNull
         LocalDate endDate,    // 산책 종료 날짜
         @NotNull
-        LocalTime startTime,  // 산책 시작 시간
+        String startTime,  // 산책 시작 시간
         @NotNull
-        LocalTime endTime,    // 산책 종료 시간
+        String endTime,    // 산책 종료 시간
         @NotNull
         String totalTime,     // 총 산책 시간 (00:00:46 형식의 문자열)
         @NotNull
@@ -25,7 +27,10 @@ public record WalkRecordCreateRequest(
         @NotNull
         Integer mapLevel,     // 지도 레벨
         @NotNull
-        List<String> path,          // 산책 경로 (위도, 경도 배열)
+        List<String> path,    // 산책 경로 (위도, 경도 배열)
         @NotNull
-        Double distance       // 총 거리 (km 단위)
+        Double distance,     // 총 거리 (km 단위)
+        @NotNull
+        String pathImges
+
 ) {}
