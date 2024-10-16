@@ -1,12 +1,12 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { getWalkRecords } from '@/apis/walkAPI';
-import { clickedFilterType } from '@/types/walk';
+import { FilterType } from '@/types/walk';
 
 /** getWalkRecords */
-export const useWalkQuery = (filterKey: keyof clickedFilterType, buddyId: number) => {
+export const useWalkQuery = (filterKey: FilterType, buddyId: number, month?: number) => {
   return useQuery({
     queryKey: ['walkRecords', filterKey],
-    queryFn: () => getWalkRecords(filterKey, buddyId),
+    queryFn: () => getWalkRecords(filterKey, buddyId, month),
   });
 };

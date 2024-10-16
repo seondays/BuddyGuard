@@ -9,17 +9,15 @@ import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import WalkList from '@/components/organisms/WalkList';
 import { useWalkQuery } from '@/hooks/useWalkAPI';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { flexColumn } from '@/styles/layoutStyles';
-import { clickedFilterType } from '@/types/walk';
 
 export default function Walk() {
-  const [clickedFilter, setClickedFilter] = useState<clickedFilterType>({ weekly: true, monthly: false, all: false });
   const [buddyId, setBuddyId] = useState(2);
 
-  const filterKey =
-    (Object.entries(clickedFilter).find(([, value]) => value)?.[0] as keyof clickedFilterType) || 'weekly';
+  const { type, month } = useFilterStore();
 
-  const { data, isLoading } = useWalkQuery(filterKey, buddyId);
+  const { data, isLoading } = useWalkQuery(type, buddyId, type !== 'weekly' ? month : undefined);
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -33,7 +31,7 @@ export default function Walk() {
           <BuddyInfoBar />
         </StyledSection>
         <StyledSection $height={10}>
-          <PeriodFilter clickedFilter={clickedFilter} setClickedFilter={setClickedFilter} />
+          <PeriodFilter />
         </StyledSection>
         <StyledSection $height={10}>
           <Statistics stats={data?.stats} />
