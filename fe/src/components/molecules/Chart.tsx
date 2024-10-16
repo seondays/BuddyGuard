@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, Legend } from 'recharts';
+import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
 import styled, { useTheme } from 'styled-components';
 
 import { record } from '@/types/walk';
@@ -14,34 +14,30 @@ interface ChartType {
   distance: number;
 }
 
-const initChartData: ChartType[] = Array.from({ length: 7 })
-  .map((_, index) => ({
-    name: dayjs().subtract(index, 'day').format('YYYY-MM-DD'),
+const getCurrentWeekRange = (): ChartType[] => {
+  const startOfWeek = dayjs().startOf('week'); // 일요일 시작
+  return Array.from({ length: 7 }).map((_, index) => ({
+    name: startOfWeek.add(index, 'day').format('YYYY-MM-DD'),
     distance: 0,
-  }))
-  .reverse();
+  }));
+};
 
 export default function Chart({ records }: ChartProps) {
-  const [chartData, setChartData] = useState<ChartType[]>(initChartData);
+  const [chartData, setChartData] = useState<ChartType[]>(getCurrentWeekRange);
 
   useEffect(() => {
     if (!(records && records.length !== 0)) return;
-    const formattedRecords = records.map(({ startDate, distance }) => ({
-      name: startDate,
-      distance: distance,
-    }));
 
-    if (formattedRecords.length < 7) {
-      const lastDate = dayjs(formattedRecords[formattedRecords.length - 1].name);
-      const additionalData = Array.from({ length: 7 - formattedRecords.length }).map((_, index) => ({
-        name: lastDate.subtract(index + 1, 'day').format('YYYY-MM-DD'),
-        distance: 0,
-      }));
+    // 주간 데이터와 매칭되는 데이터를 병합
+    const updatedData = getCurrentWeekRange().map(({ name }) => {
+      const recordForDay = records.find((record) => dayjs(record.startDate).format('YYYY-MM-DD') === name);
+      return {
+        name: name,
+        distance: recordForDay ? recordForDay.distance : 0,
+      };
+    });
 
-      setChartData([...formattedRecords, ...additionalData]);
-    } else {
-      setChartData(formattedRecords);
-    }
+    setChartData(updatedData);
   }, [records]);
 
   const chartColor = useTheme().themeValues.colorValues.special.modalBg;
@@ -64,5 +60,6 @@ export default function Chart({ records }: ChartProps) {
 const StyledGraphContainer = styled.div`
   width: 100%;
   height: 100%;
+  padding-right: 1rem;
   margin: 0 auto;
 `;
