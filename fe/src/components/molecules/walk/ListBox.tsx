@@ -121,7 +121,7 @@ const StyledInfoWrapper = styled.div`
   gap: 0.4rem;
 `;
 
-const StyledListBoxWrapper = styled.div`
+export const StyledListBoxWrapper = styled.div`
   ${flexRowCenter}
   justify-content: space-between;
   width: 100%;

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
-import ListBox from '@/components/molecules/walk/ListBox';
+import ListBox, { StyledListBoxWrapper } from '@/components/molecules/walk/ListBox';
 import { flexColumn } from '@/styles/layoutStyles';
+import Puppy from '@/svg/puppy.svg';
 import { record } from '@/types/walk';
 
 interface WalkListProps {
@@ -14,13 +15,34 @@ export default function WalkList({ records }: WalkListProps) {
       <StyledTitle>산책 리스트</StyledTitle>
 
       <StyledListWrapper>
-        {records.map((record, idx) => (
-          <ListBox record={record} key={`record-${idx}`} />
-        ))}
+        {records.length > 0 ? (
+          records.map((record, idx) => <ListBox record={record} key={`record-${idx}`} />)
+        ) : (
+          <NoRecordBoxWrapper>
+            <StyledPuppy />
+            <NoRecordText>산책 기록이 없네요 :(</NoRecordText>
+          </NoRecordBoxWrapper>
+        )}
       </StyledListWrapper>
     </StyledWalkListContainer>
   );
 }
+
+const NoRecordBoxWrapper = styled(StyledListBoxWrapper)`
+  justify-content: center;
+  cursor: auto;
+`;
+const NoRecordText = styled.div`
+  color: ${({ theme }) => theme.themeValues.colorValues.grayscale[400]};
+`;
+
+const StyledPuppy = styled(Puppy)`
+  width: 3rem;
+  margin-right: 1rem;
+  & path {
+    fill: ${({ theme }) => theme.themeValues.colorValues.grayscale[400]};
+  }
+`;
 
 const StyledListWrapper = styled.div`
   overflow-y: auto;
