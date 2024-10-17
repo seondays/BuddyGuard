@@ -3,6 +3,7 @@ package buddyguard.mybuddyguard.login.controller;
 import buddyguard.mybuddyguard.login.controller.response.UserInformationResponse;
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
 import buddyguard.mybuddyguard.login.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "로그인 한 유저의 정보를 가져오는 api", description = "유저 이름, 이메일, 프로필 사진, 펫들 아이디를 포함한 정보를 가져옵니다.")
     @GetMapping("/user")
     public ResponseEntity<UserInformationResponse> getUserInformation(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
