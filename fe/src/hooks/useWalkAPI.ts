@@ -5,8 +5,9 @@ import { FilterType } from '@/types/walk';
 
 /** getWalkRecords */
 export const useWalkQuery = (filterKey: FilterType, buddyId: number, month?: number) => {
+  const checkedfilterKey = filterKey === 'all' ? 'monthly' : filterKey;
   return useQuery({
     queryKey: ['walkRecords', filterKey],
-    queryFn: () => getWalkRecords(filterKey, buddyId, month),
+    queryFn: () => getWalkRecords(checkedfilterKey, buddyId, month),
   });
 };
