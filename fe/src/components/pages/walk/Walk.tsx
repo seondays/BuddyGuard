@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Chart from '@/components/molecules/Chart';
@@ -7,6 +7,7 @@ import PeriodFilter from '@/components/molecules/PeriodFilter';
 import Statistics from '@/components/molecules/Statistics';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
+import ScheduleCalendar from '@/components/organisms/ScheduleCalendar';
 import WalkList from '@/components/organisms/WalkList';
 import { useWalkQuery } from '@/hooks/useWalkAPI';
 import { useFilterStore } from '@/stores/useFilterStore';
@@ -15,9 +16,13 @@ import { flexColumn } from '@/styles/layoutStyles';
 export default function Walk() {
   const [buddyId, setBuddyId] = useState(2);
 
-  const { type, month } = useFilterStore();
+  const { type, month, setType } = useFilterStore();
 
   const { data, isLoading } = useWalkQuery(type, buddyId, type !== 'weekly' ? month : undefined);
+
+  useEffect(() => {
+    setType('weekly');
+  }, [setType]);
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -38,12 +43,12 @@ export default function Walk() {
         </StyledSection>
 
         <StyledSection $height={55} $responsiveHeight={55}>
-          <Chart records={data?.records} />
+          {type !== 'all' ? <Chart records={data?.records} /> : <ScheduleCalendar />}
         </StyledSection>
       </StyledStaticWrapper>
 
       <StyledSection $height={30} $responsiveHeight={40}>
-        <WalkList records={data?.records} />
+        {type !== 'all' && <WalkList records={data?.records} />}
       </StyledSection>
     </StyledWalkContainer>
   );
