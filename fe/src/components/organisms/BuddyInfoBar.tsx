@@ -41,7 +41,7 @@ export default function BuddyInfoBar() {
 }
 
 const StyledBarWrapper = styled.div`
-  margin: 1rem 0rem;
+  margin: 0.5rem 0rem;
   padding: 0.6rem 1rem;
   background-color: ${({ theme }) => theme.themeValues.colorValues.special.modalBg};
   border-radius: 1rem;

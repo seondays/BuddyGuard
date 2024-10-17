@@ -13,7 +13,6 @@ export default function WalkList({ records }: WalkListProps) {
   return (
     <StyledWalkListContainer>
       <StyledTitle>산책 리스트</StyledTitle>
-
       <StyledListWrapper>
         {records.length > 0 ? (
           records.map((record, idx) => <ListBox record={record} key={`record-${idx}`} />)
@@ -27,7 +26,6 @@ export default function WalkList({ records }: WalkListProps) {
     </StyledWalkListContainer>
   );
 }
-
 const NoRecordBoxWrapper = styled(StyledListBoxWrapper)`
   justify-content: center;
   cursor: auto;
@@ -56,7 +54,7 @@ const StyledTitle = styled.div`
   font-weight: bold;
   color: ${({ theme }) => theme.currentTheme.textPrimary};
   margin-bottom: 0.5rem;
-  height: 10%;
+  /* height: 10%; */
   /* 크기가 줄어들지 않도록 설정 */
   flex-shrink: 0;
 `;

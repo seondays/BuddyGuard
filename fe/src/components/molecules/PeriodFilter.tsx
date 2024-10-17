@@ -38,7 +38,6 @@ export default function PeriodFilter() {
 const FilterWrapper = styled.div`
   ${flexRowCenter}
   gap: 1rem;
-  margin: 0.5rem 0;
   padding: 0.3rem;
   & * {
     font-size: 0.8rem;

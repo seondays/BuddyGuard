@@ -30,7 +30,7 @@ export default function Statistics({ stats }: StatisticsProps) {
 const StatisticsWrapper = styled.div`
   ${flexRowCenter}
   justify-content: space-around;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 `;
 const Item = styled.div`
   ${flexRowCenter}

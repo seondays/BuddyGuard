@@ -26,6 +26,7 @@ export default function Walk() {
 
   if (isLoading) return <p>Loading...</p>;
 
+  console.log('type: ', type);
   return (
     <StyledWalkContainer>
       <StyledStaticWrapper>
@@ -38,18 +39,22 @@ export default function Walk() {
         <StyledSection $height={10}>
           <PeriodFilter />
         </StyledSection>
-        <StyledSection $height={10}>
-          <Statistics stats={data?.stats} />
-        </StyledSection>
+        {type !== 'all' && (
+          <StyledSection $height={10}>
+            <Statistics stats={data?.stats} />
+          </StyledSection>
+        )}
 
         <StyledSection $height={55} $responsiveHeight={55}>
           {type !== 'all' ? <Chart records={data?.records} /> : <ScheduleCalendar />}
         </StyledSection>
       </StyledStaticWrapper>
 
-      <StyledSection $height={30} $responsiveHeight={40}>
-        {type !== 'all' && <WalkList records={data?.records} />}
-      </StyledSection>
+      {type !== 'all' && (
+        <StyledSection $height={30} $responsiveHeight={40}>
+          <WalkList records={data?.records} />
+        </StyledSection>
+      )}
     </StyledWalkContainer>
   );
 }
