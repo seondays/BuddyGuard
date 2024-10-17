@@ -14,11 +14,9 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { flexColumn } from '@/styles/layoutStyles';
 
 export default function Walk() {
-  const [buddyId, setBuddyId] = useState(2);
-
   const { type, month, setType } = useFilterStore();
 
-  const { data, isLoading } = useWalkQuery(type, buddyId, type !== 'weekly' ? month : undefined);
+  const { data, isLoading } = useWalkQuery(type, 2, type !== 'weekly' ? month : undefined);
 
   useEffect(() => {
     setType('weekly');
@@ -26,33 +24,40 @@ export default function Walk() {
 
   if (isLoading) return <p>Loading...</p>;
 
-  console.log('type: ', type);
   return (
     <StyledWalkContainer>
-      <StyledStaticWrapper>
-        <StyledSection $height={10}>
+      <StyledStaticWrapper $isSchedule={type === 'all'}>
+        <StyledSection>
           <PageTitleBar title="산책 관리" />
         </StyledSection>
-        <StyledSection $height={15}>
+        <StyledSection>
           <BuddyInfoBar />
         </StyledSection>
-        <StyledSection $height={10}>
+        <StyledSection>
           <PeriodFilter />
         </StyledSection>
-        {type !== 'all' && (
-          <StyledSection $height={10}>
-            <Statistics stats={data?.stats} />
-          </StyledSection>
-        )}
 
-        <StyledSection $height={55} $responsiveHeight={55}>
-          {type !== 'all' ? <Chart records={data?.records} /> : <ScheduleCalendar />}
-        </StyledSection>
+        {(type === 'weekly' || type === 'monthly') && (
+          <>
+            <StyledSection $height={10}>
+              <Statistics stats={data?.stats} />
+            </StyledSection>
+
+            <StyledSection $height={55} $responsiveHeight={55}>
+              <Chart records={data?.records} />
+            </StyledSection>
+          </>
+        )}
       </StyledStaticWrapper>
 
-      {type !== 'all' && (
+      {(type === 'weekly' || type === 'monthly') && (
         <StyledSection $height={30} $responsiveHeight={40}>
           <WalkList records={data?.records} />
+        </StyledSection>
+      )}
+      {type === 'all' && (
+        <StyledSection $height={55} $responsiveHeight={55}>
+          <ScheduleCalendar />
         </StyledSection>
       )}
     </StyledWalkContainer>
@@ -60,7 +65,7 @@ export default function Walk() {
 }
 
 // 공통된 섹션 스타일을 함수로 추출
-const StyledSection = styled.div<{ $height: number; $responsiveHeight?: number }>`
+const StyledSection = styled.div<{ $height?: number; $responsiveHeight?: number }>`
   flex-shrink: 0;
   height: ${({ $height }) => $height}%;
 
@@ -72,14 +77,15 @@ const StyledSection = styled.div<{ $height: number; $responsiveHeight?: number }
     }`}
 `;
 
-const StyledStaticWrapper = styled.div`
+const StyledStaticWrapper = styled.div<{ $isSchedule: boolean }>`
   padding: 1rem;
-  height: 70%;
   ${flexColumn}
-  // 화면 너비가 60rem(960px) 이상일 때 조건 적용
-  @media (min-width: 60rem) {
-    height: 60%;
-  }
+  ${({ $isSchedule }) =>
+    !$isSchedule &&
+    `height: 70%;
+    @media (min-width: 60rem) {
+      height: 60%;
+    }`}
 `;
 
 const StyledWalkContainer = styled.div`
