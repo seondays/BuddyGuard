@@ -54,9 +54,7 @@ export default function Chart({ records }: ChartProps) {
     setChartData(updatedData);
   }, [records, type]);
 
-  const theme = useTheme();
-  const chartColor = theme.themeValues.colorValues.special.modalBg;
-  const axisFontColor = theme.currentTheme.textPrimary;
+  const { widgetBlue: chartColor, textPrimary: axisFontColor } = useTheme().currentTheme;
 
   return (
     <StyledGraphContainer>
@@ -66,7 +64,7 @@ export default function Chart({ records }: ChartProps) {
           <XAxis dataKey="name" tick={{ fill: axisFontColor, fontSize: 10 }} angle={-30} dy={10} />
           <YAxis tickFormatter={(value) => `${value}km`} tick={{ fill: axisFontColor }} />
           <Tooltip formatter={(value) => `${value}km`} />
-          <Bar dataKey="distance" fill={chartColor} />
+          <Bar dataKey="distance" fill={chartColor} isAnimationActive={false} />
         </BarChart>
       </ResponsiveContainer>
     </StyledGraphContainer>
