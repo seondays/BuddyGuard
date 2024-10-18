@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { getWalkRecords } from '@/apis/walkAPI';
+import { getWalkRecords, postWalkData } from '@/apis/walkAPI';
 import { FilterType } from '@/types/walk';
 
 export type UseWalkQueryProps = {
@@ -19,6 +19,19 @@ export const useWalkQuery = ({ filterKey, buddyId, month, year }: UseWalkQueryPr
       if (filterKey === 'monthly' && month) return getWalkRecords({ filterKey, buddyId, month });
       if (filterKey === 'all' && month && year) return getWalkRecords({ filterKey, buddyId, month, year });
       throw new Error('Invalid filter type');
+    },
+  });
+};
+
+/** 폼 데이터를 서버에 전송하는 뮤테이션 */
+export const useWalkMutation = () => {
+  return useMutation({
+    mutationFn: (formData: FormData) => postWalkData(formData),
+    onSuccess: (data) => {
+      console.log('Upload success:', data);
+    },
+    onError: (error) => {
+      console.error('Upload failed:', error);
     },
   });
 };
