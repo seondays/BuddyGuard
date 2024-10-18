@@ -7,7 +7,7 @@ import { FilterType, record } from '@/types/walk';
 
 interface WalkListProps {
   records: record[];
-  selectedData?: record;
+  selectedData?: record | null;
   type: FilterType;
 }
 

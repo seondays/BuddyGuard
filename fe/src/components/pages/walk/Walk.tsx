@@ -39,13 +39,13 @@ export default function Walk() {
 
   const { data, isLoading } = useWalkQuery(queryProps);
 
-  const [selectedData, setSelectedData] = useState<record | undefined>();
+  const [selectedData, setSelectedData] = useState<record | null>(null);
 
   useEffect(() => {
     if (data?.records) {
       const today = dayjs().format('YYYY-MM-DD');
       const todayRecord = data.records.find((record: record) => record.startDate === today);
-      setSelectedData(todayRecord);
+      setSelectedData(todayRecord || null);
     }
   }, [data]);
 

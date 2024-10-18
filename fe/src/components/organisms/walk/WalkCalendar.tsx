@@ -13,7 +13,7 @@ type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 interface WalkCalendarProps {
-  setSelectedData: React.Dispatch<React.SetStateAction<record>>;
+  setSelectedData: React.Dispatch<React.SetStateAction<record | null>>;
 }
 export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   const { setAll, month, year } = useFilterStore();
