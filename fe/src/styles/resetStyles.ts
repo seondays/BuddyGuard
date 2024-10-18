@@ -48,4 +48,8 @@ export const ResetStyles = createGlobalStyle`
     border-collapse: collapse;
     border-spacing: 0;
   }
+
+  root:hover, root:focus {
+    background-color: none !important;
+  }
 `;
