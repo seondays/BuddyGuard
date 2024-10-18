@@ -7,12 +7,15 @@ import styled from 'styled-components';
 import { useWalkQuery } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
 import Stamp from '@/svg/walk_stamp.svg';
-import { FilterType } from '@/types/walk';
+import { FilterType, record } from '@/types/walk';
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-export default function WalkCalendar() {
+interface WalkCalendarProps {
+  setSelectedData: React.Dispatch<React.SetStateAction<record>>;
+}
+export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   const { setAll, month, year } = useFilterStore();
 
   const [activeDate, setActiveDate] = useState(new Date(year, month - 1, 1));
@@ -40,10 +43,8 @@ export default function WalkCalendar() {
     const selectedRecord = data.records.find(({ startDate }: { startDate: string }) =>
       dayjs(startDate).isSame(newDate, 'day')
     );
-    if (selectedRecord) {
-      // TODO:선택된 날짜의 산책 정보 부모로 올리기
-      console.log('Selected record:', selectedRecord);
-    }
+
+    if (selectedRecord) setSelectedData(selectedRecord);
   };
 
   const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {

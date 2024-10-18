@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import Chart from '@/components/molecules/Chart';
@@ -12,7 +12,7 @@ import WalkList from '@/components/organisms/walk/WalkList';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { flexColumn } from '@/styles/layoutStyles';
-import { FilterType } from '@/types/walk';
+import { FilterType, record } from '@/types/walk';
 
 function isWeekly(type: FilterType): type is 'weekly' {
   return type === 'weekly';
@@ -37,6 +37,7 @@ export default function Walk() {
   }, [type, month, year]);
 
   const { data, isLoading } = useWalkQuery(queryProps);
+  const [selectedData, setSelectedData] = useState<record>(null);
 
   useEffect(() => {
     setType('weekly');
@@ -74,17 +75,17 @@ export default function Walk() {
 
       {isWeeklyOrMonthly && (
         <StyledSection $height={30} $responsiveHeight={40}>
-          <WalkList records={data?.records} />
+          <WalkList records={data?.records} type={type} />
         </StyledSection>
       )}
 
       {type === 'all' && (
         <StyledAllTypeWrapper>
           <StyledCalendarSection>
-            <WalkCalendar records={data?.records} />
+            <WalkCalendar setSelectedData={setSelectedData} />
           </StyledCalendarSection>
           <StyledWalkListSection>
-            <WalkList records={data?.records} />
+            <WalkList records={data?.records} selectedData={selectedData} type={type} />
           </StyledWalkListSection>
         </StyledAllTypeWrapper>
       )}
@@ -128,7 +129,7 @@ const StyledStaticWrapper = styled.div<{ $isSchedule: boolean }>`
   ${({ $isSchedule }) =>
     $isSchedule
       ? css`
-          height: 25%;
+          height: 22%;
           @media (min-width: 60rem) {
             height: 21%;
           }

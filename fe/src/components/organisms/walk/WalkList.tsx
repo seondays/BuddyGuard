@@ -3,26 +3,38 @@ import styled from 'styled-components';
 import ListBox, { StyledListBoxWrapper } from '@/components/molecules/walk/ListBox';
 import { flexColumn } from '@/styles/layoutStyles';
 import Puppy from '@/svg/puppy.svg';
-import { record } from '@/types/walk';
+import { FilterType, record } from '@/types/walk';
 
 interface WalkListProps {
   records: record[];
+  selectedData?: record;
+  type: FilterType;
 }
 
-export default function WalkList({ records }: WalkListProps) {
+export default function WalkList({ records, selectedData, type }: WalkListProps) {
+  const NoRecordBox = () => (
+    <NoRecordBoxWrapper>
+      <StyledPuppy />
+      <NoRecordText>산책 기록이 없네요 :(</NoRecordText>
+    </NoRecordBoxWrapper>
+  );
+
+  const renderContent = () => {
+    if (type === 'all') {
+      return selectedData ? <ListBox record={selectedData} /> : <NoRecordBox />;
+    } else {
+      return records.length > 0 ? (
+        records.map((record, idx) => <ListBox record={record} key={`record-${idx}`} />)
+      ) : (
+        <NoRecordBox />
+      );
+    }
+  };
+
   return (
     <StyledWalkListContainer>
       <StyledTitle>산책 리스트</StyledTitle>
-      <StyledListWrapper>
-        {records.length > 0 ? (
-          records.map((record, idx) => <ListBox record={record} key={`record-${idx}`} />)
-        ) : (
-          <NoRecordBoxWrapper>
-            <StyledPuppy />
-            <NoRecordText>산책 기록이 없네요 :(</NoRecordText>
-          </NoRecordBoxWrapper>
-        )}
-      </StyledListWrapper>
+      <StyledListWrapper>{renderContent()}</StyledListWrapper>
     </StyledWalkListContainer>
   );
 }
