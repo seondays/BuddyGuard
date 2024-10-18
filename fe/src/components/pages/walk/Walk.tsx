@@ -9,7 +9,7 @@ import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
 import WalkList from '@/components/organisms/walk/WalkList';
-import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkAPI';
+import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { flexColumn } from '@/styles/layoutStyles';
 import { FilterType } from '@/types/walk';
