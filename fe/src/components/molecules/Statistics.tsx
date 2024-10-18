@@ -2,22 +2,26 @@ import styled from 'styled-components';
 
 import { flexRowCenter } from '@/styles/layoutStyles';
 
-export default function Statistics() {
+interface StatisticsProps {
+  stats?: { count: number; averageDistance: number; averageTime: string };
+}
+
+export default function Statistics({ stats }: StatisticsProps) {
   return (
     <StatisticsWrapper>
       <Item>
         <Label>산책</Label>
-        <Value>10</Value>
+        <Value>{stats?.count || 0}</Value>
         <SubValue>회</SubValue>
       </Item>
       <Item>
         <Label>평균 거리</Label>
-        <Value>2.8</Value>
+        <Value>{stats?.averageDistance.toFixed(3) || 0}</Value>
         <SubValue>km</SubValue>
       </Item>
       <Item>
         <Label>평균 시간</Label>
-        <Value>10:10:02</Value>
+        <Value>{stats?.averageTime || '00:00:00'}</Value>
       </Item>
     </StatisticsWrapper>
   );
@@ -25,8 +29,8 @@ export default function Statistics() {
 
 const StatisticsWrapper = styled.div`
   ${flexRowCenter}
-  justify-content: space-between;
-  margin: 1rem 0;
+  justify-content: space-around;
+  margin: 0.5rem 0;
 `;
 const Item = styled.div`
   ${flexRowCenter}

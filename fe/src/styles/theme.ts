@@ -24,6 +24,7 @@ const colorValues = {
   },
   widget: {
     blue: '#A8D5FF', // (WIDGET_BLUE)
+    darkBlue: '#92b8db',
     red: '#FF936F', // (WIDGET_RED)
     green: '#A6CAA3', // (WIDGET_GREEN)
     yellow: '#F7DB78', // (WIDGET_YELLOW)
@@ -62,6 +63,7 @@ const lightTheme = {
   grayDark: colorValues.grayscale[600], // 어두운 회색 (보조 텍스트에 사용) #6E7191
   black: colorValues.grayscale[900], // 검정 #14142B
   white: colorValues.grayscale[50], // 흰색 #FEFEFE
+  shadow: 'rgba(0, 0, 0, 0.3)',
 };
 
 const darkTheme = {
@@ -76,7 +78,7 @@ const darkTheme = {
   accentBlue: colorValues.accent.lightBlue, // 연한 액센트 블루 #A6C8DD
   accentGreen: colorValues.accent.green, // 동일한 그린 #A7C4A5
   accentYellow: colorValues.accent.yellow, // 동일한 옐로우 #F7DB78
-  widgetBlue: colorValues.widget.blue, // 위젯 블루 (동일) #A8D5FF
+  widgetBlue: colorValues.widget.darkBlue, // 위젯 다크블루 #92b8db
   widgetRed: colorValues.widget.red, // 위젯 레드 (동일) #FF936F
   widgetGreen: colorValues.widget.green, // 위젯 그린 (동일) #A6CAA3
   widgetYellow: colorValues.widget.yellow, // 위젯 옐로우 (동일) #F7DB78
@@ -85,6 +87,7 @@ const darkTheme = {
   grayDark: colorValues.grayscale[900], // 거의 검정 #14142B
   black: colorValues.grayscale[900], // 검정 (기본 검정) #14142B
   white: colorValues.grayscale[50], // 흰색 #FEFEFE
+  shadow: 'rgba(255, 255, 255, 0.3)',
 };
 
 const radius = {

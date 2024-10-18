@@ -27,3 +27,4 @@ dist-ssr
 stories
 
 .env
+coverage/*

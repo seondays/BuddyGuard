@@ -19,26 +19,25 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   onClick?: () => void;
   children: React.ReactNode;
 }
-export const defaultShadow = '0px 4px 12px rgba(0, 0, 0, 0.2)';
+export const defaultShadow = '0rem 0.25rem 0.75rem rgba(0, 0, 0, 0.2)';
 
 export default function Button({
   children,
   $bgColor = 'white',
   $isClicked = false,
-  $boxShadow = defaultShadow,
+  $boxShadow,
   $isFocus = true,
   onClick,
   style,
   ...rest
 }: ButtonProps) {
-  const colorValues = useTheme().themeValues.colorValues;
-  const defaultBorder = `${colorValues.special.textForce02} solid 0.1rem`;
-
+  const theme = useTheme();
+  const defaultBorder = `${theme.themeValues.colorValues.special.textForce02} solid 0.1rem`;
   return (
     <StyledButton
       $bgColor={$bgColor}
       $isClicked={$isClicked}
-      $boxShadow={$boxShadow}
+      $boxShadow={$boxShadow || `0.1rem 0.15rem 0.25rem ${theme.currentTheme.shadow}}`}
       $isFocus={$isFocus}
       onClick={onClick}
       style={{ border: style?.border || defaultBorder, ...style }}
@@ -65,8 +64,8 @@ const StyledButton = styled.button<ButtonStyleProps>`
   ${({ $isClicked, $boxShadow, $bgColor, theme }) => getButtonStyle({ $isClicked, $boxShadow, $bgColor, theme })};
   font-size: ${({ style }) => style?.fontSize || '1rem'};
   color: ${({ style, theme }) => style?.color || theme.themeValues.colorValues.grayscale[900]};
-  ${({ style }) => style?.borderRadius && `border-radius: ${style.borderRadius}`};
 
+  ${({ style }) => style?.borderRadius && `border-radius: ${style.borderRadius}`};
   cursor: pointer;
   transition: all 0.3s ease;
 
