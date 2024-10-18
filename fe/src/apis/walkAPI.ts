@@ -1,5 +1,5 @@
 import apiClient from '@/apis/axiosInstance';
-import { UseWalkQueryProps } from '@/hooks/useWalkAPI';
+import { UseWalkQueryProps } from '@/hooks/useWalkQuery';
 
 const WALK_BASE_URL = '/api/walkRecords';
 

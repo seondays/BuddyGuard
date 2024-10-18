@@ -1,13 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
-import apiClient from '@/apis/axiosInstance';
+import { fetchAccessToken } from '@/apis/authAPI';
 import { delay } from '@/utils/utils';
-
-const fetchAccessToken = async () => {
-  const response = await apiClient.post('/reissue', { withCredentials: true });
-  console.log(response);
-  return response.headers.authorization;
-};
 
 export const useAuthMutation = () => {
   const { mutate: getAccessToken, status } = useMutation({
