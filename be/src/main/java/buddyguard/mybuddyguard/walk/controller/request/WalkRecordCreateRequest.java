@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public record WalkRecordCreateRequest(
-        @NotNull
-        Long id,
+
         @NotNull
         List<String> buddyIds,      // 선택한 반려동물들의 ID 배열 (문자열)
         @NotNull
