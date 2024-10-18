@@ -49,7 +49,7 @@ export const ResetStyles = createGlobalStyle`
     border-spacing: 0;
   }
 
-  root:hover, root:focus {
+  *:hover, *:focus {
     background-color: none !important;
   }
 `;
