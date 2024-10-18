@@ -132,7 +132,7 @@ const StyledStaticWrapper = styled.div<{ $isSchedule: boolean }>`
       ? css`
           height: 25%;
           @media (min-width: 60rem) {
-            height: 20%;
+            height: 21%;
           }
         `
       : css`
