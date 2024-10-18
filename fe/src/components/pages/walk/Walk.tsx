@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -37,7 +38,16 @@ export default function Walk() {
   }, [type, month, year]);
 
   const { data, isLoading } = useWalkQuery(queryProps);
-  const [selectedData, setSelectedData] = useState<record>(null);
+
+  const [selectedData, setSelectedData] = useState<record | undefined>();
+
+  useEffect(() => {
+    if (data?.records) {
+      const today = dayjs().format('YYYY-MM-DD');
+      const todayRecord = data.records.find((record: record) => record.startDate === today);
+      setSelectedData(todayRecord);
+    }
+  }, [data]);
 
   useEffect(() => {
     setType('weekly');
