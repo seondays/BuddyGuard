@@ -1,13 +1,14 @@
 import apiClient from '@/apis/axiosInstance';
-import { FilterType } from '@/types/walk';
+import { UseWalkQueryProps } from '@/hooks/useWalkAPI';
 
 const WALK_BASE_URL = '/api/walkRecords';
-export const getWalkRecords = async (filterType: FilterType, buddyId: number, month?: number) => {
+
+export const getWalkRecords = async ({ filterKey, buddyId, month, year }: UseWalkQueryProps) => {
   try {
-    const url =
-      filterType !== 'weekly'
-        ? `${WALK_BASE_URL}/${buddyId}/${filterType}/${month}`
-        : `${WALK_BASE_URL}/${buddyId}/${filterType}`;
+    let url = '';
+    if (filterKey === 'weekly') url = `${WALK_BASE_URL}/${buddyId}/${filterKey}`;
+    if (filterKey === 'monthly' && month) url = `${WALK_BASE_URL}/${buddyId}/${filterKey}/${month}`;
+    if (filterKey === 'all' && month && year) url = `${WALK_BASE_URL}/${buddyId}/monthly/${month}?year=${year}`;
 
     const response = await apiClient.get(url);
 
