@@ -109,10 +109,8 @@ const StyledWalkListSection = styled.div`
 `;
 
 const StyledCalendarSection = styled.div`
-  /* height: 70%; */
   max-height: 80%;
   @media (min-width: 60rem) {
-    /* height: 65%; */
     max-height: 70%;
   }
 `;

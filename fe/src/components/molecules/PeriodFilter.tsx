@@ -7,16 +7,18 @@ import { flexRowCenter } from '@/styles/layoutStyles';
 import { FilterType } from '@/types/walk';
 
 export default function PeriodFilter() {
-  const { type, setWeekly, setMonthly, setAll } = useFilterStore();
+  const { type, setWeekly, setMonthly, setMonth, setAll } = useFilterStore();
 
   const commonStyles = { borderRadius: '3rem', height: '2.3rem' };
 
   const handleClick = (type: FilterType) => {
     if (type === 'weekly') setWeekly();
-    if (type === 'monthly') setMonthly();
+    if (type === 'monthly') {
+      setMonthly();
+      setMonth(dayjs().month() + 1);
+    }
     if (type === 'all') {
-      const selectedMonth = dayjs().month() + 1;
-      setAll(selectedMonth);
+      setAll(dayjs().month() + 1);
     }
   };
 
