@@ -7,43 +7,43 @@ import styled from 'styled-components';
 import { useWalkQuery } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
 import Stamp from '@/svg/walk_stamp.svg';
-import { FilterType, record } from '@/types/walk';
+import { FilterType } from '@/types/walk';
 
-interface WalkCalendarProps {
-  records: record[];
-}
+type ValuePiece = Date | null;
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-const getDate = () => dayjs().format('YY-MM-DD');
+export default function WalkCalendar() {
+  const { setAll, month, year } = useFilterStore();
 
-export default function WalkCalendar({ records }: WalkCalendarProps) {
-  const { type, setMonth, setYear, setWeekly, setMonthly, setAll } = useFilterStore();
   const [queryParams, setQueryParams] = useState({
     filterKey: 'all' as FilterType,
     buddyId: 2,
-    month: dayjs().month() + 1,
-    year: dayjs().year(),
+    month,
+    year,
   });
 
   const { data, isLoading, refetch } = useWalkQuery(queryParams);
 
-  useEffect(() => {
-    refetch();
-  }, [queryParams, refetch]);
-
-  const [date, setDate] = useState<string | null>(getDate());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const handleDateChange = (newDate: Date) => {
-    console.log('😀handleDateChange');
+  const handleDateChange = (newDate: Value) => {
+    if (!(newDate instanceof Date)) return;
+    if (isLoading) return;
+    setSelectedDate(newDate);
+    const selectedRecord = data.records.find(({ startDate }: { startDate: string }) =>
+      dayjs(startDate).isSame(newDate, 'day')
+    );
+    if (selectedRecord) {
+      // TODO:선택된 날짜의 산책 정보 부모로 올리기
+      console.log('Selected record:', selectedRecord);
+    }
   };
 
-  const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date }) => {
-    console.log('🐶handleMonthChange');
+  const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
+    if (!activeStartDate) return;
     const year = Number(dayjs(activeStartDate).format('YYYY'));
     const month = Number(dayjs(activeStartDate).format('MM'));
-    console.log(year, month);
-    setYear(year);
-    setMonth(month);
+    setAll(month, year);
     setQueryParams((prev) => ({
       ...prev,
       month,
@@ -54,21 +54,21 @@ export default function WalkCalendar({ records }: WalkCalendarProps) {
   // 캘린더에 일정이 있으면 점 표시
   const tileContent = ({ date, view }: { date: Date; view: string }) => {
     const formattedDate = dayjs(date).format('YYYY-MM-DD');
-    const schedule = records?.find(({ startDate }) => startDate === formattedDate);
+    const schedule = data?.records?.find(({ startDate }: { startDate: string }) => startDate === formattedDate);
     return schedule && view === 'month' ? <StyledStamp /> : null;
   };
+
+  useEffect(() => {
+    refetch();
+  }, [queryParams, refetch]);
 
   return (
     <StyledCalendarWrapper>
       <StyledCalendar
-        // onChange={handleDateChange}
         value={selectedDate}
         onChange={handleDateChange}
         onActiveStartDateChange={handleMonthChange} // 달이 바뀔 때 호출
         tileContent={tileContent}
-        // formatDay={(date) => moment(date).format('D')}
-        // formatYear={(date) => moment(date).format('YYYY')}
-        // formatMonthYear={(date) => moment(date).format('YYYY. MM')}
         calendarType="gregory"
         showNeighboringMonth={false}
         next2Label={null}
@@ -148,13 +148,7 @@ const StyledCalendarWrapper = styled.div`
 const StyledCalendar = styled(Calendar)``;
 
 const StyledStamp = styled(Stamp)`
-  /* position: absolute; */
-  /* top: 0.1rem; */
-  /* bottom: 0; */
   width: 2rem;
   height: 2rem;
   opacity: 70%;
-  /* transform: translateX(-50%); */
-  /* left: 0; */
-  /* margin: 0 auto; */
 `;

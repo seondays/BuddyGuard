@@ -12,7 +12,7 @@ interface FilterState {
   setType: (type: FilterType) => void;
   setWeekly: () => void;
   setMonthly: () => void;
-  setAll: (month: number) => void;
+  setAll: (month: number, year: number) => void;
 }
 
 export const useFilterStore = create<FilterState>((set) => ({
@@ -24,5 +24,5 @@ export const useFilterStore = create<FilterState>((set) => ({
   setType: (type: FilterType) => set({ type }),
   setWeekly: () => set({ type: 'weekly' }),
   setMonthly: () => set({ type: 'monthly' }),
-  setAll: (month: number) => set({ type: 'all', month }),
+  setAll: (month: number, year: number) => set({ type: 'all', month, year }),
 }));

@@ -17,9 +17,7 @@ export default function PeriodFilter() {
       setMonthly();
       setMonth(dayjs().month() + 1);
     }
-    if (type === 'all') {
-      setAll(dayjs().month() + 1);
-    }
+    if (type === 'all') setAll(dayjs().month() + 1, dayjs().year());
   };
 
   return (
