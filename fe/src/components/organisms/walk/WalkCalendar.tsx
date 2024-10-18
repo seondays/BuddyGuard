@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Calendar } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
@@ -15,21 +15,28 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
 export default function WalkCalendar() {
   const { setAll, month, year } = useFilterStore();
 
-  const [queryParams, setQueryParams] = useState({
-    filterKey: 'all' as FilterType,
-    buddyId: 2,
-    month,
-    year,
-  });
+  const [activeDate, setActiveDate] = useState(new Date(year, month - 1, 1));
+  const [selectedDate, setSelectedDate] = useState(activeDate);
+
+  const queryParams = useMemo(
+    () => ({
+      filterKey: 'all' as FilterType,
+      buddyId: 2,
+      month: activeDate.getMonth() + 1,
+      year: activeDate.getFullYear(),
+    }),
+    [activeDate]
+  );
 
   const { data, isLoading, refetch } = useWalkQuery(queryParams);
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleDateChange = (newDate: Value) => {
     if (!(newDate instanceof Date)) return;
     if (isLoading) return;
+
     setSelectedDate(newDate);
+    setActiveDate(newDate);
+
     const selectedRecord = data.records.find(({ startDate }: { startDate: string }) =>
       dayjs(startDate).isSame(newDate, 'day')
     );
@@ -41,48 +48,50 @@ export default function WalkCalendar() {
 
   const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
     if (!activeStartDate) return;
-    const year = Number(dayjs(activeStartDate).format('YYYY'));
-    const month = Number(dayjs(activeStartDate).format('MM'));
-    setAll(month, year);
-    setQueryParams((prev) => ({
-      ...prev,
-      month,
-      year,
-    }));
+    setActiveDate(activeStartDate);
   };
 
   // 캘린더에 일정이 있으면 점 표시
-  const tileContent = ({ date, view }: { date: Date; view: string }) => {
-    const formattedDate = dayjs(date).format('YYYY-MM-DD');
-    const schedule = data?.records?.find(({ startDate }: { startDate: string }) => startDate === formattedDate);
-    return schedule && view === 'month' ? <StyledStamp /> : null;
-  };
+  const tileContent = useMemo(() => {
+    return ({ date, view }: { date: Date; view: string }) => {
+      const formattedDate = dayjs(date).format('YYYY-MM-DD');
+      const schedule = data?.records?.find(({ startDate }: { startDate: string }) => startDate === formattedDate);
+      return schedule && view === 'month' ? <StyledStamp /> : null;
+    };
+  }, [data?.records]);
 
   useEffect(() => {
+    const newMonth = activeDate.getMonth() + 1;
+    const newYear = activeDate.getFullYear();
+    setAll(newMonth, newYear);
     refetch();
-  }, [queryParams, refetch]);
+  }, [activeDate]);
 
   return (
     <StyledCalendarWrapper>
-      <StyledCalendar
-        value={selectedDate}
-        onChange={handleDateChange}
-        onActiveStartDateChange={handleMonthChange} // 달이 바뀔 때 호출
-        tileContent={tileContent}
-        calendarType="gregory"
-        showNeighboringMonth={false}
-        next2Label={null}
-        prev2Label={null}
-        minDetail="year"
-        locale="ko"
-      />
+      {isLoading ? (
+        <div>🥚 🐣 🐤 🐥 Loading...</div> // 또는 <LoadingSpinner /> 등의 로딩 컴포넌트
+      ) : (
+        <StyledCalendar
+          value={selectedDate}
+          onChange={handleDateChange}
+          onActiveStartDateChange={handleMonthChange}
+          tileContent={tileContent}
+          calendarType="gregory"
+          showNeighboringMonth={false}
+          next2Label={null}
+          prev2Label={null}
+          minDetail="year"
+          locale="ko"
+        />
+      )}
     </StyledCalendarWrapper>
   );
 }
 
 // 스타일
 const StyledCalendarWrapper = styled.div`
-  padding: 01rem;
+  padding: 1rem;
   width: 100%;
   display: flex;
   justify-content: center;
