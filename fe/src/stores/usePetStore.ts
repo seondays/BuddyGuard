@@ -1,11 +1,6 @@
 import { create } from 'zustand';
 
-type PetInfo = {
-  userId: number;
-  petId: number;
-  petName: string;
-  profileImage: string;
-};
+import { PetInfo } from '@/types/pet';
 
 type PetState = {
   petsInfo: PetInfo[];

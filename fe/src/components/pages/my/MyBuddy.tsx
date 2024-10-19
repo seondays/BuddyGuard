@@ -5,13 +5,14 @@ import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
 import PageTitleBar from '@/components/molecules/PageTitleBar';
 import { usePetStore } from '@/stores/usePetStore';
+import { PetInfo } from '@/types/pet';
 
 export default function MyBuddy() {
   const defaultProfileImage = '/assets/images/mascot.png';
   const { petsInfo } = usePetStore();
   const [selectedBuddy, setSelectedBuddy] = useState(petsInfo[0]);
 
-  const handleSelectBuddy = (buddy) => {
+  const handleSelectBuddy = (buddy: PetInfo) => {
     setSelectedBuddy(buddy);
   };
 
@@ -66,6 +67,7 @@ export default function MyBuddy() {
 
 const MyBuddyContainer = styled.div`
   padding: 1rem;
+  height: 100vh;
 `;
 
 const ProfileWrapper = styled.div`

@@ -4,3 +4,10 @@ export interface PetData {
   birth: string;
   profile_image: string;
 }
+
+export interface PetInfo {
+  userId: number;
+  petId: number;
+  petName: string;
+  profileImage: string;
+}

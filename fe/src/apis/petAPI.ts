@@ -26,11 +26,10 @@ export const getPetInfo = async (petId: number) => {
 };
 
 // 버디 추가하기
-export const createPet = async (petData: PetData) => {
+export const createPet = async (formData: FormData) => {
   try {
-    console.log(petData);
-    const response = await apiClient.post(`${PET_BASE_URL}`, petData); // petData를 RequestBody에 담아 전송
-    console.log(response);
+    console.log(formData);
+    const response = await apiClient.post(`${PET_BASE_URL}`, formData);
     return response.data;
   } catch (error) {
     console.error(error);
