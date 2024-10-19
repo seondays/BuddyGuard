@@ -5,8 +5,12 @@ import buddyguard.mybuddyguard.walk.controller.response.WalkRecordResponse;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordCreateRequest;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordUpdateRequest;
 import buddyguard.mybuddyguard.walk.entity.WalkRecord;
+import buddyguard.mybuddyguard.walk.entity.WalkRecordCenterPosition;
 import buddyguard.mybuddyguard.walk.mapper.WalkRecordMapper;
+import buddyguard.mybuddyguard.walk.repository.WalkRecordCenterPositionRepository;
 import buddyguard.mybuddyguard.walk.repository.WalkRecordRepository;
+import buddyguard.mybuddyguard.walkimage.entity.WalkS3Image;
+import buddyguard.mybuddyguard.walkimage.service.WalkImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -21,6 +26,8 @@ import java.util.stream.Collectors;
 public class WalkRecordService {
 
     private final WalkRecordRepository walkRecordRepository;
+    private final WalkRecordCenterPositionRepository walkRecordCenterPositionRepository;
+    private final WalkImageService walkImageService;
 
     // 특정 반려동물의 전체 산책 기록 조회
     public List<WalkRecordResponse> getAllWalkRecords(Long petId) {
@@ -39,9 +46,15 @@ public class WalkRecordService {
     }
 
     @Transactional
-    public void createWalkRecord(WalkRecordCreateRequest request) {
-        WalkRecord walkRecord = WalkRecordMapper.toEntity(request, null);  // S3Images는 별도로 처리
+    public void createWalkRecord(WalkRecordCreateRequest request, MultipartFile file) {
+        WalkRecord walkRecord = WalkRecordMapper.toEntity(request);  // S3Images는 별도로 처리
+
+        WalkRecordCenterPosition centerPosition = walkRecord.getCenterPosition();
+        walkRecordCenterPositionRepository.save(centerPosition);
+
         WalkRecord savedWalkRecord = walkRecordRepository.save(walkRecord);
+
+        walkImageService.uploadWalkImage(file);
 
         log.info("SAVED WALK RECORD: {}", savedWalkRecord);
     }
