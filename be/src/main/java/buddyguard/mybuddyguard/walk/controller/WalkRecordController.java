@@ -4,6 +4,7 @@ import buddyguard.mybuddyguard.walk.controller.request.WalkRecordCreateRequest;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordUpdateRequest;
 import buddyguard.mybuddyguard.walk.controller.response.WalkRecordResponse;
 import buddyguard.mybuddyguard.walk.service.WalkRecordService;
+import buddyguard.mybuddyguard.walkimage.service.impl.WalkImageServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,8 +45,9 @@ public class WalkRecordController {
     @Operation(summary = "산책 기록 생성", description = "pet id별 산책 기록 생성")
     @PostMapping
     public ResponseEntity<Void> createWalkRecord(
-            @Valid @RequestBody WalkRecordCreateRequest request) {
-        walkRecordService.createWalkRecord(request);
+            @RequestPart(name = "data", required = true) @Valid WalkRecordCreateRequest request,
+            @RequestPart(name = "file", required = true) MultipartFile file) {
+        walkRecordService.createWalkRecord(request, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -22,8 +22,8 @@ public record WalkRecordResponse(
         WalkRecordPosition centerPosition, // 중심 위치 (위도, 경도)
         Integer mapLevel,      // 지도 레벨
         List<WalkRecordPosition> path,           // 산책 경로 (위도, 경도 배열)
-        Double distance,       // 총 거리
-        String pathImage
+        Double distance,                 // 총 거리
+        String fileUrl
 ) {
 
     @Getter
