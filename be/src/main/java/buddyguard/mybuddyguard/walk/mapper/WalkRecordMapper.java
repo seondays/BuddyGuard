@@ -1,7 +1,5 @@
 package buddyguard.mybuddyguard.walk.mapper;
 
-//import buddyguard.mybuddyguard.s3.entity.S3Images;
-
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordCreateRequest;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordCreateRequest.WalkRecordPathRequest;
@@ -13,7 +11,7 @@ import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 public class WalkRecordMapper {
 
     // WalkRecordCreateRequest WalkRecord 엔티티로 변환하는 메서드
-    public static WalkRecord toEntity(WalkRecordCreateRequest request, String pathImage) {
+    public static WalkRecord toEntity(WalkRecordCreateRequest request) {
         return WalkRecord.builder()
                 .petWalkRecords(request.buddyIds().stream()
                         .map(id -> PetWalkRecord.builder()
@@ -34,7 +32,6 @@ public class WalkRecordMapper {
                         .map(WalkRecordPathRequest::toWalkRecordPath)
                         .toList()
                 )            // 산책 경로
-                .pathImage(pathImage)            // 경로 이미지 파일 (S3Images 객체)
                 .distance(request.distance())    // 총 거리
                 .build();
     }
@@ -61,8 +58,6 @@ public class WalkRecordMapper {
                         .toList()
                 )            // 산책 경로
                 .distance(walkRecord.getDistance())    // 총 거리
-                //  .pathImage(walkRecord.getPathImage().getImageUrl())  // 경로 이미지 URL
-                .pathImage(walkRecord.getPathImage())  // 경로 이미지 URL
                 .build();
     }
 

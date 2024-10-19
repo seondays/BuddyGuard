@@ -33,13 +33,12 @@ public record WalkRecordCreateRequest(
         @NotNull
         List<WalkRecordPathRequest> path,    // 산책 경로 (위도, 경도 배열)
         @NotNull
-        Double distance,     // 총 거리 (km 단위)
-        @NotBlank
-        String pathImges
+        Double distance     // 총 거리 (km 단위)
 
 ) {
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor(force = true)
     public static class WalkRecordPathRequest {
 
         @NotNull
