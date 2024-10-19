@@ -197,12 +197,13 @@ export const useKakaoMap = ({
   }, [handlePositionUpdate]);
 
   /** Geolocation API로 위치 감지 중단 */
-  // const stopWatchingPosition = useCallback(() => {
-  //   if (watchID.current !== null) {
-  //     navigator.geolocation.clearWatch(watchID.current);
-  //     watchID.current = null;
-  //   }
-  // }, []);
+  const stopWatchingPosition = useCallback(() => {
+    if (watchID.current !== null) {
+      console.log(`stopWatchingPosition() : ${watchID} clear!`);
+      navigator.geolocation.clearWatch(watchID.current);
+      watchID.current = null;
+    }
+  }, []);
 
   /** 선을 지도에 그리는 함수 */
   const handleDrawPolyline = useCallback(() => {
@@ -254,7 +255,7 @@ export const useKakaoMap = ({
     }
 
     return () => {
-      // stopWatchingPosition();
+      stopWatchingPosition();
       // stopPositionUpdates();
     };
   }, [isStarted, map, selectedBuddys, buddyList]);
