@@ -1,7 +1,5 @@
 package buddyguard.mybuddyguard.walk.controller.request;
 
-//import buddyguard.mybuddyguard.s3.entity.S3Images;
-import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.walk.entity.PetWalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordCenterPosition;
@@ -35,8 +33,6 @@ public record WalkRecordUpdateRequest(
         @NotNull
         List<WalkRecordPathRequest>  path,           // 산책 경로 (위도, 경도 배열)
         @NotNull
-        String pathImage,
-        @NotNull
         Double distance
 ) {
         public WalkRecord toWalkRecord(Long recordId) {
@@ -55,11 +51,10 @@ public record WalkRecordUpdateRequest(
                         .note(this.note())            // 산책에 대한 메모
                         .centerPosition(this.centerPosition().toWalkRecordCenterPosition())  // 중심 위치
                         .mapLevel(this.mapLevel())    // 지도 레벨
-                        .path(this.path().stream()
+                        .path(this.path().stream()    //산책 경로
                                 .map(WalkRecordPathRequest::toWalkRecordPath)
                                 .toList()
-                        )            // 산책 경로
-                        .pathImage(pathImage)            // 경로 이미지 파일 (S3Images 객체)
+                        )
                         .distance(this.distance())    // 총 거리
                         .build();
         }
