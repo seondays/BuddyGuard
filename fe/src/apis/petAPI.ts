@@ -1,5 +1,4 @@
 import apiClient from './axiosInstance';
-import { PetData } from '../types/pet';
 
 const PET_BASE_URL = '/pet';
 

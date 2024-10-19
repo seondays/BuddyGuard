@@ -1,37 +1,65 @@
+import React, { useEffect, useState } from 'react';
+
 import CommonCard from '@/components/molecules/CommonCard';
+import { useHospitalsInfoQuery } from '@/hooks/useHealthQuery';
+
+interface HealthRecord {
+  id: number;
+  petId: number;
+  date: string;
+  mainCategory: string;
+  subCategory: string;
+  title: string;
+  description: string;
+}
 
 export default function HealthList() {
-  const healthList = [
-    {
-      title: '건강 이력 1',
-      time: '2024년 5월 24일 월요일 17:32 ',
-      content:
-        '이것은 건강 내용 예시입니다. 아주 긴 내용입니다. 긴 내용은 잘립니다. 이것은 건강 내용 예시입니다. 아주 긴 내용입니다. 긴 내용은 잘립니다. 이것은 건강 내용 예시입니다. 아주 긴 내용입니다. 긴 내용은 잘립니다.',
-    },
-    { title: '건강 이력 2', time: '2024년 5월 27일 화요일 12:32 ', content: '건강 내용 예시 2번' },
-    {
-      title: '건강 이력 3',
-      time: '2024년 6월 14일 목요일 20:32 ',
-      content: '긴 건강 내용 예시입니다. 이 내용은 칸을 벗어나서 ...으로 표시됩니다.',
-    },
-    { title: '건강 이력 4', time: '2024년 6월 21일 토요일 12:32', content: '건강 내용 예시 4번' },
-    { title: '건강 이력 5', time: '2024년 6월 24일 월요일 13:32 ', content: '건강 내용 예시 5번' },
-    {
-      title: '건강 이력 6',
-      time: '2024년 7월 24일 월요일 09:32 ',
-      content: '긴 내용이 포함된 건강입니다. 이것도 자를 필요가 있습니다.',
-    },
-    { title: '건강 이력 7', time: '2024년 8월 14일 월요일 16:22 ', content: '건강 내용 예시 7번' },
-    { title: '건강 이력 8', time: '2024년 9월 29일 화요일 13:13 ', content: '건강 내용 예시 8번' },
-    { title: '건강 이력 9', time: '2024년 10월 3일 월요일 17:36 ', content: '건강 내용 예시 9번' },
-  ];
+  const [petId, setPetId] = useState<number | null>(null);
+
+  const updatePetIdFromStorage = () => {
+    const storedBuddy = localStorage.getItem('petsStorage');
+    if (storedBuddy) {
+      const parsedBuddy = JSON.parse(storedBuddy);
+      if (parsedBuddy?.state?.selectedBuddy) {
+        const { petId } = parsedBuddy.state.selectedBuddy;
+        setPetId(petId);
+      } else {
+        console.log('selectedBuddy가 없습니다.');
+      }
+    } else {
+      console.log('petsStorage가 없습니다.');
+    }
+  };
+
+  useEffect(() => {
+    updatePetIdFromStorage();
+
+    const interval = setInterval(() => {
+      updatePetIdFromStorage();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const { data: healthList, isLoading, isError } = useHospitalsInfoQuery(petId ?? undefined);
+
+  if (!petId) return <div>반려동물을 선택해 주세요.</div>;
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>데이터를 불러오는 데 실패했습니다.</div>;
+
   return (
     <div>
-      {healthList.map((health, index) => (
-        <CommonCard key={index} title={health.title} time={health.time} onClick={() => NaN}>
-          {health.content}
-        </CommonCard>
-      ))}
+      {healthList &&
+        healthList.map((health: HealthRecord) => (
+          <CommonCard
+            key={health.id}
+            title={health.title}
+            time={new Date(health.date).toLocaleString()}
+            onClick={() => console.log(`Clicked on ${health.title}`)}
+          >
+            {health.description}
+          </CommonCard>
+        ))}
     </div>
   );
 }
