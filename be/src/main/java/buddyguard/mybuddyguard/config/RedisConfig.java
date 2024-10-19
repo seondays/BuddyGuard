@@ -11,11 +11,10 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 @Configuration
-
 @EnableJpaRepositories(basePackages = {"buddyguard.mybuddyguard.hospital",
         "buddyguard.mybuddyguard.login", "buddyguard.mybuddyguard.pet",
         "buddyguard.mybuddyguard.weight", "buddyguard.mybuddyguard.jwt",
-        "buddyguard.mybuddyguard.walk", "buddyguard.mybuddyguard.alert"})
+        "buddyguard.mybuddyguard.walk", "buddyguard.mybuddyguard.alert", "buddyguard.mybuddyguard.walkimage"})
 @EnableRedisRepositories(basePackages = "buddyguard.mybuddyguard.invitation.repository")
 public class RedisConfig {
 
