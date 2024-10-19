@@ -69,7 +69,7 @@ export const useKakaoMap = ({
   map,
   setMap,
 }: UseKakaoMapProps) => {
-  // const watchID = useRef<number | null>(null); // watchPosition ID
+  const watchID = useRef<number | null>(null); // watchPosition ID
   // const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
   // const intervalID = useRef<NodeJS.Timeout | null>(null);
 
@@ -125,7 +125,8 @@ export const useKakaoMap = ({
         const updatedPosition: PositionType = [position.coords.latitude, position.coords.longitude];
         const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
-        console.log(updatedPosition);
+        console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
+
         // linePath에 좌표 추가
         linePathRef.current.push(newLatLng);
 
@@ -165,23 +166,24 @@ export const useKakaoMap = ({
   // }, []);
 
   /** Geolocation API로 위치 감지 시작 */
-  // const startWatchingPosition = useCallback(() => {
-  //   if (navigator.geolocation) {
-  //     watchID.current = navigator.geolocation.watchPosition(
-  //       (position) => handlePositionUpdate(position),
-  //       (error) => {
-  //         console.error('Error fetching position', error);
-  //       },
-  //       {
-  //         enableHighAccuracy: true, // 고정밀도 사용
-  //         timeout: 10000, // 10초 내에 위치 정보 못 가져오면 실패 처리
-  //         maximumAge: 0, // 캐시된 위치 정보 사용 안함
-  //       }
-  //     );
-  //   } else {
-  //     console.error('Geolocation API not supported by this browser.');
-  //   }
-  // }, [handlePositionUpdate]);
+  const startWatchingPosition = useCallback(() => {
+    if (navigator.geolocation) {
+      watchID.current = navigator.geolocation.watchPosition(
+        (position) => handlePositionUpdate(position),
+        // handlePositionUpdate,
+        (error) => {
+          console.error('Error fetching position', error);
+        },
+        {
+          enableHighAccuracy: true, // 고정밀도 사용
+          timeout: 10000, // 10초 내에 위치 정보 못 가져오면 실패 처리
+          maximumAge: 0, // 캐시된 위치 정보 사용 안함
+        }
+      );
+    } else {
+      console.error('Geolocation API not supported by this browser.');
+    }
+  }, [handlePositionUpdate]);
 
   /** Geolocation API로 위치 감지 중단 */
   // const stopWatchingPosition = useCallback(() => {
@@ -236,7 +238,7 @@ export const useKakaoMap = ({
   useEffect(() => {
     if (isStarted === 'start' && map && selectedBuddys.length) {
       replaceCustomOverLay({ overlayRef, markerRef });
-      // startWatchingPosition();
+      startWatchingPosition();
       // startPositionUpdates();
     }
 
