@@ -97,10 +97,7 @@ export const useKakaoMap = ({
   /** 위치를 받아와 업데이트하는 함수 */
   const handlePositionUpdate = useCallback(
     (position: GeolocationPosition) => {
-      // async () => {
       try {
-        // const currentPosition = await getcurrentLocation();
-        // const newLatLng = new kakao.maps.LatLng(currentPosition[0], currentPosition[1]);
         const updatedPosition: PositionType = [position.coords.latitude, position.coords.longitude];
         const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
@@ -140,7 +137,6 @@ export const useKakaoMap = ({
     if (navigator.geolocation) {
       watchID.current = navigator.geolocation.watchPosition(
         (position) => handlePositionUpdate(position),
-        // handlePositionUpdate,
         (error) => {
           console.error('Error fetching position', error);
         },
@@ -249,8 +245,6 @@ export const useKakaoMap = ({
       overlayRef.current.setMap(null);
 
       if (watchID.current !== null) stopWatchingPosition();
-      // stopWatchingPosition();
-      // stopPositionUpdates();
     }
   }, [map, walkStatus, stopWatchingPosition]);
 
