@@ -17,12 +17,12 @@ type PetState = {
 
 export const usePetStore = create<PetState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       petsInfo: [],
       selectedBuddy: null,
       setPetsInfo: (pets) => {
         set({ petsInfo: pets });
-        if (pets.length > 0) {
+        if (!get().selectedBuddy && pets.length > 0) {
           set({ selectedBuddy: pets[0] });
         }
       },

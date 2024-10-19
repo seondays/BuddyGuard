@@ -8,26 +8,20 @@ import { usePetStore } from '@/stores/usePetStore';
 import { PetInfo } from '@/types/pet';
 
 export default function BuddyInfoBar() {
-  const { petsInfo } = usePetStore();
-  const [selectedBuddy, setSelectedBuddy] = useState<PetInfo | null>(petsInfo[0] || null);
+  const { petsInfo, selectedBuddy, setSelectedBuddy } = usePetStore();
   const location = useLocation();
   const isHome = location.pathname === '/';
 
-  const [showChangeText, setShowChangeText] = useState(true);
-
   const handleBuddyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const buddyId = parseInt(e.target.value, 10);
-    const selectedBuddy = petsInfo.find((buddy) => buddy.petId === buddyId);
-    setSelectedBuddy(selectedBuddy || null);
-    setShowChangeText(true);
+    const buddy = petsInfo.find((pet) => pet.petId === buddyId);
+    if (buddy) {
+      setSelectedBuddy(buddy);
+    }
   };
 
   if (petsInfo.length === 0) {
-    return (
-      <StyledBarWrapper>
-        <Span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>버디를 등록해주세요</Span>
-      </StyledBarWrapper>
-    );
+    return <div>버디를 등록해주세요</div>;
   }
 
   return (
@@ -38,14 +32,7 @@ export default function BuddyInfoBar() {
           <StyledSpan>{selectedBuddy?.petName || '버디 이름'}</StyledSpan>
         </BuddyInfo>
         <SelectWrapper>
-          <SelectBox
-            onClick={() => setShowChangeText(false)}
-            onChange={handleBuddyChange}
-            value={showChangeText ? '' : selectedBuddy?.petId}
-          >
-            <option value="" disabled>
-              {showChangeText ? '버디 변경' : '버디 선택'} {/* Static text */}
-            </option>
+          <SelectBox value={selectedBuddy?.petId} onChange={handleBuddyChange}>
             {petsInfo.map((buddy) => (
               <option key={buddy.petId} value={buddy.petId}>
                 {buddy.petName}
@@ -54,7 +41,6 @@ export default function BuddyInfoBar() {
           </SelectBox>
         </SelectWrapper>
       </TopInfo>
-
       {isHome && (
         <BottomInfo>
           <Span>미해결</Span>
