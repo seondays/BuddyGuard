@@ -201,7 +201,7 @@ export const useKakaoMap = ({
   const stopWatchingPosition = useCallback(() => {
     // console.log(`❕stop WatchingPosition()`);
     if (watchID.current !== null) {
-      // console.log(`❕stop WatchingPosition() : ${watchID} clear!`);
+      // console.log(`❕❕stop WatchingPosition() : ${watchID} clear!`);
       navigator.geolocation.clearWatch(watchID.current);
       watchID.current = null;
     }
@@ -308,11 +308,13 @@ export const useKakaoMap = ({
 
       overlayRef.current.setMap(null);
 
+      if (watchID.current !== null) stopWatchingPosition();
       // stopWatchingPosition();
       // stopPositionUpdates();
     }
-  }, [map, walkStatus]);
+  }, [map, walkStatus, stopWatchingPosition]);
 
+  // 시작, 일시중지, 재시작
   useEffect(() => {
     // 시작 시 위치 업데이트 재개 + 마커의 새로운 위치로 오버레이 이동
     if (isStarted === 'start' && walkStatus === 'start' && map && selectedBuddys.length) {
@@ -329,10 +331,6 @@ export const useKakaoMap = ({
     if (walkStatus === 'pause' && watchID.current !== null) {
       stopWatchingPosition();
     }
-
-    return () => {
-      stopWatchingPosition();
-    };
   }, [
     isStarted,
     walkStatus,
