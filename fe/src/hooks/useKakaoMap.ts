@@ -73,8 +73,6 @@ export const useKakaoMap = ({
   setMap,
 }: UseKakaoMapProps) => {
   const watchID = useRef<number | null>(null); // watchPosition ID
-  // const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
-  // const intervalID = useRef<NodeJS.Timeout | null>(null);
 
   const markerRef = useRef<kakao.maps.Marker | null>(null);
   const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
@@ -95,28 +93,6 @@ export const useKakaoMap = ({
     if (!(overlayRef.current && markerRef.current)) return;
     overlayRef.current.setPosition(markerRef.current.getPosition());
   };
-
-  // const updatePosition = useCallback(
-  //   (prev: PositionPair): PositionPair => {
-  //     const currentPosition = prev.current;
-  //     const updatedPosition: PositionType = [
-  //       currentPosition[0] + Math.random() * 0.001,
-  //       currentPosition[1] + Math.random() * 0.001,
-  //     ];
-
-  //     const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
-
-  //     // linePath에 좌표 추가
-  //     linePathRef.current.push(newLatLng);
-
-  //     // 마커+오버레이 위치 변경
-  //     markerRef.current?.setPosition(newLatLng);
-  //     overlayRef.current?.setPosition(newLatLng);
-
-  //     return { previous: currentPosition, current: updatedPosition };
-  //   },
-  //   [linePathRef]
-  // );
 
   /** 위치를 받아와 업데이트하는 함수 */
   const handlePositionUpdate = useCallback(
@@ -157,24 +133,6 @@ export const useKakaoMap = ({
     },
     [positions, linePathRef, markerRef, overlayRef]
   );
-  /** 30초마다 위치 업데이트를 하는 함수 */
-  // const startPositionUpdates = useCallback(() => {
-  // handlePositionUpdate(); // 초기 위치 업데이트
-
-  // intervalID.current = setInterval(() => {
-  // console.log('interval');
-  // handlePositionUpdate(); // 30초마다 위치 업데이트
-  // }, 30000); // 30초마다 위치 업데이트
-  // }, 3000); // 3초마다 위치 업데이트
-  // }, [handlePositionUpdate]);
-
-  /** 위치 업데이트 중단 */
-  // const stopPositionUpdates = useCallback(() => {
-  // if (intervalID.current) {
-  //   clearInterval(intervalID.current);
-  //   intervalID.current = null;
-  // }
-  // }, []);
 
   /** Geolocation API로 위치 감지 시작 */
   const startWatchingPosition = useCallback(() => {
@@ -219,24 +177,6 @@ export const useKakaoMap = ({
   useEffect(() => {
     handleDrawPolyline();
   }, [positions, handleDrawPolyline]);
-
-  /** 임의의 위치 업데이트 함수 */
-  // const simulateLocationUpdate = useCallback(() => {
-  //   const intervalId = setInterval(() => {
-  //     // 위치 업데이트
-  //     setPositions(updatePosition);
-  //     // 지도에 경로 선 그리기
-  //     handleDrawPolyline();
-  //   }, 2000);
-
-  //   return intervalId;
-  // }, [handleDrawPolyline, updatePosition]);
-
-  // const clearSimulate = () => {
-  //   if (!simulateIntervalID.current) return;
-  //   clearInterval(simulateIntervalID?.current);
-  //   simulateIntervalID.current = null;
-  // };
 
   /** 현재위치로 이동 및 위치 상태 업데이트 */
   const handleMapMoveAndStateUpdate = useCallback(() => {
@@ -340,17 +280,6 @@ export const useKakaoMap = ({
     startWatchingPosition,
     stopWatchingPosition,
   ]);
-
-  // 위치 업데이트 인터벌 관리
-  // useEffect(() => {
-  //   if (isStarted !== 'start') return;
-  //   if (walkStatus === 'stop' || walkStatus === 'pause') return;
-  //   simulateIntervalID.current = simulateLocationUpdate();
-
-  //   return () => {
-  //     if (simulateIntervalID.current) clearSimulate();
-  //   };
-  // }, [isStarted, simulateLocationUpdate, walkStatus]);
 
   // 위치가 변경되었을 때 지도 중심 이동 (지도 다시 초기화하지 않음)
   useEffect(() => {
