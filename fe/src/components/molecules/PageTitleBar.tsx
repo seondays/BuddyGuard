@@ -4,11 +4,15 @@ import styled, { useTheme } from 'styled-components';
 import Span from '@/components/atoms/Span';
 import arrow_back from '@/svg/arrow_back.svg';
 
-export default function PageTitleBar({ title }: { title: string }) {
+type props = {
+  title: string;
+  route?: string;
+};
+export default function PageTitleBar({ title, route }: props) {
   const titleColor = useTheme().currentTheme.textPrimary;
   const navigate = useNavigate();
 
-  const handleClick = () => navigate('/menu');
+  const handleClick = () => navigate(`${route ? route : '/menu'}`);
 
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', position: 'relative', padding: '1rem' }}>
