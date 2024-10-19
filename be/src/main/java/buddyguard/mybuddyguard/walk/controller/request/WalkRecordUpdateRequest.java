@@ -2,6 +2,7 @@ package buddyguard.mybuddyguard.walk.controller.request;
 
 //import buddyguard.mybuddyguard.s3.entity.S3Images;
 import buddyguard.mybuddyguard.pet.entity.Pet;
+import buddyguard.mybuddyguard.walk.entity.PetWalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordCenterPosition;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordPath;
@@ -14,7 +15,7 @@ import lombok.Getter;
 
 public record WalkRecordUpdateRequest(
         @NotNull
-        List<Long> buddyIds,       // 추가된 반려동물들의 ID 배열 (문자열)
+        List<Long> pets,       // 추가된 반려동물들의 ID 배열 (문자열)
         @NotNull
         LocalDate startDate,   // 산책 시작 날짜
         @NotNull
@@ -41,8 +42,8 @@ public record WalkRecordUpdateRequest(
         public WalkRecord toWalkRecord(Long recordId) {
                 return WalkRecord.builder()
                         .id(recordId)
-                        .buddies(this.buddyIds().stream()
-                                .map(id -> Pet.builder()
+                        .petWalkRecords(this.pets().stream()
+                                .map(id -> PetWalkRecord.builder()
                                         .id(id)
                                         .build())
                                 .toList())    // 선택한 반려동물들의 ID 배열

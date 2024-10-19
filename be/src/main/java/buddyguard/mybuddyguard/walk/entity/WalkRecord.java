@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.walk.entity;
 
 //import buddyguard.mybuddyguard.s3.entity.S3Images;
+
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -25,7 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "WALK_RECORDS")
+@Table(name = "WALK_RECORD")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -37,13 +38,8 @@ public class WalkRecord {
     private Long id;
 
     // 산책에 참여한 여러 마리의 펫 (N:N 관계 설정)
-    @ManyToMany
-    @JoinTable(
-            name = "walk_record_pet",
-            joinColumns = @JoinColumn(name = "walk_record_id"),
-            inverseJoinColumns = @JoinColumn(name = "pet_id")
-    )
-    private List<Pet> buddies;
+    @OneToMany(mappedBy = "walkRecord", fetch = FetchType.LAZY)
+    private List<PetWalkRecord> petWalkRecords;
 
     // 산책 시작 날짜 (예: 2024년 10월 7일)
     @Column(name = "start_date", nullable = false)
@@ -78,7 +74,6 @@ public class WalkRecord {
     @Column(name = "map_level", nullable = false)
     private Integer mapLevel;
 
-    // 산책 경로 (1:1 관계 설정)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "path_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<WalkRecordPath> path;
@@ -92,8 +87,8 @@ public class WalkRecord {
     @Column(name = "distance", nullable = false)
     private Double distance;
 
-    public boolean hasBuddy(Long petId) {
-        return buddies.stream()
-                .anyMatch(buddy -> buddy.getId().equals(petId));
+    public boolean hasBuddy(long petId) {
+        return petWalkRecords.stream()
+                .anyMatch(petWalkRecord -> petWalkRecord.getPetId().equals(petId));
     }
 }
