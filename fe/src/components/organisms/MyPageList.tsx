@@ -2,14 +2,21 @@ import MyPageItem from '../molecules/MyPageItem';
 
 export default function MyPageList() {
   const handleLogout = () => {
+    // 캐시 스토리지 삭제
+    caches.keys().then(function (names) {
+      for (const name of names) caches.delete(name);
+    });
+
+    // 로컬 스토리지 삭제
     localStorage.clear();
 
+    // 쿠키 삭제
     document.cookie.split(';').forEach((cookie) => {
       const [name] = cookie.split('=');
       document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     });
 
-    window.location.href = '/';
+    window.location.href = '/join';
   };
 
   return (
