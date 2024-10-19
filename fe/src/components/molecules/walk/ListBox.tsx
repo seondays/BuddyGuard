@@ -8,9 +8,10 @@ import testProfile01 from '@public/images/profile01.png';
 
 export interface ListBoxProps {
   record: record;
+  onClickHandler: (record: any) => void;
 }
 
-export default function ListBox({ record }: ListBoxProps) {
+export default function ListBox({ record, onClickHandler }: ListBoxProps) {
   const pathImageStyle = { width: `3rem`, borderRadius: `0.5rem`, marginRight: `1rem` };
   const buddyImageStyle = {
     width: ` 1.5rem`,
@@ -18,7 +19,7 @@ export default function ListBox({ record }: ListBoxProps) {
     border: `0.1rem solid white`,
   };
   return (
-    <StyledListBoxWrapper>
+    <StyledListBoxWrapper onClick={() => onClickHandler(record)}>
       <Image src={record.pathImage} style={pathImageStyle} $isHover={false} />
 
       <StyledInfoWrapper>
