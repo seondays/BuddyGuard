@@ -10,8 +10,8 @@ export default {
 } as Meta;
 
 // 템플릿 생성
-const Template: StoryFn<ListBoxProps> = ({ record }: ListBoxProps) => {
-  return <ListBox record={record} />;
+const Template: StoryFn<ListBoxProps> = ({ record, onClickHandler }: ListBoxProps) => {
+  return <ListBox record={record} onClickHandler={onClickHandler} />;
 };
 
 export const Default = Template.bind({});

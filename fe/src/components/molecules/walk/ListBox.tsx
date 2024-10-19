@@ -8,7 +8,7 @@ import testProfile01 from '@public/images/profile01.png';
 
 export interface ListBoxProps {
   record: record;
-  onClickHandler: (record: any) => void;
+  onClickHandler: (record: record) => void;
 }
 
 export default function ListBox({ record, onClickHandler }: ListBoxProps) {
