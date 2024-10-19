@@ -69,7 +69,9 @@ export const useKakaoMap = ({
   map,
   setMap,
 }: UseKakaoMapProps) => {
+  const watchID = useRef<number | null>(null);
   const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
+  const intervalID = useRef<NodeJS.Timeout | null>(null);
 
   const markerRef = useRef<kakao.maps.Marker | null>(null);
   const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
@@ -91,27 +93,103 @@ export const useKakaoMap = ({
     overlayRef.current.setPosition(markerRef.current.getPosition());
   };
 
-  const updatePosition = useCallback(
-    (prev: PositionPair): PositionPair => {
-      const currentPosition = prev.current;
-      const updatedPosition: PositionType = [
-        currentPosition[0] + Math.random() * 0.001,
-        currentPosition[1] + Math.random() * 0.001,
-      ];
+  // const updatePosition = useCallback(
+  //   (prev: PositionPair): PositionPair => {
+  //     const currentPosition = prev.current;
+  //     const updatedPosition: PositionType = [
+  //       currentPosition[0] + Math.random() * 0.001,
+  //       currentPosition[1] + Math.random() * 0.001,
+  //     ];
 
-      const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
+  //     const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
-      // linePath에 좌표 추가
-      linePathRef.current.push(newLatLng);
+  //     // linePath에 좌표 추가
+  //     linePathRef.current.push(newLatLng);
 
-      // 마커+오버레이 위치 변경
-      markerRef.current?.setPosition(newLatLng);
-      overlayRef.current?.setPosition(newLatLng);
+  //     // 마커+오버레이 위치 변경
+  //     markerRef.current?.setPosition(newLatLng);
+  //     overlayRef.current?.setPosition(newLatLng);
 
-      return { previous: currentPosition, current: updatedPosition };
+  //     return { previous: currentPosition, current: updatedPosition };
+  //   },
+  //   [linePathRef]
+  // );
+
+  /** 위치를 받아와 업데이트하는 함수 */
+  const handlePositionUpdate = useCallback(
+    // (position: GeolocationPosition) => {
+    async () => {
+      try {
+        const currentPosition = await getcurrentLocation();
+        const newLatLng = new kakao.maps.LatLng(currentPosition[0], currentPosition[1]);
+        // const updatedPosition: PositionType = [position.coords.latitude, position.coords.longitude];
+        // const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
+
+        console.log(currentPosition);
+        // linePath에 좌표 추가
+        linePathRef.current.push(newLatLng);
+
+        // 마커와 오버레이 위치 업데이트
+        markerRef.current?.setPosition(newLatLng);
+        overlayRef.current?.setPosition(newLatLng);
+
+        // 상태 업데이트
+        setPositions((prev) => ({
+          previous: prev.current,
+          // current: updatedPosition,
+          current: currentPosition,
+        }));
+      } catch (error) {
+        console.error('Error fetching position:', error);
+      }
     },
     [linePathRef]
   );
+  /** 30초마다 위치 업데이트를 하는 함수 */
+  const startPositionUpdates = useCallback(() => {
+    handlePositionUpdate(); // 초기 위치 업데이트
+
+    intervalID.current = setInterval(() => {
+      console.log('interval');
+      handlePositionUpdate(); // 30초마다 위치 업데이트
+      // }, 30000); // 30초마다 위치 업데이트
+    }, 3000); // 3초마다 위치 업데이트
+  }, [handlePositionUpdate]);
+
+  /** 위치 업데이트 중단 */
+  const stopPositionUpdates = useCallback(() => {
+    if (intervalID.current) {
+      clearInterval(intervalID.current);
+      intervalID.current = null;
+    }
+  }, []);
+
+  /** Geolocation API로 위치 감지 시작 */
+  // const startWatchingPosition = useCallback(() => {
+  //   if (navigator.geolocation) {
+  //     watchID.current = navigator.geolocation.watchPosition(
+  //       (position) => handlePositionUpdate(position),
+  //       (error) => {
+  //         console.error('Error fetching position', error);
+  //       },
+  //       {
+  //         enableHighAccuracy: true, // 고정밀도 사용
+  //         timeout: 10000, // 10초 내에 위치 정보 못 가져오면 실패 처리
+  //         maximumAge: 0, // 캐시된 위치 정보 사용 안함
+  //       }
+  //     );
+  //   } else {
+  //     console.error('Geolocation API not supported by this browser.');
+  //   }
+  // }, [handlePositionUpdate]);
+
+  /** Geolocation API로 위치 감지 중단 */
+  // const stopWatchingPosition = useCallback(() => {
+  //   if (watchID.current !== null) {
+  //     navigator.geolocation.clearWatch(watchID.current);
+  //     watchID.current = null;
+  //   }
+  // }, []);
 
   /** 선을 지도에 그리는 함수 */
   const handleDrawPolyline = useCallback(() => {
@@ -121,23 +199,28 @@ export const useKakaoMap = ({
     }
   }, [map, linePathRef]);
 
+  // 지도에 경로 그리기
+  useEffect(() => {
+    handleDrawPolyline();
+  }, [positions, handleDrawPolyline]);
+
   /** 임의의 위치 업데이트 함수 */
-  const simulateLocationUpdate = useCallback(() => {
-    const intervalId = setInterval(() => {
-      // 위치 업데이트
-      setPositions(updatePosition);
-      // 지도에 경로 선 그리기
-      handleDrawPolyline();
-    }, 2000);
+  // const simulateLocationUpdate = useCallback(() => {
+  //   const intervalId = setInterval(() => {
+  //     // 위치 업데이트
+  //     setPositions(updatePosition);
+  //     // 지도에 경로 선 그리기
+  //     handleDrawPolyline();
+  //   }, 2000);
 
-    return intervalId;
-  }, [handleDrawPolyline, updatePosition]);
+  //   return intervalId;
+  // }, [handleDrawPolyline, updatePosition]);
 
-  const clearSimulate = () => {
-    if (!simulateIntervalID.current) return;
-    clearInterval(simulateIntervalID?.current);
-    simulateIntervalID.current = null;
-  };
+  // const clearSimulate = () => {
+  //   if (!simulateIntervalID.current) return;
+  //   clearInterval(simulateIntervalID?.current);
+  //   simulateIntervalID.current = null;
+  // };
 
   /** 현재위치로 이동 및 위치 상태 업데이트 */
   const handleMapMoveAndStateUpdate = useCallback(() => {
@@ -149,10 +232,18 @@ export const useKakaoMap = ({
   }, [map, setIsTargetClicked, positions, setChangedPosition]);
 
   // 마커의 새로운 위치로 오버레이 이동
+  // 위치 업데이트 시작
   useEffect(() => {
     if (isStarted === 'start' && map && selectedBuddys.length) {
       replaceCustomOverLay({ overlayRef, markerRef });
+      // startWatchingPosition();
+      startPositionUpdates();
     }
+
+    return () => {
+      // stopWatchingPosition();
+      stopPositionUpdates();
+    };
   }, [isStarted, map, selectedBuddys, buddyList]);
 
   // 오버레이 설정
@@ -217,14 +308,24 @@ export const useKakaoMap = ({
       setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
 
       overlayRef.current.setMap(null);
+
+      // stopWatchingPosition();
+      stopPositionUpdates();
     }
   }, [map, walkStatus]);
 
   // 일시 중지, 시작 버튼
   useEffect(() => {
-    if (walkStatus === 'pause' && simulateIntervalID.current) clearSimulate();
-    if (walkStatus === 'start' && isPositionsDifferent(positions, changedPosition) && map)
+    if (walkStatus === 'pause' && simulateIntervalID.current) {
+      // clearSimulate();
+      // stopWatchingPosition();
+      stopPositionUpdates();
+    }
+    if (walkStatus === 'start' && isPositionsDifferent(positions, changedPosition) && map) {
       handleMapMoveAndStateUpdate();
+      // startWatchingPosition();
+      startPositionUpdates();
+    }
   }, [walkStatus, handleMapMoveAndStateUpdate, positions, changedPosition, map]);
 
   // 위치 업데이트 인터벌 관리
