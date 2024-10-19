@@ -1,69 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { z } from 'zod';
 
 import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
 import PageTitleBar from '@/components/molecules/PageTitleBar';
+import { useBuddyFormHandlers } from '@/hooks/useBuddyFormHandlers';
 import { useCreatePetMutation } from '@/hooks/usePetAPI';
-import { petSchema } from '@/schema/formSchema';
-import { PetData } from '@/types/pet';
 
 export default function AddBuddy() {
-  const [formData, setFormData] = useState<PetData>({
-    name: '',
-    type: '',
-    birth: '',
-    profile_image: '',
-  });
-
-  const [file, setFile] = useState<File | null>(null);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const {
+    formData,
+    file,
+    errors,
+    handleInputChange,
+    handleDateInputChange,
+    handleFileChange,
+    handleProfileImageClick,
+    validateAndSubmit,
+  } = useBuddyFormHandlers();
   const createPetMutation = useCreatePetMutation();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const handleProfileImageClick = () => {
-    document.getElementById('profile-image-input')?.click();
-  };
-
-  const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    let cleanedValue = value.replace(/[^0-9]/g, '');
-
-    if (cleanedValue.length >= 5 && cleanedValue.length <= 6) {
-      cleanedValue = `${cleanedValue.slice(0, 4)}-${cleanedValue.slice(4)}`;
-    } else if (cleanedValue.length >= 7) {
-      cleanedValue = `${cleanedValue.slice(0, 4)}-${cleanedValue.slice(4, 6)}-${cleanedValue.slice(6, 8)}`;
-    }
-
-    setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      petSchema.parse(formData);
-      setErrors({});
-
-      const formDataToSubmit = new FormData();
-      formDataToSubmit.append('name', formData.name);
-      formDataToSubmit.append('type', formData.type);
-      formDataToSubmit.append('birth', formData.birth);
-      if (file) {
-        formDataToSubmit.append('profile_image', file);
-      }
-
+    validateAndSubmit((formDataToSubmit) => {
       createPetMutation.mutate(formDataToSubmit, {
         onSuccess: () => {
           console.log('버디 추가 완료');
@@ -72,23 +30,12 @@ export default function AddBuddy() {
           console.error('버디 추가 실패:', error);
         },
       });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const newErrors: { [key: string]: string } = {};
-        error.errors.forEach((err) => {
-          if (err.path[0]) {
-            newErrors[err.path[0] as string] = err.message;
-          }
-        });
-        setErrors(newErrors);
-      }
-    }
+    });
   };
 
   return (
     <Container>
       <PageTitleBar route="/MyPage" title="내 정보" />
-
       <FormTitle>새로운 버디 추가</FormTitle>
       <Form onSubmit={handleSubmit}>
         <FieldWrapper>
@@ -122,7 +69,7 @@ export default function AddBuddy() {
           {errors.birth && <ErrorMessage>{errors.birth}</ErrorMessage>}
         </FieldWrapper>
         <FieldWrapper>
-          <StyledInput placeholder="프로필 이미지를 선택해주세요" onClick={handleProfileImageClick} readOnly />
+          <StyledInput placeholder="프로필 이미지" onClick={handleProfileImageClick} readOnly />
           <HiddenFileInput id="profile-image-input" type="file" accept="image/*" onChange={handleFileChange} />
           {file && <ImagePreview src={URL.createObjectURL(file)} alt="선택된 이미지 미리보기" />}
         </FieldWrapper>
@@ -156,6 +103,7 @@ const ErrorMessage = styled.span`
   color: red;
   font-size: 0.9rem;
 `;
+
 const FieldWrapper = styled.div`
   margin-bottom: 1rem;
   display: flex;
@@ -178,7 +126,7 @@ const HiddenFileInput = styled.input`
   width: 0;
 `;
 
-const StyledInput = styled(Input)`
+const StyledInput = styled.input`
   padding: 0.8rem;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
@@ -188,7 +136,6 @@ const StyledInput = styled(Input)`
     outline: none;
     border-color: orange;
   }
-  cursor: pointer;
 `;
 
 const StyledButton = styled(Button)`

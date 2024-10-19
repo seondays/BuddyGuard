@@ -1,40 +1,55 @@
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
+import { usePetStore } from '@/stores/usePetStore';
+import { PetInfo } from '@/types/pet';
 
 export default function BuddyInfoBar() {
+  const { petsInfo, selectedBuddy, setSelectedBuddy } = usePetStore();
   const location = useLocation();
-
   const isHome = location.pathname === '/';
 
-  const handleChangeBuddy = () => {};
-  return (
-    <StyledBarWrapper onClick={handleChangeBuddy}>
-      <div id="top-info" style={{ display: 'flex', alignItems: 'center' }}>
-        <Image
-          src="/assets/icons/defaultBuddy.png"
-          style={{
-            width: '2.2rem',
-            height: '2.2rem',
-            borderRadius: '50%',
-            marginRight: '1rem',
-            border: '0.2rem solid white',
-          }}
-        />
-        <Span>버디 이름</Span>
-      </div>
+  const handleBuddyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const buddyId = parseInt(e.target.value, 10);
+    const buddy = petsInfo.find((pet) => pet.petId === buddyId);
+    if (buddy) {
+      setSelectedBuddy(buddy);
+    }
+  };
 
+  if (petsInfo.length === 0) {
+    return <div>버디를 등록해주세요</div>;
+  }
+
+  return (
+    <StyledBarWrapper>
+      <TopInfo>
+        <BuddyInfo>
+          <StyledImage src="/assets/images/mascot.png" alt="버디 이미지" />
+          <StyledSpan>{selectedBuddy?.petName || '버디 이름'}</StyledSpan>
+        </BuddyInfo>
+        <SelectWrapper>
+          <SelectBox value={selectedBuddy?.petId} onChange={handleBuddyChange}>
+            {petsInfo.map((buddy) => (
+              <option key={buddy.petId} value={buddy.petId}>
+                {buddy.petName}
+              </option>
+            ))}
+          </SelectBox>
+        </SelectWrapper>
+      </TopInfo>
       {isHome && (
-        <div id="bottom-info" style={{ display: 'flex', justifyContent: 'space-around', marginTop: '1rem' }}>
+        <BottomInfo>
           <Span>미해결</Span>
           <Span>일정</Span>
           <Span>건강</Span>
           <Span>체중</Span>
           <Span>산책</Span>
           <Span>식사량</Span>
-        </div>
+        </BottomInfo>
       )}
     </StyledBarWrapper>
   );
@@ -45,4 +60,57 @@ const StyledBarWrapper = styled.div`
   padding: 0.6rem 1rem;
   background-color: ${({ theme }) => theme.themeValues.colorValues.special.modalBg};
   border-radius: 1rem;
+`;
+
+const TopInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const BuddyInfo = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledImage = styled(Image)`
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  margin-right: 1rem;
+  border: 0.2rem solid white;
+`;
+
+const StyledSpan = styled(Span)`
+  font-size: 1.2rem;
+`;
+
+const SelectWrapper = styled.div`
+  margin-left: 1rem;
+`;
+
+const SelectBox = styled.select`
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: none;
+  background-color: transparent;
+  color: #333;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  box-shadow: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+
+const BottomInfo = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
 `;
