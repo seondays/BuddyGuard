@@ -87,7 +87,7 @@ export default function AddBuddy() {
 
   return (
     <Container>
-      <PageTitleBar title="내 정보" />
+      <PageTitleBar route="/MyPage" title="내 정보" />
 
       <FormTitle>새로운 버디 추가</FormTitle>
       <Form onSubmit={handleSubmit}>

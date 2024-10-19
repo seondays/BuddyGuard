@@ -18,7 +18,7 @@ export default function MyBuddy() {
 
   return (
     <MyBuddyContainer>
-      <PageTitleBar title="나의 버디" />
+      <PageTitleBar route="/MyPage" title="나의 버디" />
 
       <ProfileWrapper>
         <Image src={defaultProfileImage} style={{ width: '80%' }} alt="프로필 이미지" />
