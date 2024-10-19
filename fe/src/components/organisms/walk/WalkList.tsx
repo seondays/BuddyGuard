@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import ListBox, { StyledListBoxWrapper } from '@/components/molecules/walk/ListBox';
 import { flexColumn } from '@/styles/layoutStyles';
 import Puppy from '@/svg/puppy.svg';
 import { FilterType, record } from '@/types/walk';
+
+import WalkModal from './WalkModal';
 
 interface WalkListProps {
   records: record[];
@@ -12,6 +15,12 @@ interface WalkListProps {
 }
 
 export default function WalkList({ records, selectedData, type }: WalkListProps) {
+  const [isClickDetail, setIsClickDetail] = useState(false);
+  const onClickHandler = (selectedData: record) => {
+    console.log(selectedData);
+    // setIsClickDetail(true);
+  };
+
   const NoRecordBox = () => (
     <NoRecordBoxWrapper>
       <StyledPuppy />
@@ -21,10 +30,16 @@ export default function WalkList({ records, selectedData, type }: WalkListProps)
 
   const renderContent = () => {
     if (type === 'all') {
-      return selectedData ? <ListBox record={selectedData} /> : <NoRecordBox />;
+      return selectedData ? (
+        <ListBox record={selectedData} onClickHandler={() => onClickHandler(selectedData)} />
+      ) : (
+        <NoRecordBox />
+      );
     } else {
       return records.length > 0 ? (
-        records.map((record, idx) => <ListBox record={record} key={`record-${idx}`} />)
+        records.map((record, idx) => (
+          <ListBox key={`record-${idx}`} record={record} onClickHandler={() => onClickHandler(record)} />
+        ))
       ) : (
         <NoRecordBox />
       );

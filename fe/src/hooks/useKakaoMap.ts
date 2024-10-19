@@ -20,7 +20,7 @@ import {
 } from '@/helper/kakaoMapHelpers';
 import { BuddysType, PositionPair, PositionType, SelectedBuddysType, StatusOfTime } from '@/types/map';
 import { drawGrid, fillBackground, initCanvas } from '@/utils/canvasUtils';
-import { calculateTotalDistance } from '@/utils/mapUtils';
+import { calculateDistance, calculateTotalDistance } from '@/utils/mapUtils';
 import { getCurrentDate } from '@/utils/timeUtils';
 import { delay } from '@/utils/utils';
 
@@ -52,6 +52,9 @@ export interface SetOverlayProps {
   closeButton: HTMLImageElement;
 }
 
+/** 거리 임계 값(미터 단위) */
+const THRESHOLD_METER = 50;
+
 export const useKakaoMap = ({
   mapRef,
   buddyList,
@@ -69,7 +72,7 @@ export const useKakaoMap = ({
   map,
   setMap,
 }: UseKakaoMapProps) => {
-  const simulateIntervalID = useRef<NodeJS.Timeout | null>(null);
+  const watchID = useRef<number | null>(null); // watchPosition ID
 
   const markerRef = useRef<kakao.maps.Marker | null>(null);
   const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
@@ -91,27 +94,72 @@ export const useKakaoMap = ({
     overlayRef.current.setPosition(markerRef.current.getPosition());
   };
 
-  const updatePosition = useCallback(
-    (prev: PositionPair): PositionPair => {
-      const currentPosition = prev.current;
-      const updatedPosition: PositionType = [
-        currentPosition[0] + Math.random() * 0.001,
-        currentPosition[1] + Math.random() * 0.001,
-      ];
+  /** 위치를 받아와 업데이트하는 함수 */
+  const handlePositionUpdate = useCallback(
+    (position: GeolocationPosition) => {
+      try {
+        const updatedPosition: PositionType = [position.coords.latitude, position.coords.longitude];
+        const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
-      const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
+        // 이전 위치와 거리 계산
+        const prevPosition = positions.current;
+        const distance = prevPosition
+          ? calculateDistance(prevPosition[0], prevPosition[1], updatedPosition[0], updatedPosition[1]) * 1000
+          : null;
 
-      // linePath에 좌표 추가
-      linePathRef.current.push(newLatLng);
+        // 위치 변화가 거리 임계 값 이상일 경우에만 업데이트
+        if (!distance || distance >= THRESHOLD_METER) {
+          // console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
 
-      // 마커+오버레이 위치 변경
-      markerRef.current?.setPosition(newLatLng);
-      overlayRef.current?.setPosition(newLatLng);
+          // linePath에 좌표 추가
+          linePathRef.current.push(newLatLng);
 
-      return { previous: currentPosition, current: updatedPosition };
+          // 마커와 오버레이 위치 업데이트
+          markerRef.current?.setPosition(newLatLng);
+          overlayRef.current?.setPosition(newLatLng);
+
+          // 상태 업데이트
+          setPositions((prev) => ({
+            previous: prev.current,
+            current: updatedPosition,
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching position:', error);
+      }
     },
-    [linePathRef]
+    [positions, linePathRef, markerRef, overlayRef]
   );
+
+  /** Geolocation API로 위치 감지 시작 */
+  const startWatchingPosition = useCallback(() => {
+    // console.log('🙂 start WatchingPosition');
+    if (navigator.geolocation) {
+      watchID.current = navigator.geolocation.watchPosition(
+        (position) => handlePositionUpdate(position),
+        (error) => {
+          console.error('Error fetching position', error);
+        },
+        {
+          enableHighAccuracy: true, // 고정밀도 사용
+          timeout: 10000, // 10초 내에 위치 정보 못 가져오면 실패 처리
+          maximumAge: 0, // 캐시된 위치 정보 사용 안함
+        }
+      );
+    } else {
+      console.error('Geolocation API not supported by this browser.');
+    }
+  }, [handlePositionUpdate]);
+
+  /** Geolocation API로 위치 감지 중단 */
+  const stopWatchingPosition = useCallback(() => {
+    // console.log(`❕stop WatchingPosition()`);
+    if (watchID.current !== null) {
+      // console.log(`❕❕stop WatchingPosition() : ${watchID} clear!`);
+      navigator.geolocation.clearWatch(watchID.current);
+      watchID.current = null;
+    }
+  }, []);
 
   /** 선을 지도에 그리는 함수 */
   const handleDrawPolyline = useCallback(() => {
@@ -121,23 +169,10 @@ export const useKakaoMap = ({
     }
   }, [map, linePathRef]);
 
-  /** 임의의 위치 업데이트 함수 */
-  const simulateLocationUpdate = useCallback(() => {
-    const intervalId = setInterval(() => {
-      // 위치 업데이트
-      setPositions(updatePosition);
-      // 지도에 경로 선 그리기
-      handleDrawPolyline();
-    }, 2000);
-
-    return intervalId;
-  }, [handleDrawPolyline, updatePosition]);
-
-  const clearSimulate = () => {
-    if (!simulateIntervalID.current) return;
-    clearInterval(simulateIntervalID?.current);
-    simulateIntervalID.current = null;
-  };
+  // 지도에 경로 그리기
+  useEffect(() => {
+    handleDrawPolyline();
+  }, [positions, handleDrawPolyline]);
 
   /** 현재위치로 이동 및 위치 상태 업데이트 */
   const handleMapMoveAndStateUpdate = useCallback(() => {
@@ -147,13 +182,6 @@ export const useKakaoMap = ({
     if (!map) return;
     moveMapTo(map, moveLatLon, DEFAULT_MAP_LEVEL);
   }, [map, setIsTargetClicked, positions, setChangedPosition]);
-
-  // 마커의 새로운 위치로 오버레이 이동
-  useEffect(() => {
-    if (isStarted === 'start' && map && selectedBuddys.length) {
-      replaceCustomOverLay({ overlayRef, markerRef });
-    }
-  }, [isStarted, map, selectedBuddys, buddyList]);
 
   // 오버레이 설정
   useEffect(() => {
@@ -181,25 +209,23 @@ export const useKakaoMap = ({
 
       if (isDrawn) convertImageAndSave(canvas, setCapturedImage);
 
-      const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
-      console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
-
-      const endDate = getCurrentDate({ isDay: true, isTime: false });
-      console.log(`🏃‍♀️💦 End Date: ${endDate}`);
+      // const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
+      // console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
+      // const endDate = getCurrentDate({ isDay: true, isTime: false });
+      // console.log(`🏃‍♀️💦 End Date: ${endDate}`);
 
       await delay(1500);
       setIsStarted('done');
 
-      console.log('map Level : ', map?.getLevel());
-
-      console.log('center Position : ', changedPosition);
-      console.log('center Position.getLat() : ', changedPosition[0]);
-      console.log('center Position.getLng() : ', changedPosition[1]);
-      const pathData = linePathRef.current.map((latLng) => ({
-        lat: latLng.getLat(),
-        lng: latLng.getLng(),
-      }));
-      console.log('pathData : ', pathData);
+      // console.log('map Level : ', map?.getLevel());
+      // console.log('center Position : ', changedPosition);
+      // console.log('center Position.getLat() : ', changedPosition[0]);
+      // console.log('center Position.getLng() : ', changedPosition[1]);
+      // const pathData = linePathRef.current.map((latLng) => ({
+      //   lat: latLng.getLat(),
+      //   lng: latLng.getLng(),
+      // }));
+      // console.log('pathData : ', pathData);
     };
 
     // 산책 종료 후 경로 그리고 이미지 저장
@@ -217,26 +243,37 @@ export const useKakaoMap = ({
       setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
 
       overlayRef.current.setMap(null);
+
+      if (watchID.current !== null) stopWatchingPosition();
     }
-  }, [map, walkStatus]);
+  }, [map, walkStatus, stopWatchingPosition]);
 
-  // 일시 중지, 시작 버튼
+  // 시작, 일시중지, 재시작
   useEffect(() => {
-    if (walkStatus === 'pause' && simulateIntervalID.current) clearSimulate();
-    if (walkStatus === 'start' && isPositionsDifferent(positions, changedPosition) && map)
-      handleMapMoveAndStateUpdate();
-  }, [walkStatus, handleMapMoveAndStateUpdate, positions, changedPosition, map]);
+    // 시작 시 위치 업데이트 재개 + 마커의 새로운 위치로 오버레이 이동
+    if (isStarted === 'start' && walkStatus === 'start' && map && selectedBuddys.length) {
+      replaceCustomOverLay({ overlayRef, markerRef });
 
-  // 위치 업데이트 인터벌 관리
-  useEffect(() => {
-    if (isStarted !== 'start') return;
-    if (walkStatus === 'stop' || walkStatus === 'pause') return;
-    simulateIntervalID.current = simulateLocationUpdate();
+      // 이미 watchPosition이 실행 중인 경우 중복 호출 방지
+      if (watchID.current === null) {
+        handleMapMoveAndStateUpdate();
+        startWatchingPosition(); // 위치 추적 재개
+      }
+    }
 
-    return () => {
-      if (simulateIntervalID.current) clearSimulate();
-    };
-  }, [isStarted, simulateLocationUpdate, walkStatus]);
+    // 일시 중지 시 위치 추적 중단
+    if (walkStatus === 'pause' && watchID.current !== null) {
+      stopWatchingPosition();
+    }
+  }, [
+    isStarted,
+    walkStatus,
+    map,
+    selectedBuddys,
+    handleMapMoveAndStateUpdate,
+    startWatchingPosition,
+    stopWatchingPosition,
+  ]);
 
   // 위치가 변경되었을 때 지도 중심 이동 (지도 다시 초기화하지 않음)
   useEffect(() => {

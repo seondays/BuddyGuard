@@ -120,4 +120,8 @@ const StyledScreenWrapper = styled.div`
       color: ${textPrimary};
     `;
   }}
+
+  & *:hover, *:focus {
+    background-color: none !important;
+  }
 `;

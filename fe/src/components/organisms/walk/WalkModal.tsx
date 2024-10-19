@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +5,7 @@ import styled from 'styled-components';
 
 import Button from '@/components/atoms/Button';
 import WalkFormItem from '@/components/molecules/walk/WalkFormItem';
+import { useWalkMutation } from '@/hooks/useWalkQuery';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
 import { BuddysType, PositionType, SelectedBuddysType, TimeRef } from '@/types/map';
@@ -73,6 +73,8 @@ export default function WalkModal({
   });
 
   const navigate = useNavigate();
+  const walkMutation = useWalkMutation(); // 뮤테이션 훅 사용
+
   const onSubmit = async (data: FormDataType) => {
     if (!canvasRef.current) return;
 
@@ -100,16 +102,7 @@ export default function WalkModal({
       for (const pair of form.entries()) {
         console.log(`${pair[0]}: ${pair[1]}`);
       }
-      // try {
-      //   const response = await axios.post('/api/walk', form, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //   });
-      //   console.log('Upload success:', response.data);
-      // } catch (error) {
-      //   console.error('Upload failed:', error);
-      // }
+      walkMutation.mutate(form);
     }, 'image/png');
   };
 
