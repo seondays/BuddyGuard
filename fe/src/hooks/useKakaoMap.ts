@@ -136,7 +136,7 @@ export const useKakaoMap = ({
 
         // 위치 변화가 거리 임계 값 이상일 경우에만 업데이트
         if (!distance || distance >= THRESHOLD_METER) {
-          console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
+          // console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
 
           // linePath에 좌표 추가
           linePathRef.current.push(newLatLng);
@@ -178,6 +178,7 @@ export const useKakaoMap = ({
 
   /** Geolocation API로 위치 감지 시작 */
   const startWatchingPosition = useCallback(() => {
+    // console.log('🙂 start WatchingPosition');
     if (navigator.geolocation) {
       watchID.current = navigator.geolocation.watchPosition(
         (position) => handlePositionUpdate(position),
@@ -198,8 +199,9 @@ export const useKakaoMap = ({
 
   /** Geolocation API로 위치 감지 중단 */
   const stopWatchingPosition = useCallback(() => {
+    // console.log(`❕stop WatchingPosition()`);
     if (watchID.current !== null) {
-      console.log(`stopWatchingPosition() : ${watchID} clear!`);
+      // console.log(`❕stop WatchingPosition() : ${watchID} clear!`);
       navigator.geolocation.clearWatch(watchID.current);
       watchID.current = null;
     }
@@ -244,21 +246,6 @@ export const useKakaoMap = ({
     if (!map) return;
     moveMapTo(map, moveLatLon, DEFAULT_MAP_LEVEL);
   }, [map, setIsTargetClicked, positions, setChangedPosition]);
-
-  // 마커의 새로운 위치로 오버레이 이동
-  // 위치 업데이트 시작
-  useEffect(() => {
-    if (isStarted === 'start' && map && selectedBuddys.length) {
-      replaceCustomOverLay({ overlayRef, markerRef });
-      startWatchingPosition();
-      // startPositionUpdates();
-    }
-
-    return () => {
-      stopWatchingPosition();
-      // stopPositionUpdates();
-    };
-  }, [isStarted, map, selectedBuddys, buddyList]);
 
   // 오버레이 설정
   useEffect(() => {
@@ -326,19 +313,35 @@ export const useKakaoMap = ({
     }
   }, [map, walkStatus]);
 
-  // 일시 중지, 시작 버튼
   useEffect(() => {
-    // if (walkStatus === 'pause' && simulateIntervalID.current) {
-    // clearSimulate();
-    // stopWatchingPosition();
-    // stopPositionUpdates();
-    // }
-    if (walkStatus === 'start' && isPositionsDifferent(positions, changedPosition) && map) {
-      handleMapMoveAndStateUpdate();
-      // startWatchingPosition();
-      // startPositionUpdates();
+    // 시작 시 위치 업데이트 재개 + 마커의 새로운 위치로 오버레이 이동
+    if (isStarted === 'start' && walkStatus === 'start' && map && selectedBuddys.length) {
+      replaceCustomOverLay({ overlayRef, markerRef });
+
+      // 이미 watchPosition이 실행 중인 경우 중복 호출 방지
+      if (watchID.current === null) {
+        handleMapMoveAndStateUpdate();
+        startWatchingPosition(); // 위치 추적 재개
+      }
     }
-  }, [walkStatus, handleMapMoveAndStateUpdate, positions, changedPosition, map]);
+
+    // 일시 중지 시 위치 추적 중단
+    if (walkStatus === 'pause' && watchID.current !== null) {
+      stopWatchingPosition();
+    }
+
+    return () => {
+      stopWatchingPosition();
+    };
+  }, [
+    isStarted,
+    walkStatus,
+    map,
+    selectedBuddys,
+    handleMapMoveAndStateUpdate,
+    startWatchingPosition,
+    stopWatchingPosition,
+  ]);
 
   // 위치 업데이트 인터벌 관리
   // useEffect(() => {
