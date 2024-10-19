@@ -1,22 +1,28 @@
 import { useNavigate } from 'react-router-dom';
+
 import Image from '../atoms/Image';
 import Span from '../atoms/Span';
 
 interface MyPageItemProps {
-  title: string; 
-  router: string; 
+  title: string;
+  router?: string;
+  onClick?: () => void;
 }
 
-export default function MyPageItem({ title, router }: MyPageItemProps) {
-  const navigate = useNavigate(); 
+export default function MyPageItem({ title, router, onClick }: MyPageItemProps) {
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(router); 
+    if (onClick) {
+      onClick();
+    } else if (router) {
+      navigate(router);
+    }
   };
 
   return (
     <div
-      onClick={handleClick} 
+      onClick={handleClick}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -24,7 +30,7 @@ export default function MyPageItem({ title, router }: MyPageItemProps) {
         borderBottom: '1px solid #ddd',
         margin: '2rem 0',
         paddingBottom: '1rem',
-        cursor: 'pointer', 
+        cursor: 'pointer',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
