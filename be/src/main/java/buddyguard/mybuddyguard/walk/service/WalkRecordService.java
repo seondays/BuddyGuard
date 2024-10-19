@@ -51,26 +51,13 @@ public class WalkRecordService {
         WalkRecord walkRecord = walkRecordRepository.findById(id)
                 .orElseThrow(RecordNotFoundException::new); // 예외 처리
 
-        // 해당 기록에 petId가 포함되어 있는지 확인
-        if (walkRecord.hasBuddy(petId)) {
-            walkRecord.update(
-                    request.startDate(),
-                    request.endDate(),
-                    request.startTime(),
-                    request.endTime(),
-                    request.totalTime(),
-                    request.buddyIds(),
-                    request.note(),
-                    request.centerPosition(),
-                    request.mapLevel(),
-                    request.path(),
-                    request.pathImage(),
-                    request.distance()
-            );
-            walkRecordRepository.save(walkRecord);
-        } else {
+        if (!walkRecord.hasBuddy(petId)) {
             throw new RecordNotFoundException(); // petId가 기록에 없을 때 예외 처리
         }
+
+        WalkRecord walkRecordForUpdate = request.toWalkRecord(id);
+
+        walkRecordRepository.save(walkRecordForUpdate);
     }
 
     @Transactional

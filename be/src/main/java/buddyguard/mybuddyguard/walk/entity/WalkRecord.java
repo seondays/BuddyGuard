@@ -1,17 +1,23 @@
 package buddyguard.mybuddyguard.walk.entity;
 
 //import buddyguard.mybuddyguard.s3.entity.S3Images;
-import buddyguard.mybuddyguard.walk.util.JsonArrayConverter;
+import buddyguard.mybuddyguard.pet.entity.Pet;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,10 +36,14 @@ public class WalkRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 선택한 버디들의 ID 배열을 문자열로 저장
-    @Column(name = "buddy_ids", nullable = false)
-    @Convert(converter = JsonArrayConverter.class)
-    private List<String> buddyIds;
+    // 산책에 참여한 여러 마리의 펫 (N:N 관계 설정)
+    @ManyToMany
+    @JoinTable(
+            name = "walk_record_pet",
+            joinColumns = @JoinColumn(name = "walk_record_id"),
+            inverseJoinColumns = @JoinColumn(name = "pet_id")
+    )
+    private List<Pet> buddies;
 
     // 산책 시작 날짜 (예: 2024년 10월 7일)
     @Column(name = "start_date", nullable = false)
@@ -60,18 +70,18 @@ public class WalkRecord {
     private String note;
 
     // 산책 경로의 중심 위치 (위도, 경도), JSON 문자열로 저장
-    @Column(name = "center_position", nullable = false)
-    @Convert(converter = JsonArrayConverter.class)
-    private List<String> centerPosition;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "center_position_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private WalkRecordCenterPosition centerPosition;
 
     // 지도 레벨
     @Column(name = "map_level", nullable = false)
     private Integer mapLevel;
 
-    // 산책 경로 (위도, 경도 배열), JSON 문자열로 저장
-    @Column(name = "path", nullable = false, columnDefinition = "TEXT")
-    @Convert(converter = JsonArrayConverter.class)
-    private List<Map<String, Double>>  path;
+    // 산책 경로 (1:1 관계 설정)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "path_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private List<WalkRecordPath> path;
 
     // 산책 경로 이미지를 파일 경로로 저장 (이미지 업로드는 별도의 로직에서 처리)
     // @OneToOne(fetch = FetchType.LAZY)
@@ -83,26 +93,7 @@ public class WalkRecord {
     private Double distance;
 
     public boolean hasBuddy(Long petId) {
-        return buddyIds.stream()
-                .anyMatch(buddyId -> Long.parseLong(buddyId) == petId);
-    }
-
-    public void update(LocalDate startDate, LocalDate endDate, String startTime,
-            String endTime, String totalTime, List<String> buddyIds, String note,
-            List<String> centerPosition, Integer mapLevel, List<Map<String, Double>>  path, String pathImage,
-            Double distance) {
-
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.totalTime = totalTime;
-        this.buddyIds = buddyIds;  // 정수 리스트로 수정
-        this.note = note;
-        this.centerPosition = centerPosition;  // 실수 리스트로 수정
-        this.mapLevel = mapLevel;
-        this.path = path;  // 실수 리스트로 수정
-        this.pathImage = pathImage;
-        this.distance = distance;
+        return buddies.stream()
+                .anyMatch(buddy -> buddy.getId().equals(petId));
     }
 }

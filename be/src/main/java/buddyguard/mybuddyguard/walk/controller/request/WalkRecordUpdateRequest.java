@@ -1,14 +1,20 @@
 package buddyguard.mybuddyguard.walk.controller.request;
 
 //import buddyguard.mybuddyguard.s3.entity.S3Images;
+import buddyguard.mybuddyguard.pet.entity.Pet;
+import buddyguard.mybuddyguard.walk.entity.WalkRecord;
+import buddyguard.mybuddyguard.walk.entity.WalkRecordCenterPosition;
+import buddyguard.mybuddyguard.walk.entity.WalkRecordPath;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 public record WalkRecordUpdateRequest(
         @NotNull
-        List<String> buddyIds,       // 추가된 반려동물들의 ID 배열 (문자열)
+        List<Long> buddyIds,       // 추가된 반려동물들의 ID 배열 (문자열)
         @NotNull
         LocalDate startDate,   // 산책 시작 날짜
         @NotNull
@@ -22,13 +28,64 @@ public record WalkRecordUpdateRequest(
         @NotNull
         String note,           // 산책에 대한 메모
         @NotNull
-        List<String> centerPosition, // 중심 위치 (위도, 경도)
+        WalkRecordPathRequest centerPosition, // 중심 위치 (위도, 경도)
         @NotNull
         Integer mapLevel,      // 지도 레벨
         @NotNull
-        List<Map<String, Double>>  path,           // 산책 경로 (위도, 경도 배열)
+        List<WalkRecordPathRequest>  path,           // 산책 경로 (위도, 경도 배열)
         @NotNull
         String pathImage,
         @NotNull
         Double distance
-) {}
+) {
+        public WalkRecord toWalkRecord(Long recordId) {
+                return WalkRecord.builder()
+                        .id(recordId)
+                        .buddies(this.buddyIds().stream()
+                                .map(id -> Pet.builder()
+                                        .id(id)
+                                        .build())
+                                .toList())    // 선택한 반려동물들의 ID 배열
+                        .startDate(this.startDate())  // 산책 시작 날짜
+                        .endDate(this.endDate())      // 산책 종료 날짜
+                        .startTime(this.startTime())  // 산책 시작 시간
+                        .endTime(this.endTime())      // 산책 종료 시간
+                        .totalTime(this.totalTime())  // 총 산책 시간
+                        .note(this.note())            // 산책에 대한 메모
+                        .centerPosition(this.centerPosition().toWalkRecordCenterPosition())  // 중심 위치
+                        .mapLevel(this.mapLevel())    // 지도 레벨
+                        .path(this.path().stream()
+                                .map(WalkRecordPathRequest::toWalkRecordPath)
+                                .toList()
+                        )            // 산책 경로
+                        .pathImage(pathImage)            // 경로 이미지 파일 (S3Images 객체)
+                        .distance(this.distance())    // 총 거리
+                        .build();
+        }
+
+        @Getter
+        @AllArgsConstructor
+        @Builder
+        public static class WalkRecordPathRequest {
+
+                @NotNull
+                private final Double latitude;  // 위도
+                @NotNull
+                private final Double longitude; // 경도
+
+                public WalkRecordPath toWalkRecordPath() {
+                        return WalkRecordPath.builder()
+                                .latitude(this.latitude)
+                                .longitude(this.longitude)
+                                .build();
+                }
+
+                public WalkRecordCenterPosition toWalkRecordCenterPosition() {
+                        return WalkRecordCenterPosition.builder()
+                                .latitude(this.latitude)
+                                .longitude(this.longitude)
+                                .build();
+                }
+
+        }
+}
