@@ -20,7 +20,7 @@ import {
 } from '@/helper/kakaoMapHelpers';
 import { BuddysType, PositionPair, PositionType, SelectedBuddysType, StatusOfTime } from '@/types/map';
 import { drawGrid, fillBackground, initCanvas } from '@/utils/canvasUtils';
-import { calculateTotalDistance } from '@/utils/mapUtils';
+import { calculateDistance, calculateTotalDistance } from '@/utils/mapUtils';
 import { getCurrentDate } from '@/utils/timeUtils';
 import { delay } from '@/utils/utils';
 
@@ -51,6 +51,9 @@ export interface SetOverlayProps {
   customContents: HTMLDivElement;
   closeButton: HTMLImageElement;
 }
+
+/** 거리 임계 값(미터 단위) */
+const THRESHOLD_METER = 50;
 
 export const useKakaoMap = ({
   mapRef,
@@ -125,26 +128,34 @@ export const useKakaoMap = ({
         const updatedPosition: PositionType = [position.coords.latitude, position.coords.longitude];
         const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
-        console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
+        // 이전 위치와 거리 계산
+        const prevPosition = positions.current;
+        const distance = prevPosition
+          ? calculateDistance(prevPosition[0], prevPosition[1], updatedPosition[0], updatedPosition[1]) * 1000
+          : null;
 
-        // linePath에 좌표 추가
-        linePathRef.current.push(newLatLng);
+        // 위치 변화가 거리 임계 값 이상일 경우에만 업데이트
+        if (!distance || distance >= THRESHOLD_METER) {
+          console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
 
-        // 마커와 오버레이 위치 업데이트
-        markerRef.current?.setPosition(newLatLng);
-        overlayRef.current?.setPosition(newLatLng);
+          // linePath에 좌표 추가
+          linePathRef.current.push(newLatLng);
 
-        // 상태 업데이트
-        setPositions((prev) => ({
-          previous: prev.current,
-          current: updatedPosition,
-          // current: currentPosition,
-        }));
+          // 마커와 오버레이 위치 업데이트
+          markerRef.current?.setPosition(newLatLng);
+          overlayRef.current?.setPosition(newLatLng);
+
+          // 상태 업데이트
+          setPositions((prev) => ({
+            previous: prev.current,
+            current: updatedPosition,
+          }));
+        }
       } catch (error) {
         console.error('Error fetching position:', error);
       }
     },
-    [linePathRef]
+    [positions, linePathRef, markerRef, overlayRef]
   );
   /** 30초마다 위치 업데이트를 하는 함수 */
   // const startPositionUpdates = useCallback(() => {
