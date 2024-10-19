@@ -10,14 +10,23 @@ type PetInfo = {
 
 type PetState = {
   petsInfo: PetInfo[];
+  selectedBuddy: PetInfo | null;
   setPetsInfo: (pets: PetInfo[]) => void;
+  setSelectedBuddy: (buddy: PetInfo) => void;
 };
 
 export const usePetStore = create<PetState>()(
   persist(
     (set) => ({
       petsInfo: [],
-      setPetsInfo: (pets) => set({ petsInfo: pets }),
+      selectedBuddy: null,
+      setPetsInfo: (pets) => {
+        set({ petsInfo: pets });
+        if (pets.length > 0) {
+          set({ selectedBuddy: pets[0] });
+        }
+      },
+      setSelectedBuddy: (buddy) => set({ selectedBuddy: buddy }),
     }),
     {
       name: 'petsStorage',
