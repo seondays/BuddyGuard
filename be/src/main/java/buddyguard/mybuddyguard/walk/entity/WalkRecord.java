@@ -1,8 +1,6 @@
 package buddyguard.mybuddyguard.walk.entity;
 
-//import buddyguard.mybuddyguard.s3.entity.S3Images;
-
-import buddyguard.mybuddyguard.pet.entity.Pet;
+import buddyguard.mybuddyguard.walkimage.entity.WalkS3Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -12,8 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -79,9 +75,9 @@ public class WalkRecord {
     private List<WalkRecordPath> path;
 
     // 산책 경로 이미지를 파일 경로로 저장 (이미지 업로드는 별도의 로직에서 처리)
-    // @OneToOne(fetch = FetchType.LAZY)
-    @Column(name = "path_image", nullable = false)
-    private String pathImage;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "path_image_id")
+    private WalkS3Image pathImage;
 
     // 총 거리 (km), 최대 소수점 3자리까지
     @Column(name = "distance", nullable = false)
