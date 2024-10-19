@@ -55,15 +55,13 @@ public class SecurityConfig {
                         userInfoEndpointConfig.userService(oAuth2UserService))
                 .successHandler(customSuccessHandler));
 
-//        http.authorizeHttpRequests(
-//                auth -> auth.requestMatchers("/", "/login", "/oauth2**", "/swagger-ui/**",
-//                                "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs",
-//                                "/reissue")
-//                        .permitAll()
-//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                        .anyRequest().authenticated());
-
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        http.authorizeHttpRequests(
+                auth -> auth.requestMatchers("/", "/login", "/oauth2**", "/swagger-ui/**",
+                                "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs",
+                                "/reissue")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().authenticated());
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
