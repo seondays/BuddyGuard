@@ -4,7 +4,6 @@ import buddyguard.mybuddyguard.walk.controller.request.WalkRecordCreateRequest;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordUpdateRequest;
 import buddyguard.mybuddyguard.walk.controller.response.WalkRecordResponse;
 import buddyguard.mybuddyguard.walk.service.WalkRecordService;
-import buddyguard.mybuddyguard.walkimage.service.impl.WalkImageServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

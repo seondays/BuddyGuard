@@ -1,16 +1,23 @@
 package buddyguard.mybuddyguard.walk.service;
 
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
+import buddyguard.mybuddyguard.pet.entity.Pet;
+import buddyguard.mybuddyguard.pet.repository.PetRepository;
 import buddyguard.mybuddyguard.walk.controller.response.WalkRecordResponse;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordCreateRequest;
 import buddyguard.mybuddyguard.walk.controller.request.WalkRecordUpdateRequest;
+import buddyguard.mybuddyguard.walk.entity.PetWalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordCenterPosition;
+import buddyguard.mybuddyguard.walk.entity.WalkRecordPath;
 import buddyguard.mybuddyguard.walk.mapper.WalkRecordMapper;
 import buddyguard.mybuddyguard.walk.repository.WalkRecordCenterPositionRepository;
 import buddyguard.mybuddyguard.walk.repository.WalkRecordRepository;
 import buddyguard.mybuddyguard.walkimage.entity.WalkS3Image;
 import buddyguard.mybuddyguard.walkimage.service.WalkImageService;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +35,7 @@ public class WalkRecordService {
     private final WalkRecordRepository walkRecordRepository;
     private final WalkRecordCenterPositionRepository walkRecordCenterPositionRepository;
     private final WalkImageService walkImageService;
+    private final PetRepository petRepository;
 
     // 특정 반려동물의 전체 산책 기록 조회
     public List<WalkRecordResponse> getAllWalkRecords(Long petId) {
@@ -47,14 +55,62 @@ public class WalkRecordService {
 
     @Transactional
     public void createWalkRecord(WalkRecordCreateRequest request, MultipartFile file) {
-        WalkRecord walkRecord = WalkRecordMapper.toEntity(request);  // S3Images는 별도로 처리
+        WalkS3Image walkS3Image = null;
 
-        WalkRecordCenterPosition centerPosition = walkRecord.getCenterPosition();
-        walkRecordCenterPositionRepository.save(centerPosition);
+        // 이미지 파일 존재하면 S3에 업로드 후 WalkS3Image 엔티티 생성
+        if (file != null && !file.isEmpty()) {
+            walkS3Image = walkImageService.uploadWalkImage(file);
+        }
 
+        // WalkRecordCenterPosition 생성 및 저장
+        WalkRecordCenterPosition centerPosition = request.centerPosition().toWalkRecordCenterPosition();
+        walkRecordCenterPositionRepository.save(centerPosition);  // CenterPosition 저장
+
+        // WalkRecord 엔티티 생성 (필요한 값들로만 생성)
+        WalkRecord walkRecord = WalkRecord.builder()
+                .startDate(request.startDate())
+                .endDate(request.endDate())
+                .startTime(request.startTime())
+                .endTime(request.endTime())
+                .totalTime(request.totalTime())
+                .note(request.note())
+                .centerPosition(centerPosition)
+                .mapLevel(request.mapLevel())
+                .distance(request.distance())
+                .path(new ArrayList<>())  // 빈 리스트로 가변 리스트 초기화
+                .petWalkRecords(new ArrayList<>())  // 빈 리스트로 가변 리스트 초기화
+                .pathImage(walkS3Image)
+                .build();
+
+        // 먼저 WalkRecord 저장
         WalkRecord savedWalkRecord = walkRecordRepository.save(walkRecord);
 
-        walkImageService.uploadWalkImage(file);
+        // PetWalkRecord 생성
+        List<PetWalkRecord> petWalkRecords = request.buddyIds().stream()
+                .map(petId -> {
+                    Pet pet = petRepository.findById(petId)
+                            .orElseThrow(() -> new EntityNotFoundException("Pet not found"));
+                    return PetWalkRecord.builder()
+                            .pet(pet)
+                            .walkRecord(savedWalkRecord)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        // WalkRecordPath 생성
+        List<WalkRecordPath> walkRecordPaths = request.path().stream()
+                .map(pathRequest -> WalkRecordPath.builder()
+                        .latitude(pathRequest.getLatitude())
+                        .longitude(pathRequest.getLongitude())
+                        .build())
+                .collect(Collectors.toList());
+
+        // 연관된 엔티티 추가 후 업데이트
+        savedWalkRecord.getPetWalkRecords().addAll(petWalkRecords);  // PetWalkRecord 리스트 추가
+        savedWalkRecord.getPath().addAll(walkRecordPaths);  // WalkRecordPath 리스트 추가
+
+        // WalkRecord 업데이트
+        walkRecordRepository.save(savedWalkRecord);
 
         log.info("SAVED WALK RECORD: {}", savedWalkRecord);
     }
