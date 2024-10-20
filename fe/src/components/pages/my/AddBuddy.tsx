@@ -86,7 +86,9 @@ export default function AddBuddy() {
         <FieldWrapper>
           <StyledInput placeholder="프로필 이미지" onClick={handleProfileImageClick} readOnly />
           <HiddenFileInput id="profile-image-input" type="file" accept="image/*" onChange={handleFileChange} />
-          {file && <ImagePreview src={URL.createObjectURL(file)} alt="선택된 이미지 미리보기" />}
+          {file && typeof file !== 'string' && (
+            <ImagePreview src={URL.createObjectURL(file)} alt="선택된 이미지 미리보기" />
+          )}
         </FieldWrapper>
 
         <StyledButton type="submit">버디 추가</StyledButton>
