@@ -1,6 +1,8 @@
 package buddyguard.mybuddyguard.pet.entity;
 
 import buddyguard.mybuddyguard.pet.utils.PetType;
+import buddyguard.mybuddyguard.walk.entity.PetWalkRecord;
+import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,8 +10,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,12 +33,20 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @Column(name = "profile_image")
     private String profileImage;
+
     @Enumerated(EnumType.STRING)
     private PetType type;
+
     private LocalDate birth;
+
+    // 산책 기록과의 N:N 관계
+    @OneToMany(mappedBy = "pet")
+    private List<PetWalkRecord> petWalkRecords;
 
     public void update(String name, String profileImage, LocalDate birth) {
         if (name != null) {
