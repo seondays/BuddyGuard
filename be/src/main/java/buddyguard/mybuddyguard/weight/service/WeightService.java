@@ -29,11 +29,6 @@ public class WeightService {
         Weight savedWeight = weightRepository.save(weight);
 
         log.info("SAVED WEIGHT : {}", savedWeight);
-
-        alertService.sendAlertToAllPetGroup(
-                request.petId(),
-                "체중생성완료",
-                savedWeight.getWeight().toString());
     }
 
     public List<WeightResponse> getAllWeightRecords(Long petId) {
