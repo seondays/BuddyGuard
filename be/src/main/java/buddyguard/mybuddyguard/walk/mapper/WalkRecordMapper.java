@@ -7,6 +7,7 @@ import buddyguard.mybuddyguard.walk.controller.response.WalkRecordDetailResponse
 import buddyguard.mybuddyguard.walk.controller.response.WalkRecordResponse;
 import buddyguard.mybuddyguard.walk.entity.PetWalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecord;
+import buddyguard.mybuddyguard.walkimage.entity.WalkS3Image;
 
 public class WalkRecordMapper {
 
@@ -58,6 +59,7 @@ public class WalkRecordMapper {
                         .toList()
                 )            // 산책 경로
                 .distance(walkRecord.getDistance())    // 총 거리
+                .fileUrl(walkRecord.getPathImage().getImageUrl()) // 이미지 URL 설정
                 .build();
     }
 
