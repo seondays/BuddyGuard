@@ -66,7 +66,9 @@ export default function Walk() {
         <StyledSection>
           <BuddyInfoBar />
         </StyledSection>
-        <StyledSection>{/* <PeriodFilter /> */}</StyledSection>
+        <StyledSection>
+          <PeriodFilter />
+        </StyledSection>
 
         {isWeeklyOrMonthly && (
           <>
