@@ -22,7 +22,7 @@ export default function PeriodFilter() {
 
   return (
     <FilterWrapper>
-      <Button style={commonStyles} $isClicked={type === 'weekly'} onClick={() => handleClick('weekly')}>
+      {/* <Button style={commonStyles} $isClicked={type === 'weekly'} onClick={() => handleClick('weekly')}>
         주
       </Button>
       <Button style={commonStyles} $isClicked={type === 'monthly'} onClick={() => handleClick('monthly')}>
@@ -30,7 +30,11 @@ export default function PeriodFilter() {
       </Button>
       <Button style={commonStyles} $isClicked={type === 'all'} onClick={() => handleClick('all')}>
         전체
-      </Button>
+      </Button> */}
+
+      <button onClick={() => handleClick('weekly')}>주</button>
+      <button onClick={() => handleClick('weekly')}>월</button>
+      <button onClick={() => handleClick('weekly')}>전체</button>
     </FilterWrapper>
   );
 }
