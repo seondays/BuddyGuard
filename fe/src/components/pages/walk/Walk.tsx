@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 // import Chart from '@/components/molecules/Chart';
-import PageTitleBar from '@/components/molecules/PageTitleBar';
-import PeriodFilter from '@/components/molecules/PeriodFilter';
+// import PageTitleBar from '@/components/molecules/PageTitleBar';
+// import PeriodFilter from '@/components/molecules/PeriodFilter';
 import Statistics from '@/components/molecules/Statistics';
-import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
+// import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 // import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
 // import WalkList from '@/components/organisms/walk/WalkList';
@@ -60,7 +60,7 @@ export default function Walk() {
   return (
     <StyledWalkContainer>
       <StyledStaticWrapper $isSchedule={type === 'all'}>
-        <StyledSection>
+        {/* <StyledSection>
           <PageTitleBar title="산책 관리" />
         </StyledSection>
         <StyledSection>
@@ -68,7 +68,7 @@ export default function Walk() {
         </StyledSection>
         <StyledSection>
           <PeriodFilter />
-        </StyledSection>
+        </StyledSection> */}
 
         {isWeeklyOrMonthly && (
           <>
