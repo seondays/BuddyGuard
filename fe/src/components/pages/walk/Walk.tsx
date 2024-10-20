@@ -77,7 +77,7 @@ export default function Walk() {
             </StyledSection>
 
             <StyledSection $height={55} $responsiveHeight={55}>
-              <Chart records={data?.records} />
+              {/* <Chart records={data?.records} /> */}
             </StyledSection>
           </>
         )}
@@ -91,7 +91,9 @@ export default function Walk() {
 
       {type === 'all' && (
         <StyledAllTypeWrapper>
-          <StyledCalendarSection>{/* <WalkCalendar setSelectedData={setSelectedData} /> */}</StyledCalendarSection>
+          <StyledCalendarSection>
+            <WalkCalendar setSelectedData={setSelectedData} />
+          </StyledCalendarSection>
           <StyledWalkListSection>
             <WalkList records={data?.records} selectedData={selectedData} type={type} />
           </StyledWalkListSection>
