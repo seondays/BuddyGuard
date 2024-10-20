@@ -26,6 +26,7 @@ export const postWalkData = async (form: FormData) => {
         'Content-Type': 'multipart/form-data',
       },
     });
+
     // const response = await apiClient.post(WALK_BASE_URL, form);
     return response.data; // 응답 데이터 반환
   } catch (error) {
