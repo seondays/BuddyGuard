@@ -11,7 +11,7 @@ import { PetInfo } from '@/types/pet';
 export default function MyBuddy() {
   const defaultProfileImage = '/assets/images/mascot.png';
   const { petsInfo, setPetsInfo } = usePetStore();
-  const [selectedBuddy, setSelectedBuddy] = useState(petsInfo[0]);
+  const [selectedBuddy, setSelectedBuddy] = useState<PetInfo | null>(null); // 초기값을 null로 설정
 
   const deletePetMutation = useDeletePetMutation();
 
@@ -41,10 +41,25 @@ export default function MyBuddy() {
   };
 
   useEffect(() => {
-    if (petsInfo.length > 0 && !selectedBuddy) {
-      setSelectedBuddy(petsInfo[0]);
+    // 로컬 스토리지에서 버디 정보를 가져오기
+    const storedBuddy = localStorage.getItem('petsStorage');
+    if (storedBuddy) {
+      try {
+        const parsedBuddy = JSON.parse(storedBuddy);
+        const selectedBuddyFromStorage = parsedBuddy?.state?.selectedBuddy;
+
+        if (selectedBuddyFromStorage) {
+          setSelectedBuddy(selectedBuddyFromStorage); // 로컬 스토리지의 선택된 버디 설정
+        } else if (petsInfo.length > 0) {
+          setSelectedBuddy(petsInfo[0]); // 선택된 버디가 없으면 첫 번째 버디 선택
+        }
+      } catch (error) {
+        console.error('로컬 스토리지에서 데이터를 파싱하는 중 오류가 발생했습니다.', error);
+      }
+    } else if (petsInfo.length > 0) {
+      setSelectedBuddy(petsInfo[0]); // 로컬 스토리지에 정보가 없을 때 첫 번째 버디 선택
     }
-  }, [petsInfo, selectedBuddy]);
+  }, [petsInfo]);
 
   return (
     <MyBuddyContainer>
@@ -150,7 +165,6 @@ const DeleteButton = styled.button`
   padding: 1rem;
   background-color: red;
   color: white;
-  /* font-size: 1.2rem; */
   border: none;
   border-radius: 5px;
   cursor: pointer;
