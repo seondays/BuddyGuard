@@ -16,7 +16,10 @@ import buddyguard.mybuddyguard.walk.repository.WalkRecordRepository;
 import buddyguard.mybuddyguard.walkimage.entity.WalkS3Image;
 import buddyguard.mybuddyguard.walkimage.service.WalkImageService;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -61,14 +64,20 @@ public class WalkRecordService {
             walkS3Image = walkImageService.uploadWalkImage(file);
         }
 
+        // 날짜 형식 변환 로직 추가
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 EEEE", Locale.KOREAN);
+        LocalDate startDate = LocalDate.parse(request.startDate(), formatter);
+        LocalDate endDate = LocalDate.parse(request.endDate(), formatter);
+
         // WalkRecordCenterPosition 생성 및 저장
         WalkRecordCenterPosition centerPosition = request.centerPosition().toWalkRecordCenterPosition();
         walkRecordCenterPositionRepository.save(centerPosition);  // CenterPosition 저장
 
+
         // WalkRecord 엔티티 생성 (필요한 값들로만 생성)
         WalkRecord walkRecord = WalkRecord.builder()
-                .startDate(request.startDate())
-                .endDate(request.endDate())
+                .startDate(startDate)
+                .endDate(endDate)
                 .startTime(request.startTime())
                 .endTime(request.endTime())
                 .totalTime(request.totalTime())
