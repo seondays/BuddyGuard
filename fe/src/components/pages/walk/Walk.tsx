@@ -89,7 +89,7 @@ export default function Walk() {
         </StyledSection>
       )}
 
-      {type === 'all' && (
+      {/* {type === 'all' && (
         <StyledAllTypeWrapper>
           <StyledCalendarSection>
             <WalkCalendar setSelectedData={setSelectedData} />
@@ -98,7 +98,7 @@ export default function Walk() {
             <WalkList records={data?.records} selectedData={selectedData} type={type} />
           </StyledWalkListSection>
         </StyledAllTypeWrapper>
-      )}
+      )} */}
     </StyledWalkContainer>
   );
 }
