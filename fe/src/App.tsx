@@ -4,7 +4,6 @@ import { RouterProvider } from 'react-router-dom';
 
 // import useFirebaseMessaging from './hooks/useFirebaseMessaging';
 import { router } from './routes/router';
-import { GlobalStyles } from './styles/globalStyles';
 import { ResetStyles } from './styles/resetStyles';
 
 const queryClient = new QueryClient();
@@ -14,7 +13,6 @@ function App() {
   return (
     <>
       <ResetStyles />
-      <GlobalStyles />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
         {import.meta.env.VITE_MODE === 'development' && <ReactQueryDevtools initialIsOpen={false} position="left" />}

@@ -10,4 +10,9 @@ export const GlobalStyles = createGlobalStyle`
   a {
     text-decoration: none;
   }
+
+  #root:hover,
+  #root:focus {
+    background-color: transparent !important;
+  }
 `;
