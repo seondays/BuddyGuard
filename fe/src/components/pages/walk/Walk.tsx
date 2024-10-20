@@ -83,17 +83,17 @@ export default function Walk() {
         )}
       </StyledStaticWrapper>
 
-      {isWeeklyOrMonthly && (
+      {/* {isWeeklyOrMonthly && (
         <StyledSection $height={30} $responsiveHeight={40}>
           <WalkList records={data?.records} type={type} />
         </StyledSection>
-      )}
+      )} */}
 
       {/* {type === 'all' && (
         <StyledAllTypeWrapper>
-          <StyledCalendarSection>
+          <StyledCaleㅅndarSection>
             <WalkCalendar setSelectedData={setSelectedData} />
-          </StyledCalendarSection>
+          </StyledCaleㅅndarSection>
           <StyledWalkListSection>
             <WalkList records={data?.records} selectedData={selectedData} type={type} />
           </StyledWalkListSection>
