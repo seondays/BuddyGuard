@@ -27,6 +27,7 @@ export const getPetInfo = async (petId: number) => {
 // 버디 추가하기
 export const createPet = async (formData: FormData) => {
   try {
+    console.log(formData);
     const response = await apiClient.post(`${PET_BASE_URL}`, formData);
     return response;
   } catch (error) {
