@@ -9,9 +9,9 @@ export const useBuddyFormHandlers = () => {
     name: '',
     type: '',
     birth: '',
-    profile_image: null,
+    profile_image: '',
   });
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | string>('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +35,8 @@ export const useBuddyFormHandlers = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+    } else {
+      setFile('');
     }
   };
 
@@ -47,8 +49,9 @@ export const useBuddyFormHandlers = () => {
       const mappedFormData = {
         ...formData,
         type: formData.type === '개' ? 'DOG' : formData.type === '고양이' ? 'CAT' : formData.type,
+        profile_image: file || '',
       };
-
+      console.log(mappedFormData);
       petSchema.parse(mappedFormData);
       setErrors({});
 
@@ -56,7 +59,7 @@ export const useBuddyFormHandlers = () => {
       formDataToSubmit.append('name', mappedFormData.name);
       formDataToSubmit.append('type', mappedFormData.type);
       formDataToSubmit.append('birth', mappedFormData.birth);
-      if (file) {
+      if (file && typeof file !== 'string') {
         formDataToSubmit.append('profile_image', file);
       }
 

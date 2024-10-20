@@ -1,5 +1,7 @@
-import Span from '../atoms/Span';
 import React from 'react';
+import styled from 'styled-components';
+
+import Span from '../atoms/Span';
 
 export interface CommonCardProps {
   title: string;
@@ -10,25 +12,55 @@ export interface CommonCardProps {
 
 export default function CommonCard({ title, time, onClick, children }: CommonCardProps) {
   return (
-    <div
-      onClick={onClick}
-      style={{
-        borderBottom: '1px solid #ddd',
-        padding: '1rem',
-        position: 'relative',
-        height: '7rem',
-        cursor: 'pointer',
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Span style={{ fontWeight: 'bold' }}>{title}</Span>
-        <Span $color="gray" style={{ position: 'absolute', right: '1rem', textAlign: 'right' }}>
-          {time}
-        </Span>
-      </div>
-      <div style={{ marginTop: '3rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-        {children}
-      </div>
-    </div>
+    <CardContainer onClick={onClick}>
+      <CardHeader>
+        <Title>{title}</Title>
+        <Time>{time}</Time>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </CardContainer>
   );
 }
+
+const CardContainer = styled.div`
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const CardHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Title = styled(Span)`
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+`;
+
+const Time = styled(Span)`
+  font-size: 0.9rem;
+  color: gray;
+`;
+
+const CardContent = styled.div`
+  margin-top: 0.8rem;
+  font-size: 1rem;
+  color: #555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;

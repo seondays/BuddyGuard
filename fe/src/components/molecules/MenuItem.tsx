@@ -25,7 +25,7 @@ export default function MenuItem({ $backgroundColor, src, title, path }: MenuIte
       <Image src={src} style={{ width: '70%', height: '60%', marginBottom: '0.5rem' }} />
       {title && (
         <Span
-          $color="white"
+          $color="black"
           style={{
             fontWeight: 'bold',
             position: 'absolute',

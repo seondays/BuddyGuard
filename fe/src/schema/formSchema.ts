@@ -11,7 +11,7 @@ export const petSchema = z.object({
     .refine(
       (date) => {
         const [year, month, day] = date.split('-').map(Number);
-        const isValidYear = year <= currentYear; // 현재 연도보다 크지 않도록 허용
+        const isValidYear = year <= currentYear;
         const isValidMonth = month >= 1 && month <= 12;
         const isValidDay = day >= 1 && day <= 31;
         const isValidDate = !isNaN(year) && !isNaN(month) && !isNaN(day);
@@ -21,5 +21,6 @@ export const petSchema = z.object({
         message: '올바른 생일을 입력해주세요.',
       }
     ),
-  profile_image: z.instanceof(File).nullable(),
+
+  profile_image: z.union([z.instanceof(File), z.string().nullable()]),
 });
