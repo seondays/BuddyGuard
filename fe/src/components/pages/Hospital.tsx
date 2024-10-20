@@ -22,7 +22,7 @@ export default function Hospital() {
             borderRadius: '10rem',
           }}
         >
-          병원 기록 등록
+          건강 기록 등록
         </Button>
       </div>
     </div>
