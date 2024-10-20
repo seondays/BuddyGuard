@@ -6,7 +6,7 @@ export const useHospitalsInfoQuery = (petId?: number) => {
   return useQuery({
     queryKey: ['hospitalsInfo', petId],
     queryFn: () => getHospitalsInfo(petId!),
-    enabled: !!petId, // petId가 존재할 때만 쿼리 실행
+    enabled: !!petId,
   });
 };
 
