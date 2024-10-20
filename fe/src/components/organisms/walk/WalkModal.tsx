@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -65,6 +66,14 @@ export default function WalkModal({
   changedPosition,
   map,
 }: WalkModalProps) {
+  const formatKoreanDate = (dateString: string) => {
+    // 요일 제거 (한글 요일 부분 제거)
+    const cleanedDate = dateString.replace(/일요일|월요일|화요일|수요일|목요일|금요일|토요일/g, '').trim();
+
+    const [year, month, day] = cleanedDate.split(/년|월|일/).map((str) => str.trim());
+
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  };
   // const [dateTime, setDateTime] = useState<TimeRef>(initTimeRef);
   // const [formData, setFormData] = useState(initFormData);
 
@@ -83,6 +92,17 @@ export default function WalkModal({
 
       const form = new FormData();
 
+      // `pathImage`를 제외한 나머지 데이터를 처리
+      const { pathImage, ...restData } = data; // `pathImage`를 제거하고 나머지 데이터만 분리
+
+      // 나머지 데이터를 'data'라는 키로 묶어서 JSON 형태로 추가
+      form.append('data', JSON.stringify(restData));
+
+      // `pathImage`를 별도로 추가
+      // form.append('pathImage', blob, 'path-image.png');
+      // Blob을 FormData에 추가하면서 MIME 타입이 설정된 파일 이름을 함께 명시합니다.
+      form.append('pathImage', new File([blob], 'path-image.png', { type: 'image/png' }));
+
       // 배열 데이터만 JSON으로 변환
       // Object.keys(data).forEach((key) => {
       //   const typedKey = key as keyof FormDataType;
@@ -98,11 +118,6 @@ export default function WalkModal({
       // 배열 데이터를 포함한 모든 데이터를 JSON으로 변환하여 'data'라는 키로 FormData에 추가
       // const jsonData = JSON.stringify(data);
       // form.append('data', jsonData);
-
-      // 모든 데이터를 'data'라는 키로 묶어서 JSON 형태로 추가
-      form.append('data', JSON.stringify(data));
-
-      form.append('pathImage', blob, 'path-image.png');
 
       //TODO(Woody):API연동
       // 폼 데이터 콘솔에 출력
@@ -134,11 +149,6 @@ export default function WalkModal({
 
   useEffect(() => {
     if (!changedPosition) return;
-    console.log({
-      latitude: changedPosition[0],
-      longitude: changedPosition[1],
-    });
-
     setValue('centerPosition', {
       latitude: changedPosition[0],
       longitude: changedPosition[1],
@@ -152,6 +162,8 @@ export default function WalkModal({
   useEffect(() => {
     if (!timeRef.current) return;
     const { start, end, total } = timeRef.current;
+    // setValue('startDate', formatKoreanDate(start.day));
+    // setValue('endDate', formatKoreanDate(end.day));
     setValue('startDate', start.day);
     setValue('endDate', end.day);
     setValue('startTime', start.time);
