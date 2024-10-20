@@ -2,14 +2,14 @@ import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import Chart from '@/components/molecules/Chart';
+// import Chart from '@/components/molecules/Chart';
 import PageTitleBar from '@/components/molecules/PageTitleBar';
 import PeriodFilter from '@/components/molecules/PeriodFilter';
 import Statistics from '@/components/molecules/Statistics';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
-import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
-import WalkList from '@/components/organisms/walk/WalkList';
+// import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
+// import WalkList from '@/components/organisms/walk/WalkList';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { flexColumn } from '@/styles/layoutStyles';
@@ -91,9 +91,9 @@ export default function Walk() {
 
       {/* {type === 'all' && (
         <StyledAllTypeWrapper>
-          <StyledCaleㅅndarSection>
+          <StyledCalendarSection>
             <WalkCalendar setSelectedData={setSelectedData} />
-          </StyledCaleㅅndarSection>
+          </StyledCalendarSection>
           <StyledWalkListSection>
             <WalkList records={data?.records} selectedData={selectedData} type={type} />
           </StyledWalkListSection>
