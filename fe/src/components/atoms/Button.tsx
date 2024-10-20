@@ -54,25 +54,43 @@ const getButtonStyle = ({ $isClicked, $boxShadow, $bgColor, theme }: ButtonStyle
   transform: $isClicked ? 'translateY(-2px)' : 'none',
 });
 
+// const StyledButton = styled.button<ButtonStyleProps>`
+//   display: ${({ style }) => style?.display || 'flex'};
+//   justify-content: ${({ style }) => style?.justifyContent || 'center'};
+//   align-items: ${({ style }) => style?.alignItems || 'center'};
+//   text-align: ${({ style }) => style?.textAlign || 'center'};
+//   width: ${({ style }) => style?.width || '100%'};
+//   height: ${({ style }) => style?.height || '4rem'};
+//   ${({ $isClicked, $boxShadow, $bgColor, theme }) => getButtonStyle({ $isClicked, $boxShadow, $bgColor, theme })};
+//   font-size: ${({ style }) => style?.fontSize || '1rem'};
+//   color: ${({ style, theme }) => style?.color || theme.themeValues.colorValues.grayscale[900]};
+
+//   ${({ style }) => style?.borderRadius && `border-radius: ${style.borderRadius}`};
+//   cursor: pointer;
+//   transition: all 0.3s ease;
+
+//   ${({ $isFocus, $focusColor, theme }) =>
+//     $isFocus &&
+//     `&:hover,
+//   &:focus {
+//     background-color: ${$focusColor ? $focusColor : theme.themeValues.colorValues.special.modalBg};
+//   }`};
+// `;
+
 const StyledButton = styled.button<ButtonStyleProps>`
-  display: ${({ style }) => style?.display || 'flex'};
-  justify-content: ${({ style }) => style?.justifyContent || 'center'};
-  align-items: ${({ style }) => style?.alignItems || 'center'};
-  text-align: ${({ style }) => style?.textAlign || 'center'};
-  width: ${({ style }) => style?.width || '100%'};
-  height: ${({ style }) => style?.height || '4rem'};
-  ${({ $isClicked, $boxShadow, $bgColor, theme }) => getButtonStyle({ $isClicked, $boxShadow, $bgColor, theme })};
-  font-size: ${({ style }) => style?.fontSize || '1rem'};
-  color: ${({ style, theme }) => style?.color || theme.themeValues.colorValues.grayscale[900]};
-
-  ${({ style }) => style?.borderRadius && `border-radius: ${style.borderRadius}`};
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 4rem;
+  background-color: ${({ $isClicked, $bgColor, theme }) =>
+    $isClicked ? theme.themeValues.colorValues.special.modalBg : $bgColor};
+  box-shadow: ${({ $isClicked, $boxShadow }) => ($isClicked ? $boxShadow : 'none')};
+  transform: ${({ $isClicked }) => ($isClicked ? 'translateY(-2px)' : 'none')};
   transition: all 0.3s ease;
-
-  ${({ $isFocus, $focusColor, theme }) =>
-    $isFocus &&
-    `&:hover,
+  &:hover,
   &:focus {
-    background-color: ${$focusColor ? $focusColor : theme.themeValues.colorValues.special.modalBg};
-  }`};
+    background-color: ${({ $focusColor, theme }) => $focusColor || theme.themeValues.colorValues.special.modalBg};
+  }
 `;
