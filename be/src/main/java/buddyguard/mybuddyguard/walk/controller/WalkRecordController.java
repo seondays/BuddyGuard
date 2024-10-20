@@ -45,7 +45,7 @@ public class WalkRecordController {
     @PostMapping
     public ResponseEntity<Void> createWalkRecord(
             @RequestPart(name = "data", required = false) @Valid WalkRecordCreateRequest request,
-            @RequestPart(name = "file", required = true) MultipartFile file) {
+            @RequestPart(name = "file", required = false) MultipartFile file) {
         walkRecordService.createWalkRecord(request, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
