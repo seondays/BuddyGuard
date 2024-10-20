@@ -1,3 +1,4 @@
+import axios from 'axios';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -87,47 +88,46 @@ export default function WalkModal({
   const onSubmit = async (data: FormDataType) => {
     if (!canvasRef.current) return;
 
+    // canvas에서 이미지를 Blob 형식으로 변환
     canvasRef.current.toBlob(async (blob) => {
       if (!blob) return;
 
       const form = new FormData();
 
-      // `pathImage`를 제외한 나머지 데이터를 처리
-      const { pathImage, ...restData } = data; // `pathImage`를 제거하고 나머지 데이터만 분리
+      // JSON 데이터를 'data'라는 키로 묶어서 추가
+      const jsonData = {
+        startDate: data.startDate,
+        endDate: data.endDate,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        totalTime: data.totalTime,
+        buddysId: data.buddysId,
+        note: data.note,
+        centerPosition: data.centerPosition,
+        mapLevel: data.mapLevel,
+        path: data.path,
+        distance: data.distance,
+      };
 
-      // 나머지 데이터를 'data'라는 키로 묶어서 JSON 형태로 추가
-      form.append('data', JSON.stringify(restData));
+      // JSON 데이터를 Blob으로 변환해서 'data'로 추가 (JSON을 multipart의 한 부분으로 추가)
+      form.append('data', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
-      // `pathImage`를 별도로 추가
-      // form.append('pathImage', blob, 'path-image.png');
-      // Blob을 FormData에 추가하면서 MIME 타입이 설정된 파일 이름을 함께 명시합니다.
+      // 이미지 Blob을 multipart 형식으로 추가 (image/png 타입을 명시)
       form.append('pathImage', new File([blob], 'path-image.png', { type: 'image/png' }));
 
-      // 배열 데이터만 JSON으로 변환
-      // Object.keys(data).forEach((key) => {
-      //   const typedKey = key as keyof FormDataType;
-
-      //   if (typedKey === 'pathImage') return; // pathImage는 이 단계에서 처리하지 않고 넘어감
-
-      //   const value = data[typedKey]; // 값을 안전하게 가져옴
-
-      //   if (Array.isArray(value)) form.append(key, JSON.stringify(data[key as keyof FormDataType]));
-      //   else form.append(key, data[key as keyof FormDataType] as string);
-      // });
-
-      // 배열 데이터를 포함한 모든 데이터를 JSON으로 변환하여 'data'라는 키로 FormData에 추가
-      // const jsonData = JSON.stringify(data);
-      // form.append('data', jsonData);
-
-      //TODO(Woody):API연동
-      // 폼 데이터 콘솔에 출력
-      for (const pair of form.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
+      try {
+        // FormData를 POST로 전송
+        await axios.post('https://api.buddyguard.site/api/walkRecords', form, {
+          headers: {
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJST0xFX1VTRVIiLCJ0b2tlblR5cGUiOiJBQ0NFU1MiLCJpYXQiOjE3MjkxODQzNjIsImV4cCI6NjE3MjkxODQzNjJ9.tclLX9BIEMbZoRFaY5kkaf_p_u3QbPuoW2rSygIAe4I',
+          },
+        });
+      } catch (error) {
+        console.error('Error while uploading walk record:', error);
       }
-      walkMutation.mutate(form);
     }, 'image/png');
   };
-
   const onClose = () => {
     // 임시 컨펌창
     const isClose: boolean = confirm('저장을 취소하시겠습니까?');
