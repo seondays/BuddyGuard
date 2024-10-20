@@ -33,7 +33,7 @@ export interface FormDataType {
   totalTime: string;
   buddysId: number[];
   note: string;
-  centerPosition: number[];
+  centerPosition: path;
   mapLevel: number;
   path: path[];
   pathImage: string; // 이미지 URL 또는 base64
@@ -48,7 +48,7 @@ const initFormData: FormDataType = {
   totalTime: '',
   buddysId: [],
   note: '',
-  centerPosition: [],
+  centerPosition: { latitude: 0, longitude: 0 },
   mapLevel: 3,
   path: [],
   pathImage: '',
@@ -114,8 +114,8 @@ export default function WalkModal({
 
   useEffect(() => {
     const pathData = linePathRef.current.map((latLng) => ({
-      lat: latLng.getLat(),
-      lng: latLng.getLng(),
+      latitude: latLng.getLat(),
+      longitude: latLng.getLng(),
     }));
     setValue('path', pathData);
   }, [linePathRef, setValue]);
@@ -127,7 +127,11 @@ export default function WalkModal({
 
   useEffect(() => {
     if (!changedPosition) return;
-    setValue('centerPosition', [...changedPosition]);
+
+    setValue('centerPosition', {
+      latitude: changedPosition[0],
+      longitude: changedPosition[1],
+    });
   }, [changedPosition, setValue]);
 
   useEffect(() => {
