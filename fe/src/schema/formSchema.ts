@@ -24,3 +24,25 @@ export const petSchema = z.object({
 
   profile_image: z.union([z.instanceof(File), z.string().nullable()]),
 });
+
+export const hospitalSchema = z.object({
+  petId: z.number(),
+  date: z
+    .string()
+    .datetime({ message: '올바른 날짜 형식이 아닙니다. ISO 8601 형식이어야 합니다.' })
+    .refine(
+      (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth() + 1;
+        const day = date.getUTCDate();
+        const isValidYear = year <= currentYear;
+        return isValidYear && !isNaN(year) && !isNaN(month) && !isNaN(day);
+      },
+      {
+        message: '올바른 날짜를 입력해주세요.',
+      }
+    ),
+  title: z.string().min(1, { message: '제목을 입력해주세요.' }),
+  description: z.string().min(1, { message: '메모 할 내용을 입력해주세요.' }),
+});
