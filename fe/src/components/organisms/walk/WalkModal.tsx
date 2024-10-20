@@ -84,16 +84,23 @@ export default function WalkModal({
       const form = new FormData();
 
       // 배열 데이터만 JSON으로 변환
-      Object.keys(data).forEach((key) => {
-        const typedKey = key as keyof FormDataType;
+      // Object.keys(data).forEach((key) => {
+      //   const typedKey = key as keyof FormDataType;
 
-        if (typedKey === 'pathImage') return; // pathImage는 이 단계에서 처리하지 않고 넘어감
+      //   if (typedKey === 'pathImage') return; // pathImage는 이 단계에서 처리하지 않고 넘어감
 
-        const value = data[typedKey]; // 값을 안전하게 가져옴
+      //   const value = data[typedKey]; // 값을 안전하게 가져옴
 
-        if (Array.isArray(value)) form.append(key, JSON.stringify(data[key as keyof FormDataType]));
-        else form.append(key, data[key as keyof FormDataType] as string);
-      });
+      //   if (Array.isArray(value)) form.append(key, JSON.stringify(data[key as keyof FormDataType]));
+      //   else form.append(key, data[key as keyof FormDataType] as string);
+      // });
+
+      // 배열 데이터를 포함한 모든 데이터를 JSON으로 변환하여 'data'라는 키로 FormData에 추가
+      // const jsonData = JSON.stringify(data);
+      // form.append('data', jsonData);
+
+      // 모든 데이터를 'data'라는 키로 묶어서 JSON 형태로 추가
+      form.append('data', JSON.stringify(data));
 
       form.append('pathImage', blob, 'path-image.png');
 
@@ -127,13 +134,16 @@ export default function WalkModal({
 
   useEffect(() => {
     if (!changedPosition) return;
+    console.log({
+      latitude: changedPosition[0],
+      longitude: changedPosition[1],
+    });
 
     setValue('centerPosition', {
       latitude: changedPosition[0],
       longitude: changedPosition[1],
     });
   }, [changedPosition, setValue]);
-
   useEffect(() => {
     if (!selectedBuddys) return;
     setValue('buddysId', selectedBuddys);
