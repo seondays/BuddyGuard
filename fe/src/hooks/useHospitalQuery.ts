@@ -15,8 +15,6 @@ export const useHospitalInfoQuery = (petId: number, id: number) => {
   return useQuery({
     queryKey: ['hospitalInfo', petId, id],
     queryFn: () => getHospitalInfo(petId, id),
-    // staleTime: 1000 * 60 * 5, // 5분 동안 stale 상태 유지
-    // cacheTime: 1000 * 60 * 30, // 30분 동안 캐시 유지
   });
 };
 
