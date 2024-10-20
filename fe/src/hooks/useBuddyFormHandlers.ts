@@ -49,9 +49,9 @@ export const useBuddyFormHandlers = () => {
       const mappedFormData = {
         ...formData,
         type: formData.type === '개' ? 'DOG' : formData.type === '고양이' ? 'CAT' : formData.type,
-        profile_image: file || '',
+        profile_image: file || 'none',
       };
-      console.log(mappedFormData);
+
       petSchema.parse(mappedFormData);
       setErrors({});
 
@@ -59,7 +59,10 @@ export const useBuddyFormHandlers = () => {
       formDataToSubmit.append('name', mappedFormData.name);
       formDataToSubmit.append('type', mappedFormData.type);
       formDataToSubmit.append('birth', mappedFormData.birth);
-      if (file && typeof file !== 'string') {
+      console.log(formDataToSubmit);
+      if (typeof file === 'string') {
+        formDataToSubmit.append('profile_image', 'none');
+      } else if (file) {
         formDataToSubmit.append('profile_image', file);
       }
 

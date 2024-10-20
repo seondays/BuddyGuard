@@ -17,7 +17,7 @@ export const getPetsInfo = async () => {
 export const getPetInfo = async (petId: number) => {
   try {
     const response = await apiClient.get(`${PET_BASE_URL}/${petId}`);
-    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error(error);
@@ -28,10 +28,24 @@ export const getPetInfo = async (petId: number) => {
 export const createPet = async (formData: FormData) => {
   try {
     console.log(formData);
-    const response = await apiClient.post(`${PET_BASE_URL}`, formData);
+    const response = await apiClient.post(`${PET_BASE_URL}`, formData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return response;
   } catch (error) {
     console.error(error);
     throw new Error();
+  }
+};
+
+// 버디 삭제하기
+export const deletePet = async (petId: number) => {
+  try {
+    const response = await apiClient.delete(`${PET_BASE_URL}/${petId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
   }
 };
