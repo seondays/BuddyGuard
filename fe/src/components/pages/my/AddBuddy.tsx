@@ -38,7 +38,8 @@ export default function AddBuddy() {
     validateAndSubmit((formDataToSubmit) => {
       createPetMutation.mutate(formDataToSubmit, {
         onSuccess: () => {
-          console.log('버디 추가 완료');
+          alert('버디 등록 성공!');
+          navigate('/');
         },
         onError: (error) => {
           console.error('버디 추가 실패:', error);

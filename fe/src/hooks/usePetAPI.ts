@@ -1,14 +1,12 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { getPetInfo, getPetsInfo, createPet } from '@/apis/petAPI';
+import { getPetInfo, getPetsInfo, createPet, deletePet } from '@/apis/petAPI';
 
 // 전체 버디 정보
 export const usePetsInfoQuery = () => {
   return useQuery({
     queryKey: ['petsInfo'],
     queryFn: getPetsInfo,
-    // staleTime: 1000 * 60 * 5,
-    // cacheTime: 1000 * 60 * 30,
   });
 };
 
@@ -17,8 +15,6 @@ export const usePetInfoQuery = (petId: number) => {
   return useQuery({
     queryKey: ['petInfo', petId],
     queryFn: () => getPetInfo(petId),
-    // staleTime: 1000 * 60 * 5,
-    // cacheTime: 1000 * 60 * 30,
   });
 };
 
@@ -26,5 +22,20 @@ export const usePetInfoQuery = (petId: number) => {
 export const useCreatePetMutation = () => {
   return useMutation({
     mutationFn: (formData: FormData) => createPet(formData),
+  });
+};
+
+// 버디 삭제하기
+export const useDeletePetMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (petId: number) => deletePet(petId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['petsInfo']);
+    },
+    onError: (error) => {
+      console.error('버디 삭제 실패:', error);
+    },
   });
 };
