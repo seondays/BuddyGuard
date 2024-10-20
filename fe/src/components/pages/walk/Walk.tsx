@@ -91,9 +91,7 @@ export default function Walk() {
 
       {type === 'all' && (
         <StyledAllTypeWrapper>
-          <StyledCalendarSection>
-            <WalkCalendar setSelectedData={setSelectedData} />
-          </StyledCalendarSection>
+          <StyledCalendarSection>{/* <WalkCalendar setSelectedData={setSelectedData} /> */}</StyledCalendarSection>
           <StyledWalkListSection>
             <WalkList records={data?.records} selectedData={selectedData} type={type} />
           </StyledWalkListSection>
