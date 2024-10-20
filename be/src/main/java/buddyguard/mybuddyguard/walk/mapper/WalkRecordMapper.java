@@ -14,7 +14,7 @@ public class WalkRecordMapper {
     // WalkRecordCreateRequest WalkRecord 엔티티로 변환하는 메서드
     public static WalkRecord toEntity(WalkRecordCreateRequest request) {
         return WalkRecord.builder()
-                .petWalkRecords(request.buddyIds().stream()
+                .petWalkRecords(request.buddysId().stream()
                         .map(id -> PetWalkRecord.builder()
                                 .pet(Pet.builder()
                                         .id(id)

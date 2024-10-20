@@ -85,7 +85,7 @@ public class WalkRecordService {
         WalkRecord savedWalkRecord = walkRecordRepository.save(walkRecord);
 
         // PetWalkRecord 생성
-        List<PetWalkRecord> petWalkRecords = request.buddyIds().stream()
+        List<PetWalkRecord> petWalkRecords = request.buddysId().stream()
                 .map(petId -> {
                     Pet pet = petRepository.findById(petId)
                             .orElseThrow(() -> new EntityNotFoundException("Pet not found"));

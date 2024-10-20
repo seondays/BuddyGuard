@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public record WalkRecordCreateRequest(
 
         @NotNull
-        List<Long> buddyIds,      // 선택한 반려동물들의 ID 배열
+        List<Long> buddysId,      // 선택한 반려동물들의 ID 배열
         @NotNull
         LocalDate startDate,  // 산책 시작 날짜
         @NotNull
@@ -27,7 +27,7 @@ public record WalkRecordCreateRequest(
         String endTime,    // 산책 종료 시간
         @NotBlank
         String totalTime,     // 총 산책 시간 (00:00:46 형식의 문자열)
-        @NotBlank
+
         String note,          // 산책에 대한 메모
         @NotNull
         WalkRecordPathRequest centerPosition, // 중심 위치 (위도, 경도)
