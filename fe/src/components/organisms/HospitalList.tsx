@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import CommonCard from '@/components/molecules/CommonCard';
-import { useHospitalsInfoQuery } from '@/hooks/useHealthQuery';
+import { useHospitalsInfoQuery } from '@/hooks/useHospitalQuery';
 
-interface HealthRecord {
+interface HospitalRecord {
   id: number;
   petId: number;
   date: string;
@@ -13,7 +13,7 @@ interface HealthRecord {
   description: string;
 }
 
-export default function HealthList() {
+export default function HospitalList() {
   const [petId, setPetId] = useState<number | null>(null);
 
   const updatePetIdFromStorage = () => {
@@ -41,7 +41,7 @@ export default function HealthList() {
     return () => clearInterval(interval);
   }, []);
 
-  const { data: healthList, isLoading, isError } = useHospitalsInfoQuery(petId ?? undefined);
+  const { data: HospitalList, isLoading, isError } = useHospitalsInfoQuery(petId ?? undefined);
 
   if (!petId) return <div>반려동물을 선택해 주세요.</div>;
   if (isLoading) return <div>로딩 중...</div>;
@@ -49,15 +49,15 @@ export default function HealthList() {
 
   return (
     <div>
-      {healthList &&
-        healthList.map((health: HealthRecord) => (
+      {HospitalList &&
+        HospitalList.map((Hospital: HospitalRecord) => (
           <CommonCard
-            key={health.id}
-            title={health.title}
-            time={new Date(health.date).toLocaleString()}
-            onClick={() => console.log(`Clicked on ${health.title}`)}
+            key={Hospital.id}
+            title={Hospital.title}
+            time={new Date(Hospital.date).toLocaleString()}
+            onClick={() => console.log(`Clicked on ${Hospital.title}`)}
           >
-            {health.description}
+            {Hospital.description}
           </CommonCard>
         ))}
     </div>

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { getHospitalsInfo, getHospitalInfo, createHospitalRecord } from '@/apis/healthAPI';
+import { getHospitalsInfo, getHospitalInfo, createHospitalRecord } from '@/apis/HospitalAPI';
 
 // 전체 병원 기록 조회
 export const useHospitalsInfoQuery = (petId?: number) => {
