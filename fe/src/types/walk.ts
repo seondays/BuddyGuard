@@ -1,6 +1,6 @@
 export type FilterType = 'weekly' | 'monthly' | 'all';
 
-export type path = { lat: number; lng: number };
+export type path = { latitude: number; longitude: number };
 
 export type record = {
   id: number;
