@@ -32,8 +32,7 @@ const colorValues = {
   },
   special: {
     bgDefault: '#FEFFD2', // (BG_DEF)
-    // modalBg: '#FFEEA9', // (MODAL_BG_DEF)
-    modalBg: '#000', // (MODAL_BG_DEF)
+    modalBg: '#FFEEA9', // (MODAL_BG_DEF)
     modalBg2: '#FFFEF3', // (POPUP_YLW)
     textForce: '#FFBF78', // (TEXT_FORCE_DEF)
     textForce02: '#FF7D29', // (TEXT_FORCE_02_DEF)

@@ -2,14 +2,14 @@ import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-// import Chart from '@/components/molecules/Chart';
+import Chart from '@/components/molecules/Chart';
 import PageTitleBar from '@/components/molecules/PageTitleBar';
 import PeriodFilter from '@/components/molecules/PeriodFilter';
 import Statistics from '@/components/molecules/Statistics';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
-// import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
-// import WalkList from '@/components/organisms/walk/WalkList';
+import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
+import WalkList from '@/components/organisms/walk/WalkList';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { flexColumn } from '@/styles/layoutStyles';
@@ -77,19 +77,19 @@ export default function Walk() {
             </StyledSection>
 
             <StyledSection $height={55} $responsiveHeight={55}>
-              {/* <Chart records={data?.records} /> */}
+              <Chart records={data?.records} />
             </StyledSection>
           </>
         )}
       </StyledStaticWrapper>
 
-      {/* {isWeeklyOrMonthly && (
+      {isWeeklyOrMonthly && (
         <StyledSection $height={30} $responsiveHeight={40}>
           <WalkList records={data?.records} type={type} />
         </StyledSection>
-      )} */}
+      )}
 
-      {/* {type === 'all' && (
+      {type === 'all' && (
         <StyledAllTypeWrapper>
           <StyledCalendarSection>
             <WalkCalendar setSelectedData={setSelectedData} />
@@ -98,7 +98,7 @@ export default function Walk() {
             <WalkList records={data?.records} selectedData={selectedData} type={type} />
           </StyledWalkListSection>
         </StyledAllTypeWrapper>
-      )} */}
+      )}
     </StyledWalkContainer>
   );
 }
