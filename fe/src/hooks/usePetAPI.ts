@@ -32,7 +32,7 @@ export const useDeletePetMutation = () => {
   return useMutation({
     mutationFn: (petId: number) => deletePet(petId),
     onSuccess: () => {
-      queryClient.invalidateQueries(['petsInfo']);
+      queryClient.invalidateQueries({ queryKey: ['petsInfo'] });
     },
     onError: (error) => {
       console.error('버디 삭제 실패:', error);

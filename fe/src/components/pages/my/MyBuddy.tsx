@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
 import PageTitleBar from '@/components/molecules/PageTitleBar';
-import { useDeletePetMutation } from '@/hooks/usePetAPI'; // 삭제 훅 추가
+import { useDeletePetMutation } from '@/hooks/usePetAPI';
 import { usePetStore } from '@/stores/usePetStore';
 import { PetInfo } from '@/types/pet';
 
@@ -13,7 +13,7 @@ export default function MyBuddy() {
   const { petsInfo, setPetsInfo } = usePetStore();
   const [selectedBuddy, setSelectedBuddy] = useState(petsInfo[0]);
 
-  const deletePetMutation = useDeletePetMutation(); // 삭제 훅 사용
+  const deletePetMutation = useDeletePetMutation();
 
   const handleSelectBuddy = (buddy: PetInfo) => {
     setSelectedBuddy(buddy);
@@ -25,13 +25,10 @@ export default function MyBuddy() {
     deletePetMutation.mutate(selectedBuddy.petId, {
       onSuccess: () => {
         const updatedPets = petsInfo.filter((buddy) => buddy.petId !== selectedBuddy.petId);
-        setPetsInfo(updatedPets); // zustand로 상태 업데이트
+        setPetsInfo(updatedPets);
 
-        // 선택된 버디가 없으면 첫 번째 버디 선택
         if (updatedPets.length > 0) {
           setSelectedBuddy(updatedPets[0]);
-        } else {
-          setSelectedBuddy(null); // 더 이상 선택할 버디가 없으면 null
         }
 
         alert('버디가 성공적으로 삭제되었습니다.');
@@ -45,7 +42,7 @@ export default function MyBuddy() {
 
   useEffect(() => {
     if (petsInfo.length > 0 && !selectedBuddy) {
-      setSelectedBuddy(petsInfo[0]); // 버디가 없으면 첫 번째 버디 선택
+      setSelectedBuddy(petsInfo[0]);
     }
   }, [petsInfo, selectedBuddy]);
 
