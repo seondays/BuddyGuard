@@ -4,6 +4,7 @@ import buddyguard.mybuddyguard.exception.FilterException;
 import buddyguard.mybuddyguard.jwt.utils.TokenType;
 import buddyguard.mybuddyguard.jwt.repository.RefreshTokenRepository;
 import buddyguard.mybuddyguard.jwt.service.TokenService;
+import buddyguard.mybuddyguard.jwt.utils.TokenUtility;
 import buddyguard.mybuddyguard.login.exception.CustomAuthenticationEntryPoint;
 import buddyguard.mybuddyguard.login.exception.LogoutException;
 import jakarta.servlet.FilterChain;
@@ -49,19 +50,19 @@ public class CustomLogoutFilter extends GenericFilterBean {
             chain.doFilter(request, response);
             return;
         }
-        // 헤더에서 refresh 토큰 획득 후 검증 진행
-        String refreshToken = request.getHeader("refresh");
+
+        String refresh = TokenUtility.getRefreshToken(request.getCookies());
         try {
-            if (refreshToken == null) {
+            if (refresh == null) {
                 throw new LogoutException(HttpStatus.BAD_REQUEST, "token not found");
             }
-            if (service.isExpired(refreshToken)) {
+            if (service.isExpired(refresh)) {
                 throw new LogoutException(HttpStatus.BAD_REQUEST, "already logout");
             }
-            if (!repository.existsByToken(refreshToken)) {
+            if (!repository.existsById(refresh)) {
                 throw new LogoutException(HttpStatus.BAD_REQUEST, "token not exist");
             }
-            if (!service.getTokenType(refreshToken).equals(TokenType.REFRESH)) {
+            if (!service.getTokenType(refresh).equals(TokenType.REFRESH)) {
                 throw new LogoutException(HttpStatus.BAD_REQUEST, "not refresh token");
             }
         } catch (FilterException exception) {
@@ -70,7 +71,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         // 로그아웃
-        repository.deleteByToken(refreshToken);
+        repository.deleteById(refresh);
 
         // 카카오 api에 로그아웃 요청 ?
         chain.doFilter(request, response);

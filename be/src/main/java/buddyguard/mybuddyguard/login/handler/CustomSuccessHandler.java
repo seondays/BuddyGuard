@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
     private final TokenService tokenService;
     private final RefreshTokenRepository repository;
 
@@ -49,7 +50,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority authority = iterator.next();
         String role = authority.getAuthority();
 
-        String refreshToken = tokenService.createJwt(userId, role, TokenType.REFRESH, 7 * 24 * 60 * 60L);
+        String refreshToken = tokenService.createJwt(userId, role, TokenType.REFRESH,
+                7 * 24 * 60 * 60L);
 
         // refresh 토큰 저장
         saveRefreshToken(userId, refreshToken, 7 * 24 * 60 * 60L);
@@ -63,6 +65,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     /**
      * 쿠키를 생성한다.
+     *
      * @param key
      * @param value
      * @return
@@ -76,10 +79,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private void saveRefreshToken(Long userId, String refreshToken, Long expiredSeconds) {
-        RefreshToken token = new RefreshToken();
-        token.setUserId(userId);
-        token.setToken(refreshToken);
-        token.setExpiration(String.valueOf(Date.from(Instant.now().plusSeconds(expiredSeconds))));
+        RefreshToken token = RefreshToken.builder().userId(userId).token(refreshToken)
+                .expiration(String.valueOf(Date.from(Instant.now().plusSeconds(expiredSeconds))))
+                .build();
         repository.save(token);
     }
 }

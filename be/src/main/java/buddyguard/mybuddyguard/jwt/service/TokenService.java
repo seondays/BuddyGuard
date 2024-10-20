@@ -113,7 +113,7 @@ public class TokenService {
             throw new NotAccessTokenException(HttpStatus.UNAUTHORIZED, "unauthorized token");
         }
         // DB와 비교
-        if (!repository.existsByToken(refresh)) {
+        if (!repository.existsById(refresh)) {
             throw new TokenNotFoundException(HttpStatus.UNAUTHORIZED, "unauthorized token");
         }
 
