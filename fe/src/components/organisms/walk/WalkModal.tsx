@@ -67,23 +67,22 @@ export default function WalkModal({
   changedPosition,
   map,
 }: WalkModalProps) {
-  const formatKoreanDate = (dateString: string) => {
-    // 요일 제거 (한글 요일 부분 제거)
-    const cleanedDate = dateString.replace(/일요일|월요일|화요일|수요일|목요일|금요일|토요일/g, '').trim();
-
-    const [year, month, day] = cleanedDate.split(/년|월|일/).map((str) => str.trim());
-
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-  };
-  // const [dateTime, setDateTime] = useState<TimeRef>(initTimeRef);
-  // const [formData, setFormData] = useState(initFormData);
-
   const { handleSubmit, setValue, getValues } = useForm<FormDataType>({
     defaultValues: initFormData,
   });
 
   const navigate = useNavigate();
-  const walkMutation = useWalkMutation(); // 뮤테이션 훅 사용
+
+  const onErrorFn = () => {
+    alert('😿 등록에 실패하였습니다.');
+    navigate('/');
+  };
+  const onSuccessFn = () => {
+    alert('🐶 등록에 성공하였습니다.');
+    navigate('/menu/walk');
+  };
+
+  const walkMutation = useWalkMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
 
   const onSubmit = async (data: FormDataType) => {
     if (!canvasRef.current) return;
@@ -112,22 +111,14 @@ export default function WalkModal({
       // JSON 데이터를 Blob으로 변환해서 'data'로 추가 (JSON을 multipart의 한 부분으로 추가)
       form.append('data', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
+      //TODO: file이 null일경우 처리
       // 이미지 Blob을 multipart 형식으로 추가 (image/png 타입을 명시)
       form.append('pathImage', new File([blob], 'path-image.png', { type: 'image/png' }));
 
-      try {
-        // FormData를 POST로 전송
-        await axios.post('https://api.buddyguard.site/api/walkRecords', form, {
-          headers: {
-            Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJST0xFX1VTRVIiLCJ0b2tlblR5cGUiOiJBQ0NFU1MiLCJpYXQiOjE3MjkxODQzNjIsImV4cCI6NjE3MjkxODQzNjJ9.tclLX9BIEMbZoRFaY5kkaf_p_u3QbPuoW2rSygIAe4I',
-          },
-        });
-      } catch (error) {
-        console.error('Error while uploading walk record:', error);
-      }
+      walkMutation.mutate(form);
     }, 'image/png');
   };
+
   const onClose = () => {
     // 임시 컨펌창
     const isClose: boolean = confirm('저장을 취소하시겠습니까?');
@@ -162,8 +153,6 @@ export default function WalkModal({
   useEffect(() => {
     if (!timeRef.current) return;
     const { start, end, total } = timeRef.current;
-    // setValue('startDate', formatKoreanDate(start.day));
-    // setValue('endDate', formatKoreanDate(end.day));
     setValue('startDate', start.day);
     setValue('endDate', end.day);
     setValue('startTime', start.time);

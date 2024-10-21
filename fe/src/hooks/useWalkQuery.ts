@@ -10,6 +10,10 @@ export type UseWalkQueryProps = {
   year?: number;
 };
 
+interface useWalkMutationProps {
+  onSuccessFn: () => void;
+  onErrorFn: () => void;
+}
 /** getWalkRecords */
 export const useWalkQuery = ({ filterKey, buddyId, month, year }: UseWalkQueryProps) => {
   return useQuery({
@@ -24,14 +28,18 @@ export const useWalkQuery = ({ filterKey, buddyId, month, year }: UseWalkQueryPr
 };
 
 /** 폼 데이터를 서버에 전송하는 뮤테이션 */
-export const useWalkMutation = () => {
+export const useWalkMutation = ({ onSuccessFn, onErrorFn }: useWalkMutationProps) => {
   return useMutation({
     mutationFn: (formData: FormData) => postWalkData(formData),
-    onSuccess: (data) => {
-      console.log('Upload success:', data);
+    onSuccess: (status) => {
+      if (status === 201 || status === 200) {
+        // console.log('Upload success:', data);
+        onSuccessFn();
+      }
     },
     onError: (error) => {
       console.error('Upload failed:', error);
+      onErrorFn();
     },
   });
 };

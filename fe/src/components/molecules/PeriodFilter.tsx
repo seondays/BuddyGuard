@@ -1,17 +1,15 @@
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 
-import Button from '@/components/atoms/Button';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { flexRowCenter } from '@/styles/layoutStyles';
+import { flexColumnCenter, flexRowCenter } from '@/styles/layoutStyles';
 import { FilterType } from '@/types/walk';
 
 export default function PeriodFilter() {
   const { type, setWeekly, setMonthly, setMonth, setAll } = useFilterStore();
 
-  const commonStyles = { borderRadius: '3rem', height: '2.3rem' };
-
   const handleClick = (type: FilterType) => {
+    console.log(type);
     if (type === 'weekly') setWeekly();
     if (type === 'monthly') {
       setMonthly();
@@ -21,25 +19,43 @@ export default function PeriodFilter() {
   };
 
   return (
-    <FilterWrapper>
-      {/* <Button style={commonStyles} $isClicked={type === 'weekly'} onClick={() => handleClick('weekly')}>
+    <StyledFilterWrapper>
+      <StyledFilterButton onClick={() => handleClick('weekly')} $isClicked={type === 'weekly'}>
         주
-      </Button>
-      <Button style={commonStyles} $isClicked={type === 'monthly'} onClick={() => handleClick('monthly')}>
+      </StyledFilterButton>
+      <StyledFilterButton onClick={() => handleClick('monthly')} $isClicked={type === 'monthly'}>
         월
-      </Button>
-      <Button style={commonStyles} $isClicked={type === 'all'} onClick={() => handleClick('all')}>
+      </StyledFilterButton>
+      <StyledFilterButton onClick={() => handleClick('all')} $isClicked={type === 'all'}>
         전체
-      </Button> */}
-
-      <button onClick={() => handleClick('weekly')}>주</button>
-      <button onClick={() => handleClick('weekly')}>월</button>
-      <button onClick={() => handleClick('weekly')}>전체</button>
-    </FilterWrapper>
+      </StyledFilterButton>
+    </StyledFilterWrapper>
   );
 }
 
-const FilterWrapper = styled.div`
+const StyledFilterButton = styled.button<{ $isClicked: boolean }>`
+  ${flexColumnCenter}
+  width: 100%;
+  min-height: 2rem;
+  border-radius: 3rem;
+  border: ${({ theme }) => `${theme.themeValues.colorValues.special.textForce02} solid 0.1rem`};
+  font-size: 1rem;
+  color: ${({ theme }) => theme.themeValues.colorValues.grayscale[900]};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: ${({ $isClicked, theme }) =>
+    $isClicked ? theme.themeValues.colorValues.special.modalBg : 'white'};
+  box-shadow: ${({ $isClicked, theme }) =>
+    $isClicked ? `0.1rem 0.15rem 0.25rem ${theme.currentTheme.shadow}` : 'none'};
+  transform: ${({ $isClicked }) => ($isClicked ? 'translateY(-2px)' : 'none')};
+
+  &:hover,
+  &:focus {
+    background-color: ${({ theme }) => theme.themeValues.colorValues.special.modalBg};
+  }
+`;
+
+const StyledFilterWrapper = styled.div`
   ${flexRowCenter}
   gap: 1rem;
   padding: 0.3rem;
