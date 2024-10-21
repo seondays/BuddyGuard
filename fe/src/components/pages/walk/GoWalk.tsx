@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import PlayIcon from '@/components/icons/PlayIcon';
@@ -15,11 +15,9 @@ import {
   StatusOfTime,
   TimeRef,
 } from '@/types/map';
+import { PetInfo } from '@/types/pet';
 import { getCurrentDate } from '@/utils/timeUtils';
 import targetIcon from '@public/assets/icons/targetIcon.png';
-import profile01 from '@public/images/profile01.png';
-import profile02 from '@public/images/profile02.png';
-import profile03 from '@public/images/profile03.png';
 
 const playIconStyle = {
   $stroke: 'white',
@@ -32,39 +30,13 @@ const PLAY_ICON_GAP = '5rem';
 export const initTimeRef: TimeRef = { start: { day: '', time: '' }, end: { day: '', time: '' }, total: '' };
 export type IsStartedType = 'ready' | 'start' | 'done';
 
-// TODO(Woody): API 연결
-export const buddys: BuddysType[] = [
-  {
-    id: 1,
-    img: `${profile01}`,
-    name: '우디',
-  },
-  {
-    id: 2,
-    img: `${profile02}`,
-    name: '수잔',
-  },
-  {
-    id: 3,
-    img: `${profile03}`,
-    name: '데이',
-  },
-  {
-    id: 4,
-    img: `${profile01}`,
-    name: '진',
-  },
-  {
-    id: 5,
-    img: `${profile02}`,
-    name: '잔',
-  },
-  {
-    id: 6,
-    img: `${profile03}`,
-    name: '심바',
-  },
-];
+const getTitlePetId = () => {
+  const petsStorage = localStorage.getItem('petsStorage');
+  if (!petsStorage) return [];
+  const titleBuddyId = JSON.parse(petsStorage)?.state?.selectedBuddy?.petId;
+  return titleBuddyId ? [titleBuddyId] : [];
+};
+
 export default function GoWalk() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -74,10 +46,23 @@ export default function GoWalk() {
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null); // 캡처된 이미지를 저장할 상태
   const [isStarted, setIsStarted] = useState<IsStartedType>('ready');
-  const [selectedBuddys, setSelectedBuddys] = useState<SelectedBuddysType>([]); // 클릭한 버디
-  const [buddyList, setBuddyList] = useState<BuddysType[]>(buddys);
+  const [selectedBuddys, setSelectedBuddys] = useState<SelectedBuddysType>(getTitlePetId()); // 클릭한 버디
+  const [buddyList, setBuddyList] = useState<BuddysType[]>([{ id: 0, img: '', name: '' }]);
   const [isTargetClicked, setIsTargetClicked] = useState(false);
   const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
+
+  useEffect(() => {
+    const petsStorage = localStorage.getItem('petsStorage');
+    if (!petsStorage) return;
+    const buddysList = JSON.parse(petsStorage)?.state?.petsInfo?.map(({ petId, petName, profileImage }: PetInfo) => ({
+      id: petId,
+      img: profileImage,
+      name: petName,
+    }));
+    if (buddysList) {
+      setBuddyList(buddysList);
+    }
+  }, []);
 
   useKakaoMap({
     mapRef,
@@ -126,7 +111,7 @@ export default function GoWalk() {
           <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} timeRef={timeRef} />
         )}
         {isStarted === 'ready' && (
-          <WalkBuddySelectBar buddys={buddys} selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
+          <WalkBuddySelectBar buddys={buddyList} selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
         )}
         {isStarted === 'done' && (
           <WalkModal

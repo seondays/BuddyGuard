@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type PetInfo = {
+export type PetInfo = {
   userId: number;
   petId: number;
   petName: string;
