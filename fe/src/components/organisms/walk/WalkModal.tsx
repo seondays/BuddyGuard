@@ -67,9 +67,6 @@ export default function WalkModal({
   changedPosition,
   map,
 }: WalkModalProps) {
-  // const [dateTime, setDateTime] = useState<TimeRef>(initTimeRef);
-  // const [formData, setFormData] = useState(initFormData);
-
   const { handleSubmit, setValue, getValues } = useForm<FormDataType>({
     defaultValues: initFormData,
   });
@@ -114,20 +111,9 @@ export default function WalkModal({
       // JSON 데이터를 Blob으로 변환해서 'data'로 추가 (JSON을 multipart의 한 부분으로 추가)
       form.append('data', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
+      //TODO: file이 null일경우 처리
       // 이미지 Blob을 multipart 형식으로 추가 (image/png 타입을 명시)
       form.append('pathImage', new File([blob], 'path-image.png', { type: 'image/png' }));
-
-      // try {
-      //   // FormData를 POST로 전송
-      //   await axios.post('https://api.buddyguard.site/api/walkRecords', form, {
-      //     headers: {
-      //       Authorization:
-      //         'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJST0xFX1VTRVIiLCJ0b2tlblR5cGUiOiJBQ0NFU1MiLCJpYXQiOjE3MjkxODQzNjIsImV4cCI6NjE3MjkxODQzNjJ9.tclLX9BIEMbZoRFaY5kkaf_p_u3QbPuoW2rSygIAe4I',
-      //     },
-      //   });
-      // } catch (error) {
-      //   console.error('Error while uploading walk record:', error);
-      // }
 
       walkMutation.mutate(form);
     }, 'image/png');
