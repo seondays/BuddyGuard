@@ -20,7 +20,7 @@ export default function ListBox({ record, onClickHandler }: ListBoxProps) {
   };
   return (
     <StyledListBoxWrapper onClick={() => onClickHandler(record)}>
-      <Image src={record.pathImage} style={pathImageStyle} $isHover={false} />
+      <Image src={record.fileUrl} style={pathImageStyle} $isHover={false} />
 
       <StyledInfoWrapper>
         <StyledMainInfo>

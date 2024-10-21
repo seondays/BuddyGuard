@@ -38,6 +38,6 @@ Default.args = {
       },
     ],
     distance: 4.502,
-    pathImage: testWalkPath,
+    fileUrl: testWalkPath,
   },
 };
