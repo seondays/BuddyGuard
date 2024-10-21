@@ -9,7 +9,6 @@ export default function PeriodFilter() {
   const { type, setWeekly, setMonthly, setMonth, setAll } = useFilterStore();
 
   const handleClick = (type: FilterType) => {
-    console.log(type);
     if (type === 'weekly') setWeekly();
     if (type === 'monthly') {
       setMonthly();

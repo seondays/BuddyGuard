@@ -4,6 +4,7 @@ import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
 import { SetOverlayProps } from '@/hooks/useKakaoMap';
 import { BuddysType, PositionPair, PositionType, SelectedBuddysType } from '@/types/map';
 import closeIcon from '@public/assets/icons/closeIcon.png';
+import mascot from '@public/assets/images/mascot.png';
 import mapMarkerImage from '@public/images/mapMarker.png';
 
 /** 마커의 새로운 위치로 오버레이 이동 */
@@ -174,10 +175,11 @@ export const createOverLayElement = (SelectedBuddys: SelectedBuddysType, buddys:
 
   const filterdBuddys = buddys.filter(({ id }) => SelectedBuddys.includes(id));
 
-  const ImageCssText = 'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white;';
+  const ImageCssText =
+    'width: 2rem; height: 2rem; border-radius: 50%; border: 0.2rem solid white; background-color:beige';
   filterdBuddys.forEach(({ img }) => {
     const profileImage = document.createElement('img');
-    profileImage.src = img;
+    profileImage.src = img === 'none' ? mascot : img;
     profileImage.style.cssText = ImageCssText;
     customContents.appendChild(profileImage);
   });
@@ -241,5 +243,3 @@ export const getcurrentLocation = (): Promise<PositionType> => {
     );
   });
 };
-
-// navigator.geolocation.clearWatch(watchID); //위치 추적 종료

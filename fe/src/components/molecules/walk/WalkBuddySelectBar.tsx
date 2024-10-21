@@ -5,9 +5,7 @@ import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { BuddysType, CheckboxChangeHandler, SelectedBuddysType } from '@/types/map';
-
-// TODO(Woody): API 연동
-// TODO(Woody): 대표 버디는 처음부터 체크되어있음
+import mascot from '@public/assets/images/mascot.png';
 
 export const BUDDY_SELECTBAR_HEIGHT = '10rem';
 
@@ -39,12 +37,18 @@ export default function WalkBuddySelectBar({ buddys, selectedBuddys, handleOnCha
             />
             <StyledImgWrapper>
               <Image
-                style={{ width: '50%', color: spanColor, marginTop: '1rem' }}
+                style={{
+                  width: '50%',
+                  color: spanColor,
+                  margin: '1rem 0 0.5rem 0',
+                  border: '0.2rem solid white',
+                  backgroundColor: 'beige',
+                }}
                 $borderRadius={'50%'}
                 $isHover={false}
-                src={img}
+                src={img === 'none' ? mascot : img}
               ></Image>
-              <StyledText style={{ color: spanColor }}>{`${name}sfsfsd${id}더긴이름이름이름`}</StyledText>
+              <StyledText style={{ color: spanColor }}>{name}</StyledText>
             </StyledImgWrapper>
           </StyledBuddyWrapper>
         ))}
@@ -58,6 +62,7 @@ const StyledText = styled(Span)`
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 `;
 
 const StyledImgWrapper = styled.div`

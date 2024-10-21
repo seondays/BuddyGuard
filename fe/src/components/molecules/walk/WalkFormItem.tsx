@@ -7,6 +7,7 @@ import Input from '@/components/atoms/Input';
 import { FormDataType } from '@/components/organisms/walk/WalkModal';
 import { BuddysType, SelectedBuddysType } from '@/types/map';
 import { calculateTotalDistance } from '@/utils/mapUtils';
+import mascot from '@public/assets/images/mascot.png';
 
 interface WalkFormItemProps {
   linePathRef: React.MutableRefObject<kakao.maps.LatLng[]>;
@@ -23,7 +24,6 @@ export default function WalkFormItem({
   setValue,
   getValues,
 }: WalkFormItemProps) {
-  // const [totalDistance, setTotalDistance] = useState(0);
   const [filterdBuddys, setFilterdBuddys] = useState<BuddysType[]>([]);
   const [note, setNote] = useState<string>('');
 
@@ -49,16 +49,6 @@ export default function WalkFormItem({
     setNote(e.target.value);
     setValue('note', e.target.value);
   };
-
-  // const updateFormData = (updatedData: any) => {
-  //   const formData = {
-  //     title,
-  //     note,
-  //     selectedCategory,
-  //     ...updatedData,
-  //   };
-  //   onChange(formData); // 입력된 모든 데이터를 합쳐서 onChange로 전달
-  // };
 
   return (
     <>
@@ -87,11 +77,11 @@ export default function WalkFormItem({
           {filterdBuddys.map(({ id, img, name }) => (
             <BuddyWrapper key={`select-${id}`}>
               <Image
-                style={{ width: '2.5rem', border: '0.2rem solid white' }}
+                style={{ width: '2.5rem', border: '0.2rem solid white', backgroundColor: 'beige' }}
                 $borderRadius={'50%'}
                 $isHover={false}
                 $isPointer={false}
-                src={img}
+                src={img === 'none' ? mascot : img}
                 alt={name}
               />
               <SubValue>{`${name}`}</SubValue>
