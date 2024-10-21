@@ -37,4 +37,10 @@ public class VaccinationRecord {
 
     @Column(nullable = false)
     private String description;
+
+    public void update(LocalDateTime vaccinationDate, String vaccinationName, String description) {
+        this.vaccinationDate = vaccinationDate;
+        this.vaccinationName = vaccinationName;
+        this.description = description;
+    }
 }

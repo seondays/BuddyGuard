@@ -2,6 +2,7 @@ package buddyguard.mybuddyguard.vaccination.service;
 
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.vaccination.controller.request.VaccinationRecordCreateRequest;
+import buddyguard.mybuddyguard.vaccination.controller.request.VaccinationRecordUpdateRequest;
 import buddyguard.mybuddyguard.vaccination.controller.response.VaccinationRecordResponse;
 import buddyguard.mybuddyguard.vaccination.entity.VaccinationRecord;
 import buddyguard.mybuddyguard.vaccination.mapper.VaccinationRecordMapper;
@@ -44,5 +45,18 @@ public class VaccinationRecordService {
                 .orElseThrow(RecordNotFoundException::new);
 
         return VaccinationRecordMapper.toResponse(vaccinationRecord);
+    }
+
+    @Transactional
+    public void updateVaccinationRecord(Long id, Long petId, VaccinationRecordUpdateRequest request) {
+        VaccinationRecord record = vaccinationRecordRepository.findByIdAndPetId(id,
+                        petId)
+                .orElseThrow(RecordNotFoundException::new);
+
+        record.update(
+                request.vaccinationDate(),
+                request.vaccinationName(),
+                request.description()
+        );
     }
 }

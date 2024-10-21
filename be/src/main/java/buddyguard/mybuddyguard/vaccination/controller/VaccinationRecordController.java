@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.vaccination.controller;
 
 import buddyguard.mybuddyguard.vaccination.controller.request.VaccinationRecordCreateRequest;
+import buddyguard.mybuddyguard.vaccination.controller.request.VaccinationRecordUpdateRequest;
 import buddyguard.mybuddyguard.vaccination.controller.response.VaccinationRecordResponse;
 import buddyguard.mybuddyguard.vaccination.service.VaccinationRecordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,5 +53,17 @@ public class VaccinationRecordController {
                 id, petId);
 
         return ResponseEntity.ok(record);
+    }
+
+    @Operation(summary = "예방접종 기록 수정", description = "petId 별 특정 예방접종 기록 수정")
+    @PutMapping("/{petId}/detail/{id}")
+    public ResponseEntity<Void> updateVaccinationRecord(
+            @PathVariable("petId") Long petId,
+            @PathVariable("id") Long id,
+            @Valid @RequestBody VaccinationRecordUpdateRequest request
+    ) {
+        vaccinationRecordService.updateVaccinationRecord(id, petId, request);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
