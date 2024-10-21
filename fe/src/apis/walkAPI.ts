@@ -21,14 +21,8 @@ export const getWalkRecords = async ({ filterKey, buddyId, month, year }: UseWal
 /** 폼 데이터를 서버에 전송하는 함수 */
 export const postWalkData = async (form: FormData) => {
   try {
-    // const response = await apiClient.post(WALK_BASE_URL, form, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //   },
-    // });
-
     const { status } = await apiClient.post(WALK_BASE_URL, form);
-    return status; // 응답 데이터 반환
+    return status;
   } catch (error) {
     console.error('Upload failed:', error);
     throw error;

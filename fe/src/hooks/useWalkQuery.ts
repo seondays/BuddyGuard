@@ -33,7 +33,6 @@ export const useWalkMutation = ({ onSuccessFn, onErrorFn }: useWalkMutationProps
     mutationFn: (formData: FormData) => postWalkData(formData),
     onSuccess: (status) => {
       if (status === 201 || status === 200) {
-        // console.log('Upload success:', data);
         onSuccessFn();
       }
     },
