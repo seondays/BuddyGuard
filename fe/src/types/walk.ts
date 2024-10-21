@@ -15,7 +15,7 @@ export type record = {
   mapLevel: number;
   path: path[];
   distance: number;
-  pathImage: string;
+  fileUrl: string;
 };
 export interface Buddy {
   id: number;
