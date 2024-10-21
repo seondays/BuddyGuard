@@ -75,7 +75,17 @@ export default function WalkModal({
   });
 
   const navigate = useNavigate();
-  const walkMutation = useWalkMutation(); // 뮤테이션 훅 사용
+
+  const onErrorFn = () => {
+    alert('😿 등록에 실패하였습니다.');
+    navigate('/');
+  };
+  const onSuccessFn = () => {
+    alert('🐶 등록에 성공하였습니다.');
+    navigate('/menu/walk');
+  };
+
+  const walkMutation = useWalkMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
 
   const onSubmit = async (data: FormDataType) => {
     if (!canvasRef.current) return;
@@ -107,19 +117,22 @@ export default function WalkModal({
       // 이미지 Blob을 multipart 형식으로 추가 (image/png 타입을 명시)
       form.append('pathImage', new File([blob], 'path-image.png', { type: 'image/png' }));
 
-      try {
-        // FormData를 POST로 전송
-        await axios.post('https://api.buddyguard.site/api/walkRecords', form, {
-          headers: {
-            Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJST0xFX1VTRVIiLCJ0b2tlblR5cGUiOiJBQ0NFU1MiLCJpYXQiOjE3MjkxODQzNjIsImV4cCI6NjE3MjkxODQzNjJ9.tclLX9BIEMbZoRFaY5kkaf_p_u3QbPuoW2rSygIAe4I',
-          },
-        });
-      } catch (error) {
-        console.error('Error while uploading walk record:', error);
-      }
+      // try {
+      //   // FormData를 POST로 전송
+      //   await axios.post('https://api.buddyguard.site/api/walkRecords', form, {
+      //     headers: {
+      //       Authorization:
+      //         'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJST0xFX1VTRVIiLCJ0b2tlblR5cGUiOiJBQ0NFU1MiLCJpYXQiOjE3MjkxODQzNjIsImV4cCI6NjE3MjkxODQzNjJ9.tclLX9BIEMbZoRFaY5kkaf_p_u3QbPuoW2rSygIAe4I',
+      //     },
+      //   });
+      // } catch (error) {
+      //   console.error('Error while uploading walk record:', error);
+      // }
+
+      walkMutation.mutate(form);
     }, 'image/png');
   };
+
   const onClose = () => {
     // 임시 컨펌창
     const isClose: boolean = confirm('저장을 취소하시겠습니까?');

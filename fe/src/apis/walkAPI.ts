@@ -27,8 +27,8 @@ export const postWalkData = async (form: FormData) => {
     //   },
     // });
 
-    const response = await apiClient.post(WALK_BASE_URL, form);
-    return response.data; // 응답 데이터 반환
+    const { status } = await apiClient.post(WALK_BASE_URL, form);
+    return status; // 응답 데이터 반환
   } catch (error) {
     console.error('Upload failed:', error);
     throw error;
