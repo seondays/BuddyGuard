@@ -26,16 +26,16 @@ public class VaccinationRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "pet_id")
     private Long petId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "vaccination_date")
     private LocalDateTime vaccinationDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "vaccination_name")
     private String vaccinationName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "description")
     private String description;
 
     public void update(LocalDateTime vaccinationDate, String vaccinationName, String description) {
