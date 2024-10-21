@@ -27,7 +27,11 @@ export const getHospitalInfo = async (petId: number, id: number) => {
 // 병원 기록 생성
 export const createHospitalRecord = async (petId: number, formData: FormData) => {
   try {
-    const response = await apiClient.post(`${PET_BASE_URL}/${petId}`, formData);
+    const response = await apiClient.post(`${PET_BASE_URL}/${petId}`, formData, {
+      headers: {
+        'Content-Type': 'application/json', // JSON 전송
+      },
+    });
     return response;
   } catch (error) {
     console.error(error);

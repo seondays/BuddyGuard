@@ -3,75 +3,79 @@ import { z } from 'zod';
 
 import { hospitalSchema } from '@/schema/formSchema';
 
-import { hospitalData } from '../types/hospital';
-
-export const useHospitalFormHandlers = () => {
-  const [formData, setFormData] = useState<hospitalData>({
-    petId: 0,
+export const useHospitalFormHandlers = (petId: number, createHospitalMutation: any, navigate: any) => {
+  const [formData, setFormData] = useState({
+    petId: petId || 0,
     date: '',
     title: '',
     description: '',
   });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const petsStorage = localStorage.getItem('petsStorage');
     if (petsStorage) {
       const parsedPets = JSON.parse(petsStorage);
       const selectedPetId = parsedPets?.state?.selectedBuddy?.petId;
-
-      if (selectedPetId) {
-        setFormData((prev) => ({
-          ...prev,
-          petId: selectedPetId,
-        }));
-      }
+      setFormData((prev) => ({ ...prev, petId: selectedPetId || petId }));
     }
-  }, []);
+  }, [petId]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'petId' ? Number(value) : value,
-    }));
-  };
-
-  const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const validateAndSubmit = (onSuccess: (formDataToSubmit: FormData) => void) => {
+  const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, date: e.target.value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const convertToISO = (localDateTime: string) => new Date(localDateTime).toISOString();
+
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append('petId', String(formData.petId));
+    formDataToSubmit.append('date', convertToISO(formData.date));
+    formDataToSubmit.append('title', formData.title);
+    formDataToSubmit.append('description', formData.description);
+
     try {
-      hospitalSchema.parse(formData);
-      setErrors({});
+      const validationData = {
+        petId: formData.petId,
+        date: convertToISO(formData.date),
+        title: formData.title,
+        description: formData.description,
+      };
 
-      const formDataToSubmit = new FormData();
-      formDataToSubmit.append('petId', String(formData.petId));
-      formDataToSubmit.append('date', formData.date);
-      formDataToSubmit.append('title', formData.title);
-      formDataToSubmit.append('description', formData.description);
-
-      onSuccess(formDataToSubmit);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
+      hospitalSchema.parse(validationData);
+      createHospitalMutation.mutate(formDataToSubmit, {
+        onSuccess: () => {
+          alert('건강 기록 등록 성공!');
+          navigate('/menu/hospital');
+        },
+        onError: (error: any) => {
+          console.error('건강 기록 등록 실패:', error);
+          alert('건강 기록 등록에 실패했습니다. 다시 시도해 주세요.');
+        },
+      });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
         const newErrors: { [key: string]: string } = {};
-        error.errors.forEach((err) => {
-          if (err.path[0]) {
-            newErrors[err.path[0] as string] = err.message;
-          }
+        err.errors.forEach((error) => {
+          newErrors[error.path[0]] = error.message;
         });
-        setErrors(newErrors);
+        setFormErrors(newErrors);
       }
     }
   };
 
   return {
     formData,
-    errors,
+    formErrors,
     handleInputChange,
     handleDateInputChange,
-    validateAndSubmit,
+    handleSubmit,
   };
 };

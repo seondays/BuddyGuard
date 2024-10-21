@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
 import { usePetStore } from '@/stores/usePetStore';
-import { PetInfo } from '@/types/pet';
 
 export default function BuddyInfoBar() {
   const { petsInfo, selectedBuddy, setSelectedBuddy } = usePetStore();
@@ -20,16 +19,12 @@ export default function BuddyInfoBar() {
     }
   };
 
-  if (petsInfo.length === 0) {
-    return <div>버디를 등록해주세요</div>;
-  }
-
   return (
     <StyledBarWrapper>
       <TopInfo>
         <BuddyInfo>
           <StyledImage src="/assets/images/mascot.png" alt="버디 이미지" />
-          <StyledSpan>{selectedBuddy?.petName || '버디 이름'}</StyledSpan>
+          <StyledSpan>{selectedBuddy?.petName || '버디를 등록해주세요'}</StyledSpan>
         </BuddyInfo>
         <SelectWrapper>
           <SelectBox value={selectedBuddy?.petId} onChange={handleBuddyChange}>
@@ -58,7 +53,7 @@ export default function BuddyInfoBar() {
 const StyledBarWrapper = styled.div`
   margin: 0.5rem 0rem;
   padding: 0.6rem 1rem;
-  background-color: ${({ theme }) => theme.themeValues.colorValues.special.modalBg};
+  background-color: #ff7d29;
   border-radius: 1rem;
 `;
 
@@ -79,10 +74,12 @@ const StyledImage = styled(Image)`
   border-radius: 50%;
   margin-right: 1rem;
   border: 0.2rem solid white;
+  background-color: white;
 `;
 
 const StyledSpan = styled(Span)`
   font-size: 1.2rem;
+  color: white;
 `;
 
 const SelectWrapper = styled.div`
@@ -94,7 +91,7 @@ const SelectBox = styled.select`
   font-size: 1rem;
   border: none;
   background-color: transparent;
-  color: #333;
+  color: white;
   outline: none;
   cursor: pointer;
   appearance: none;

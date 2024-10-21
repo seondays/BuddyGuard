@@ -11,7 +11,7 @@ import { PetInfo } from '@/types/pet';
 export default function MyBuddy() {
   const defaultProfileImage = '/assets/images/mascot.png';
   const { petsInfo, setPetsInfo } = usePetStore();
-  const [selectedBuddy, setSelectedBuddy] = useState<PetInfo | null>(null); // 초기값을 null로 설정
+  const [selectedBuddy, setSelectedBuddy] = useState<PetInfo | null>(null);
 
   const deletePetMutation = useDeletePetMutation();
 
@@ -41,7 +41,6 @@ export default function MyBuddy() {
   };
 
   useEffect(() => {
-    // 로컬 스토리지에서 버디 정보를 가져오기
     const storedBuddy = localStorage.getItem('petsStorage');
     if (storedBuddy) {
       try {
@@ -49,15 +48,15 @@ export default function MyBuddy() {
         const selectedBuddyFromStorage = parsedBuddy?.state?.selectedBuddy;
 
         if (selectedBuddyFromStorage) {
-          setSelectedBuddy(selectedBuddyFromStorage); // 로컬 스토리지의 선택된 버디 설정
+          setSelectedBuddy(selectedBuddyFromStorage);
         } else if (petsInfo.length > 0) {
-          setSelectedBuddy(petsInfo[0]); // 선택된 버디가 없으면 첫 번째 버디 선택
+          setSelectedBuddy(petsInfo[0]);
         }
       } catch (error) {
         console.error('로컬 스토리지에서 데이터를 파싱하는 중 오류가 발생했습니다.', error);
       }
     } else if (petsInfo.length > 0) {
-      setSelectedBuddy(petsInfo[0]); // 로컬 스토리지에 정보가 없을 때 첫 번째 버디 선택
+      setSelectedBuddy(petsInfo[0]);
     }
   }, [petsInfo]);
 
@@ -99,7 +98,7 @@ export default function MyBuddy() {
             <BuddyButton
               key={buddy.petId}
               onClick={() => handleSelectBuddy(buddy)}
-              selected={selectedBuddy && selectedBuddy.petId === buddy.petId}
+              selected={selectedBuddy?.petId === buddy.petId || false}
             >
               {buddy.petName}
             </BuddyButton>
