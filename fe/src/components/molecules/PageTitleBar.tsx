@@ -19,7 +19,7 @@ export default function PageTitleBar({ title, route }: props) {
       <div onClick={handleClick}>
         <StyledArrowBack />
       </div>
-      <Span $color={titleColor} style={{ margin: '0 auto', fontSize: '1.5rem', fontWeight: 'bold' }}>
+      <Span $color={titleColor} style={{ margin: '0 auto', fontSize: '1.2rem', fontWeight: 'bold' }}>
         {title}
       </Span>
     </div>

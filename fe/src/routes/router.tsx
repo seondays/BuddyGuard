@@ -2,7 +2,8 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import Food from '@/components/pages/Food';
 import Home from '@/components/pages/Home';
-import Hospital from '@/components/pages/Hospital';
+import AddHospital from '@/components/pages/hospital/AddHospital';
+import Hospital from '@/components/pages/hospital/Hospital';
 import Login from '@/components/pages/login/Login';
 import Menu from '@/components/pages/Menu';
 import AddBuddy from '@/components/pages/my/AddBuddy';
@@ -120,6 +121,16 @@ export const router = createBrowserRouter([
       <RequireAuth>
         <ResponsiveLayout>
           <Hospital />
+        </ResponsiveLayout>
+      </RequireAuth>
+    ),
+  },
+  {
+    path: '/menu/hospital/addHospital',
+    element: (
+      <RequireAuth>
+        <ResponsiveLayout>
+          <AddHospital />
         </ResponsiveLayout>
       </RequireAuth>
     ),

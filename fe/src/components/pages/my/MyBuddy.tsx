@@ -11,7 +11,7 @@ import { PetInfo } from '@/types/pet';
 export default function MyBuddy() {
   const defaultProfileImage = '/assets/images/mascot.png';
   const { petsInfo, setPetsInfo } = usePetStore();
-  const [selectedBuddy, setSelectedBuddy] = useState(petsInfo[0]);
+  const [selectedBuddy, setSelectedBuddy] = useState<PetInfo | null>(null);
 
   const deletePetMutation = useDeletePetMutation();
 
@@ -41,10 +41,24 @@ export default function MyBuddy() {
   };
 
   useEffect(() => {
-    if (petsInfo.length > 0 && !selectedBuddy) {
+    const storedBuddy = localStorage.getItem('petsStorage');
+    if (storedBuddy) {
+      try {
+        const parsedBuddy = JSON.parse(storedBuddy);
+        const selectedBuddyFromStorage = parsedBuddy?.state?.selectedBuddy;
+
+        if (selectedBuddyFromStorage) {
+          setSelectedBuddy(selectedBuddyFromStorage);
+        } else if (petsInfo.length > 0) {
+          setSelectedBuddy(petsInfo[0]);
+        }
+      } catch (error) {
+        console.error('로컬 스토리지에서 데이터를 파싱하는 중 오류가 발생했습니다.', error);
+      }
+    } else if (petsInfo.length > 0) {
       setSelectedBuddy(petsInfo[0]);
     }
-  }, [petsInfo, selectedBuddy]);
+  }, [petsInfo]);
 
   return (
     <MyBuddyContainer>
@@ -84,7 +98,7 @@ export default function MyBuddy() {
             <BuddyButton
               key={buddy.petId}
               onClick={() => handleSelectBuddy(buddy)}
-              selected={selectedBuddy && selectedBuddy.petId === buddy.petId}
+              selected={selectedBuddy?.petId === buddy.petId || false}
             >
               {buddy.petName}
             </BuddyButton>
@@ -150,7 +164,6 @@ const DeleteButton = styled.button`
   padding: 1rem;
   background-color: red;
   color: white;
-  /* font-size: 1.2rem; */
   border: none;
   border-radius: 5px;
   cursor: pointer;
