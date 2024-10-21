@@ -67,14 +67,6 @@ export default function WalkModal({
   changedPosition,
   map,
 }: WalkModalProps) {
-  const formatKoreanDate = (dateString: string) => {
-    // 요일 제거 (한글 요일 부분 제거)
-    const cleanedDate = dateString.replace(/일요일|월요일|화요일|수요일|목요일|금요일|토요일/g, '').trim();
-
-    const [year, month, day] = cleanedDate.split(/년|월|일/).map((str) => str.trim());
-
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-  };
   // const [dateTime, setDateTime] = useState<TimeRef>(initTimeRef);
   // const [formData, setFormData] = useState(initFormData);
 
@@ -162,8 +154,6 @@ export default function WalkModal({
   useEffect(() => {
     if (!timeRef.current) return;
     const { start, end, total } = timeRef.current;
-    // setValue('startDate', formatKoreanDate(start.day));
-    // setValue('endDate', formatKoreanDate(end.day));
     setValue('startDate', start.day);
     setValue('endDate', end.day);
     setValue('startTime', start.time);
