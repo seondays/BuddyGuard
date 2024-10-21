@@ -12,9 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +54,7 @@ public class WeightController {
     }
 
     @Operation(summary = "체중 기록 수정", description = "pet id는 체중이 해당 pet의 기록이 맞는지 검증 위해 쓰임.")
-    @PatchMapping("/{petId}/detail/{id}")
+    @PutMapping("/{petId}/detail/{id}")
     public ResponseEntity<Void> updateWeightRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id,
