@@ -59,4 +59,12 @@ public class VaccinationRecordService {
                 request.description()
         );
     }
+
+    @Transactional
+    public void deleteVaccinationRecord(Long id, Long petId) {
+        VaccinationRecord record = vaccinationRecordRepository.findByIdAndPetId(id, petId)
+                .orElseThrow(RecordNotFoundException::new);
+
+        vaccinationRecordRepository.delete(record);
+    }
 }
