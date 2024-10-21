@@ -12,6 +12,7 @@ import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
 import WalkList from '@/components/organisms/walk/WalkList';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
+import { usePetStore } from '@/stores/usePetStore';
 import { flexColumn } from '@/styles/layoutStyles';
 import { FilterType, record } from '@/types/walk';
 
@@ -29,13 +30,15 @@ function isAll(type: FilterType): type is 'all' {
 
 export default function Walk() {
   const { type, month, setType, year } = useFilterStore();
+  const { selectedBuddy } = usePetStore();
+  const titlePetId = selectedBuddy?.petId || 0;
 
   const queryProps: UseWalkQueryProps = React.useMemo(() => {
-    if (isWeekly(type)) return { filterKey: type, buddyId: 2 };
-    if (isMonthly(type)) return { filterKey: type, buddyId: 2, month };
-    if (isAll(type)) return { filterKey: type, buddyId: 2, month, year };
+    if (isWeekly(type)) return { filterKey: type, buddyId: titlePetId };
+    if (isMonthly(type)) return { filterKey: type, buddyId: titlePetId, month };
+    if (isAll(type)) return { filterKey: type, buddyId: titlePetId, month, year };
     throw new Error('Invalid filter type');
-  }, [type, month, year]);
+  }, [type, month, year, titlePetId]);
 
   const { data, isLoading } = useWalkQuery(queryProps);
 
