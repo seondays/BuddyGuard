@@ -48,7 +48,7 @@ export const useDeleteHospitalRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ petId, id }: { petId: number; id: number }) => deleteHospitalRecord(petId, id),
-    onSuccess: (data, { petId }) => {
+    onSuccess: (_, { petId }) => {
       console.log('병원 기록이 성공적으로 삭제되었습니다.');
       queryClient.invalidateQueries({ queryKey: ['hospitalsInfo', petId] });
     },
@@ -90,12 +90,12 @@ export const useCreateVaccinationRecordMutation = () => {
   });
 };
 
-// 병원 기록 삭제하기
+// 백신 기록 삭제하기
 export const useDeleteVaccinationRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ petId, id }: { petId: number; id: number }) => deleteVaccinationRecord(petId, id),
-    onSuccess: (data, { petId }) => {
+    onSuccess: (_, { petId }) => {
       console.log('백신 기록이 성공적으로 삭제되었습니다.');
       queryClient.invalidateQueries({ queryKey: ['vaccinationsInfo', petId] });
     },
