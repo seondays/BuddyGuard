@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import CommonCard from '@/components/molecules/CommonCard';
-import NotificationPopup from '@/components/molecules/NotificationModal';
+import DetailModal from '@/components/molecules/DetailModal';
 
 // Notification 타입 정의
 interface Notification {
@@ -11,7 +11,7 @@ interface Notification {
 }
 
 export default function NotificationList() {
-  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null); // Notification 타입으로 지정
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const notifications: Notification[] = [
@@ -63,7 +63,7 @@ export default function NotificationList() {
       ))}
 
       {isPopupOpen && selectedNotification && (
-        <NotificationPopup
+        <DetailModal
           title={selectedNotification.title}
           time={selectedNotification.time}
           content={selectedNotification.content}

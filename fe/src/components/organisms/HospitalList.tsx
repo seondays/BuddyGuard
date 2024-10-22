@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import CommonCard from '@/components/molecules/CommonCard';
 import { useHospitalsInfoQuery } from '@/hooks/useHospitalQuery';
 
+import DetailModal from '../molecules/DetailModal';
+
 interface HospitalRecord {
   id: number;
   petId: number;
@@ -15,6 +17,18 @@ interface HospitalRecord {
 
 export default function HospitalList() {
   const [petId, setPetId] = useState<number | null>(null);
+
+  const [selectedHospital, setSelectedHospital] = useState<HospitalRecord | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleHospitalClick = (hospital: HospitalRecord) => {
+    setSelectedHospital(hospital);
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
 
   const updatePetIdFromStorage = () => {
     const storedBuddy = localStorage.getItem('petsStorage');
@@ -45,21 +59,49 @@ export default function HospitalList() {
 
   if (!petId) return <div>반려동물을 선택해 주세요.</div>;
   if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>데이터를 불러오는 데 실패했습니다.</div>;
+  if (isError) return <div>데이터가 없습니다.</div>;
+
+  const formatDateToYMD = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR');
+  };
+
+  const formatDateToYMDHM = (dateString: string) => {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    };
+    return date.toLocaleString('ko-KR', options);
+  };
 
   return (
     <div>
       {HospitalList &&
-        HospitalList.map((Hospital: HospitalRecord) => (
+        HospitalList.map((hospital: HospitalRecord) => (
           <CommonCard
-            key={Hospital.id}
-            title={Hospital.title}
-            time={new Date(Hospital.date).toLocaleString()}
-            onClick={() => console.log(`Clicked on ${Hospital.title}`)}
+            key={hospital.id}
+            subCategory={hospital.subCategory}
+            title={hospital.title}
+            time={formatDateToYMD(hospital.date)}
+            onClick={() => handleHospitalClick(hospital)}
           >
-            {Hospital.description}
+            {hospital.description}
           </CommonCard>
         ))}
+      {isPopupOpen && selectedHospital && (
+        <DetailModal
+          subCategory={selectedHospital.subCategory}
+          title={selectedHospital.title}
+          time={formatDateToYMDHM(selectedHospital.date)}
+          content={selectedHospital.description}
+          onClose={closePopup}
+        />
+      )}
     </div>
   );
 }

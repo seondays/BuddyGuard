@@ -1,14 +1,16 @@
 import Span from '../atoms/Span';
 
-export default function NotificationPopup({
+export default function DetailModal({
   title,
   time,
   content,
   onClose,
+  subCategory,
 }: {
   title: string;
   time: string;
   content: string;
+  subCategory?: string;
   onClose: () => void;
 }) {
   return (
@@ -27,10 +29,11 @@ export default function NotificationPopup({
         maxWidth: '400px',
       }}
     >
-      <div style={{ marginBottom: '1rem' }}>
-        <Span style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>{title}</Span>
+      <div style={{ marginBottom: '0.5rem' }}>
+        <Span style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>{title} - </Span>
+        <Span style={{ fontWeight: 'bold' }}>{subCategory}</Span>
       </div>
-      <div style={{ marginBottom: '1rem' }}>
+      <div style={{ marginBottom: '2rem' }}>
         <Span $color="gray">{time}</Span>
       </div>
       <div style={{ marginBottom: '2rem' }}>
