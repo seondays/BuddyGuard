@@ -29,12 +29,22 @@ export const createHospitalRecord = async (petId: number, formData: FormData) =>
   try {
     const response = await apiClient.post(`${PET_BASE_URL}/${petId}`, formData, {
       headers: {
-        'Content-Type': 'application/json', // JSON 전송
+        'Content-Type': 'application/json',
       },
     });
     return response;
   } catch (error) {
     console.error(error);
     throw new Error();
+  }
+};
+
+// 병원 기록 삭제
+export const deleteHospitalRecord = async (petId: number, id: number) => {
+  try {
+    const response = await apiClient.delete(`${PET_BASE_URL}/${petId}/detail/${id}`);
+    return response;
+  } catch (error) {
+    console.error(error);
   }
 };

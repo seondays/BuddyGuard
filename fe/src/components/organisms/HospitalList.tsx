@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import CommonCard from '@/components/molecules/CommonCard';
-import { useHospitalsInfoQuery } from '@/hooks/useHospitalQuery';
+import { useHospitalsInfoQuery, useDeleteHospitalRecordMutation } from '@/hooks/useHospitalQuery';
 
 import DetailModal from '../molecules/DetailModal';
 
@@ -17,9 +17,9 @@ interface HospitalRecord {
 
 export default function HospitalList() {
   const [petId, setPetId] = useState<number | null>(null);
-
   const [selectedHospital, setSelectedHospital] = useState<HospitalRecord | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const deleteHospitalMutation = useDeleteHospitalRecordMutation();
 
   const handleHospitalClick = (hospital: HospitalRecord) => {
     setSelectedHospital(hospital);
@@ -28,6 +28,19 @@ export default function HospitalList() {
 
   const closePopup = () => {
     setIsPopupOpen(false);
+  };
+
+  const handleDeleteHospital = () => {
+    if (selectedHospital && petId) {
+      deleteHospitalMutation.mutate(
+        { petId, id: selectedHospital.id },
+        {
+          onSuccess: () => {
+            closePopup();
+          },
+        }
+      );
+    }
   };
 
   const updatePetIdFromStorage = () => {
@@ -100,6 +113,7 @@ export default function HospitalList() {
           time={formatDateToYMDHM(selectedHospital.date)}
           content={selectedHospital.description}
           onClose={closePopup}
+          onDelete={handleDeleteHospital}
         />
       )}
     </div>

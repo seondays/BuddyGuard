@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { createHospitalRecord, getHospitalInfo, getHospitalsInfo } from '@/apis/healthAPI';
+import { createHospitalRecord, getHospitalInfo, getHospitalsInfo, deleteHospitalRecord } from '@/apis/healthAPI';
 
 // 전체 병원 기록 조회
 export const useHospitalsInfoQuery = (petId?: number) => {
@@ -21,13 +21,30 @@ export const useHospitalInfoQuery = (petId: number, id: number) => {
 
 // 병원 기록 생성하기
 export const useCreateHospitalRecordMutation = (petId: number) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: FormData) => createHospitalRecord(petId, formData),
     onSuccess: () => {
       console.log('병원 기록이 성공적으로 추가되었습니다.');
+      queryClient.invalidateQueries({ queryKey: ['hospitalsInfo', petId] });
     },
     onError: (error) => {
       console.error('병원 기록 추가 실패:', error);
+    },
+  });
+};
+
+// 병원 기록 삭제하기
+export const useDeleteHospitalRecordMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ petId, id }: { petId: number; id: number }) => deleteHospitalRecord(petId, id),
+    onSuccess: (data, { petId }) => {
+      console.log('병원 기록이 성공적으로 삭제되었습니다.');
+      queryClient.invalidateQueries({ queryKey: ['hospitalsInfo', petId] });
+    },
+    onError: (error) => {
+      console.error('병원 기록 삭제 실패:', error);
     },
   });
 };
