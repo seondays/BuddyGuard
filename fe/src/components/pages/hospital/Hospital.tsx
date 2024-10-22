@@ -4,6 +4,7 @@ import Button from '@/components/atoms/Button';
 import PageTitleBar from '@/components/molecules/PageTitleBar';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import HospitalList from '@/components/organisms/HospitalList';
+import VaccinationList from '@/components/organisms/VaccinationList';
 
 export default function Hospital() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function Hospital() {
       <BuddyInfoBar />
       <div style={{ padding: '1rem', height: '64vh', overflowY: 'scroll', scrollbarWidth: 'none' }}>
         <HospitalList />
+        <VaccinationList />
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Button
