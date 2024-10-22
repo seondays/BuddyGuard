@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +44,16 @@ public class FeedController {
         Long userId = customOAuth2User.getId();
         feedService.save(petId, userId, feedRecordCreateRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "펫의 먹이 기록을 삭제하는 api", description = "펫의 특정 먹이 기록을 삭제합니다")
+    @DeleteMapping("/{feedId}")
+    public ResponseEntity<Void> deleteFeedRecord(@PathVariable("petId") Long petId,
+            @PathVariable("feedId") Long feedId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        Long userId = customOAuth2User.getId();
+        feedService.delete(petId, userId, feedId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

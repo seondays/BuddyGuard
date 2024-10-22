@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.feed.service;
 
+import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.feed.aop.UserPetGroupValidation;
 import buddyguard.mybuddyguard.feed.controller.request.FeedRecordCreateRequest;
 import buddyguard.mybuddyguard.feed.controller.response.FeedRecordResponse;
@@ -40,5 +41,16 @@ public class FeedService {
         feedRepository.save(feedRecord);
 
         log.info("SAVE FEED RECORD : {}번 펫 먹이 기록 등록", feedRecord.getPetId());
+    }
+
+    @Transactional
+    @UserPetGroupValidation
+    public void delete(Long petId, Long userId, Long feedId) {
+        FeedRecord feedRecord = feedRepository.findById(feedId)
+                .orElseThrow(RecordNotFoundException::new);
+
+        feedRepository.delete(feedRecord);
+
+        log.info("DELETE FEED RECORD : {}번 펫 먹이 기록 삭제", feedRecord.getPetId());
     }
 }
