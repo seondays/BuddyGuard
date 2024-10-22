@@ -65,35 +65,31 @@ export default function MyBuddy() {
       <PageTitleBar route="/MyPage" title="나의 버디" />
 
       <ProfileWrapper>
-        <Image src={defaultProfileImage} style={{ width: '80%' }} alt="프로필 이미지" />
+        <Image src={defaultProfileImage} alt="프로필 이미지" />
       </ProfileWrapper>
 
       <InfoSection>
         <InfoContent>
-          <Span style={{ fontSize: '1.5rem', fontWeight: 'bold', padding: '0.5rem 0', color: 'orange' }}>
-            {selectedBuddy ? selectedBuddy.petName : '버디가 없습니다.'}
+          <Span style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#FF7D29' }}>
+            {selectedBuddy ? selectedBuddy.petName + ' - ' : '버디가 없습니다.'}
           </Span>
-          <Span style={{ fontSize: '1.5rem', fontWeight: 'bold', padding: '0.5rem 0' }}>
-            {selectedBuddy ? '품종' : ''}
-          </Span>
+          <Span style={{ fontSize: '1rem', color: '#FF7D29' }}>{selectedBuddy ? '품종 정보' : ''}</Span>
         </InfoContent>
-        <Image src={defaultProfileImage} style={{ width: '5rem', marginRight: '1rem' }} alt="프로필 이미지" />
       </InfoSection>
 
       <PetDetails>
-        <Span style={{ fontSize: '1.5rem', fontWeight: 'bold', padding: '0.5rem', marginBottom: '1rem' }}>
+        <Span style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', display: 'block' }}>
           나의 버디 정보
         </Span>
         <div>
-          <Span style={{ fontSize: '1.3rem', fontWeight: 'bold', padding: '0.5rem' }}>생일</Span>
-          <Span style={{ fontSize: '1.3rem', fontWeight: 'bold', padding: '0.5rem' }}>몸무게</Span>
-          <Span style={{ fontSize: '1.3rem', fontWeight: 'bold', padding: '0.5rem' }}>등등...</Span>
+          <DetailItem>생일 : 2024년 4월 25일</DetailItem>
+          <DetailItem>몸무게 : 3.5kg</DetailItem>
         </div>
       </PetDetails>
 
       <BuddyList>
-        <Span style={{ fontSize: '1.5rem', fontWeight: 'bold', padding: '0.5rem' }}>나의 버디들</Span>
-        <div>
+        <Span style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>나의 버디들</Span>
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           {petsInfo.map((buddy) => (
             <BuddyButton
               key={buddy.petId}
@@ -113,51 +109,67 @@ export default function MyBuddy() {
 const MyBuddyContainer = styled.div`
   padding: 1rem;
   height: 100vh;
+  background-color: #f9f9f9;
 `;
 
 const ProfileWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-right: 1rem;
+  margin-bottom: 2rem;
+
+  img {
+    padding: 1rem;
+    width: 50%;
+    border-radius: 30%;
+    object-fit: cover;
+    border: 5px solid #ff7d29;
+  }
 `;
 
 const InfoSection = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #ddd;
+  justify-content: center;
+  margin-bottom: 1.5rem;
 `;
 
 const InfoContent = styled.div`
-  display: flex;
-  flex-direction: column;
+  text-align: center;
 `;
 
 const PetDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  padding: 1rem;
-  border-bottom: 1px solid #ddd;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+`;
+
+const DetailItem = styled.p`
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.8rem;
 `;
 
 const BuddyList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  padding: 1rem;
-  border-bottom: 1px solid #ddd;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
 `;
 
 const BuddyButton = styled.button<{ selected: boolean }>`
-  padding: 1rem;
-  margin-right: 1rem;
-  background-color: ${(props) => (props.selected ? 'orange' : 'lightgray')};
-  color: white;
+  padding: 0.8rem 1.5rem;
+  background-color: ${(props) => (props.selected ? '#FF7D29' : '#E0E0E0')};
+  color: ${(props) => (props.selected ? '#fff' : '#333')};
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  margin: 0.5rem 0.5rem 0 0;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: ${(props) => (props.selected ? '#FF7D29' : '#ccc')};
+  }
 `;
 
 const DeleteButton = styled.button`
@@ -165,9 +177,10 @@ const DeleteButton = styled.button`
   background-color: red;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   margin-top: 1rem;
+  width: 100%;
 
   &:hover {
     background-color: darkred;
