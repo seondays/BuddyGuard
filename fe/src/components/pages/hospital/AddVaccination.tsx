@@ -5,16 +5,16 @@ import styled from 'styled-components';
 import Button from '@/components/atoms/Button';
 import Span from '@/components/atoms/Span';
 import PageTitleBar from '@/components/molecules/PageTitleBar';
-import { useHospitalFormHandlers } from '@/hooks/useHospitalFormHandlers';
-import { useCreateHospitalRecordMutation } from '@/hooks/useHospitalQuery';
+import { useCreateVaccinationRecordMutation } from '@/hooks/useHospitalQuery';
+import { useVaccinationFormHandlers } from '@/hooks/useVaccinationFormHandlers';
 
-export default function AddHospital() {
+export default function AddVaccination() {
   const navigate = useNavigate();
   const [petId, setPetId] = useState<number>(0);
-  const createHospitalMutation = useCreateHospitalRecordMutation(petId);
-  const { formData, formErrors, handleInputChange, handleDateInputChange, handleSubmit } = useHospitalFormHandlers(
+  const createVaccinationMutation = useCreateVaccinationRecordMutation();
+  const { formData, formErrors, handleInputChange, handleDateInputChange, handleSubmit } = useVaccinationFormHandlers(
     petId,
-    createHospitalMutation,
+    createVaccinationMutation,
     navigate
   );
 
@@ -30,14 +30,20 @@ export default function AddHospital() {
   return (
     <Container>
       <PageTitleBarWrapper>
-        <PageTitleBar route="/menu/hospital" title="건강 기록" />
+        <PageTitleBar route="/menu/vaccination" title="건강 기록" />
       </PageTitleBarWrapper>
       <ContentWrapper>
-        <Span style={{ margin: '0 0 2rem 0' }}>건강 기록하기</Span>
+        <Span style={{ margin: '0 0 2rem 0' }}>백신 기록하기</Span>
         <StyledForm onSubmit={handleSubmit}>
           <FieldWrapper>
-            <StyledInput name="title" value={formData.title} onChange={handleInputChange} placeholder="제목" required />
-            {formErrors.title && <ErrorMessage>{formErrors.title}</ErrorMessage>}
+            <StyledInput
+              name="vaccinationName"
+              value={formData.vaccinationName}
+              onChange={handleInputChange}
+              placeholder="백신 이름"
+              required
+            />
+            {formErrors.vaccinationName && <ErrorMessage>{formErrors.vaccinationName}</ErrorMessage>}
           </FieldWrapper>
           <FieldWrapper>
             <StyledInput
@@ -51,16 +57,16 @@ export default function AddHospital() {
           </FieldWrapper>
           <FieldWrapper>
             <StyledInput
-              name="date"
+              name="vaccinationDate"
               type="datetime-local"
-              value={formData.date}
+              value={formData.vaccinationDate}
               onChange={handleDateInputChange}
               placeholder="날짜 (YYYY-MM-DD HH:MM)"
               required
             />
-            {formErrors.date && <ErrorMessage>{formErrors.date}</ErrorMessage>}
+            {formErrors.vaccinationDate && <ErrorMessage>{formErrors.vaccinationDate}</ErrorMessage>}
           </FieldWrapper>
-          <StyledButton type="submit">건강 기록 추가</StyledButton>
+          <StyledButton type="submit">백신 기록 추가</StyledButton>
         </StyledForm>
       </ContentWrapper>
     </Container>

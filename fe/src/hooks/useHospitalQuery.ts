@@ -76,13 +76,13 @@ export const useVaccinationInfoQuery = (petId: number, id: number) => {
 };
 
 // 백신 기록 생성하기
-export const useCreateVaccinationRecordMutation = (petId: number) => {
+export const useCreateVaccinationRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData: FormData) => createVaccinationRecord(petId, formData),
+    mutationFn: (formData: FormData) => createVaccinationRecord(formData),
     onSuccess: () => {
       console.log('백신 기록이 성공적으로 추가되었습니다.');
-      queryClient.invalidateQueries({ queryKey: ['vaccinationsInfo', petId] });
+      queryClient.invalidateQueries({ queryKey: ['vaccinationsInfo'] });
     },
     onError: (error) => {
       console.error('백신 기록 추가 실패:', error);

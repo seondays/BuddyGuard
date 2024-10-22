@@ -8,10 +8,10 @@ import DetailModal from '../molecules/DetailModal';
 interface VaccinationRecord {
   id: number;
   petId: number;
-  date: string;
+  vaccinationDate: string;
   mainCategory: string;
   subCategory: string;
-  title: string;
+  vaccinationName: string;
   description: string;
 }
 
@@ -98,9 +98,9 @@ export default function VaccinationList() {
         VaccinationList.map((vaccination: VaccinationRecord) => (
           <CommonCard
             key={vaccination.id}
-            subCategory={vaccination.subCategory}
-            title={vaccination.title}
-            time={formatDateToYMD(vaccination.date)}
+            subCategory="백신"
+            title={vaccination.vaccinationName}
+            time={formatDateToYMD(vaccination.vaccinationDate)}
             onClick={() => handleVaccinationClick(vaccination)}
           >
             {vaccination.description}
@@ -109,8 +109,8 @@ export default function VaccinationList() {
       {isPopupOpen && selectedVaccination && (
         <DetailModal
           subCategory={selectedVaccination.subCategory}
-          title={selectedVaccination.title}
-          time={formatDateToYMDHM(selectedVaccination.date)}
+          title={selectedVaccination.vaccinationName}
+          time={formatDateToYMDHM(selectedVaccination.vaccinationDate)}
           content={selectedVaccination.description}
           onClose={closePopup}
           onDelete={handleDeleteVaccination}

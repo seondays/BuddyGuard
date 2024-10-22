@@ -73,9 +73,9 @@ export const getVaccinationRecord = async (petId: number, id: number) => {
 };
 
 // 백신 기록 생성
-export const createVaccinationRecord = async (petId: number, formData: FormData) => {
+export const createVaccinationRecord = async (formData: FormData) => {
   try {
-    const response = await apiClient.post(`${VACCINATION_BASE_URL}/${petId}`, formData, {
+    const response = await apiClient.post(`${VACCINATION_BASE_URL}`, formData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -87,7 +87,7 @@ export const createVaccinationRecord = async (petId: number, formData: FormData)
   }
 };
 
-// 병원 기록 삭제
+// 백신 기록 삭제
 export const deleteVaccinationRecord = async (petId: number, id: number) => {
   try {
     const response = await apiClient.delete(`${VACCINATION_BASE_URL}/${petId}/detail/${id}`);
