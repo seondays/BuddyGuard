@@ -62,8 +62,9 @@ public class HospitalRecordController {
     @Operation(summary = "병원 기록 삭제", description = "petId 별 특정 병원 기록 삭제")
     @DeleteMapping("/detail/{id}")
     public ResponseEntity<Void> deleteHospitalRecord(
-            @PathVariable Long petId,
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            @PathVariable Long petId
+            ) {
 
         hospitalRecordService.deleteHospitalRecord(petId, id);
 
