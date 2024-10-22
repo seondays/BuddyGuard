@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
 
 import CommonCard from '@/components/molecules/CommonCard';
-import { useHospitalsInfoQuery, useDeleteHospitalRecordMutation } from '@/hooks/useHospitalQuery';
+import { useVaccinationsInfoQuery, useDeleteVaccinationRecordMutation } from '@/hooks/useHospitalQuery';
 
 import DetailModal from '../molecules/DetailModal';
 
-interface HospitalRecord {
+interface VaccinationRecord {
   id: number;
   petId: number;
-  date: string;
+  vaccinationDate: string;
   mainCategory: string;
   subCategory: string;
-  title: string;
+  vaccinationName: string;
   description: string;
 }
 
-export default function HospitalList() {
+export default function VaccinationList() {
   const [petId, setPetId] = useState<number | null>(null);
-  const [selectedHospital, setSelectedHospital] = useState<HospitalRecord | null>(null);
+  const [selectedVaccination, setSelectedVaccination] = useState<VaccinationRecord | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const deleteHospitalMutation = useDeleteHospitalRecordMutation();
+  const deleteVaccinationMutation = useDeleteVaccinationRecordMutation();
 
-  const handleHospitalClick = (hospital: HospitalRecord) => {
-    setSelectedHospital(hospital);
+  const handleVaccinationClick = (vaccination: VaccinationRecord) => {
+    setSelectedVaccination(vaccination);
     setIsPopupOpen(true);
   };
 
@@ -30,10 +30,10 @@ export default function HospitalList() {
     setIsPopupOpen(false);
   };
 
-  const handleDeleteHospital = () => {
-    if (selectedHospital && petId) {
-      deleteHospitalMutation.mutate(
-        { petId, id: selectedHospital.id },
+  const handleDeleteVaccination = () => {
+    if (selectedVaccination && petId) {
+      deleteVaccinationMutation.mutate(
+        { petId, id: selectedVaccination.id },
         {
           onSuccess: () => {
             closePopup();
@@ -68,7 +68,7 @@ export default function HospitalList() {
     return () => clearInterval(interval);
   }, []);
 
-  const { data: HospitalList, isLoading, isError } = useHospitalsInfoQuery(petId ?? undefined);
+  const { data: VaccinationList, isLoading, isError } = useVaccinationsInfoQuery(petId ?? undefined);
 
   if (!petId) return <div>반려동물을 선택해 주세요.</div>;
   if (isLoading) return <div>로딩 중...</div>;
@@ -94,26 +94,26 @@ export default function HospitalList() {
 
   return (
     <div>
-      {HospitalList &&
-        HospitalList.map((hospital: HospitalRecord) => (
+      {VaccinationList &&
+        VaccinationList.map((vaccination: VaccinationRecord) => (
           <CommonCard
-            key={hospital.id}
-            subCategory={hospital.subCategory}
-            title={hospital.title}
-            time={formatDateToYMD(hospital.date)}
-            onClick={() => handleHospitalClick(hospital)}
+            key={vaccination.id}
+            subCategory="백신"
+            title={vaccination.vaccinationName}
+            time={formatDateToYMD(vaccination.vaccinationDate)}
+            onClick={() => handleVaccinationClick(vaccination)}
           >
-            {hospital.description}
+            {vaccination.description}
           </CommonCard>
         ))}
-      {isPopupOpen && selectedHospital && (
+      {isPopupOpen && selectedVaccination && (
         <DetailModal
-          subCategory={selectedHospital.subCategory}
-          title={selectedHospital.title}
-          time={formatDateToYMDHM(selectedHospital.date)}
-          content={selectedHospital.description}
+          subCategory={selectedVaccination.subCategory}
+          title={selectedVaccination.vaccinationName}
+          time={formatDateToYMDHM(selectedVaccination.vaccinationDate)}
+          content={selectedVaccination.description}
           onClose={closePopup}
-          onDelete={handleDeleteHospital}
+          onDelete={handleDeleteVaccination}
         />
       )}
     </div>

@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Food from '@/components/pages/Food';
 import Home from '@/components/pages/Home';
 import AddHospital from '@/components/pages/hospital/AddHospital';
+import AddVaccination from '@/components/pages/hospital/AddVaccination';
 import Hospital from '@/components/pages/hospital/Hospital';
 import Login from '@/components/pages/login/Login';
 import Menu from '@/components/pages/Menu';
@@ -131,6 +132,16 @@ export const router = createBrowserRouter([
       <RequireAuth>
         <ResponsiveLayout>
           <AddHospital />
+        </ResponsiveLayout>
+      </RequireAuth>
+    ),
+  },
+  {
+    path: '/menu/hospital/addVaccination',
+    element: (
+      <RequireAuth>
+        <ResponsiveLayout>
+          <AddVaccination />
         </ResponsiveLayout>
       </RequireAuth>
     ),

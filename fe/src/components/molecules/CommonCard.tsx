@@ -4,17 +4,21 @@ import styled from 'styled-components';
 import Span from '../atoms/Span';
 
 export interface CommonCardProps {
+  subCategory?: string;
   title: string;
   time: string;
   onClick: () => void;
   children: React.ReactNode;
 }
 
-export default function CommonCard({ title, time, onClick, children }: CommonCardProps) {
+export default function CommonCard({ subCategory, title, time, onClick, children }: CommonCardProps) {
   return (
     <CardContainer onClick={onClick}>
       <CardHeader>
-        <Title>{title}</Title>
+        <div>
+          <Title>{title} - </Title>
+          <SubCategory>{subCategory}</SubCategory>
+        </div>
         <Time>{time}</Time>
       </CardHeader>
       <CardContent>{children}</CardContent>
@@ -43,6 +47,12 @@ const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const SubCategory = styled(Span)`
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #333;
 `;
 
 const Title = styled(Span)`
