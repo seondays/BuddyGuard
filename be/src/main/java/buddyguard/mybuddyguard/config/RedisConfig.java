@@ -15,7 +15,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
         "buddyguard.mybuddyguard.login", "buddyguard.mybuddyguard.pet",
         "buddyguard.mybuddyguard.weight", "buddyguard.mybuddyguard.walk", 
         "buddyguard.mybuddyguard.alert", "buddyguard.mybuddyguard.walkimage",
-        "buddyguard.mybuddyguard.vaccination"})
+        "buddyguard.mybuddyguard.vaccination", "buddyguard.mybuddyguard.feed"})
 @EnableRedisRepositories(basePackages = {"buddyguard.mybuddyguard.invitation",
         "buddyguard.mybuddyguard.weight", "buddyguard.mybuddyguard.walk",
         "buddyguard.mybuddyguard.alert",  "buddyguard.mybuddyguard.jwt"})
