@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.feed.controller;
 
 import buddyguard.mybuddyguard.feed.controller.request.FeedRecordCreateRequest;
+import buddyguard.mybuddyguard.feed.controller.request.FeedRecordUpdateRequest;
 import buddyguard.mybuddyguard.feed.controller.response.FeedRecordResponse;
 import buddyguard.mybuddyguard.feed.service.FeedService;
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,4 +58,14 @@ public class FeedController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(summary = "펫의 먹이 기록을 업데이트하는 api", description = "펫의 먹이 기록 내용을 업데이트합니다")
+    @PatchMapping("/{feedId}")
+    public ResponseEntity<Void> updateFeedRecord(
+            @RequestBody FeedRecordUpdateRequest feedRecordUpdateRequest,
+            @PathVariable("petId") Long petId, @PathVariable("feedId") Long feedId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        Long userId = customOAuth2User.getId();
+        feedService.update(petId, userId, feedId, feedRecordUpdateRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
