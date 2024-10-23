@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components';
 
 import Nav from '@/components/organisms/Nav';
 import { HOME_DESCRIPTION_TEXT1, HOME_DESCRIPTION_TEXT2 } from '@/constants/textConstants';
+import { fillAvailable } from '@/styles/layoutStyles';
 
 interface ResponsiveLayoutProps {
   children: ReactNode;
@@ -89,6 +90,8 @@ export const StyledMobileFrame = styled.div`
     width: 95vw;
     height: 95vh;
   }
+
+  ${fillAvailable}
 `;
 
 const StyledNavWrapper = styled.div`
@@ -121,7 +124,10 @@ const StyledScreenWrapper = styled.div`
     `;
   }}
 
-  & *:hover, *:focus {
+  ${fillAvailable}
+
+  & *:hover,
+  *:focus {
     background-color: none !important;
   }
 `;
