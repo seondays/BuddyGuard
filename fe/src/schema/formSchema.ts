@@ -28,7 +28,7 @@ export const hospitalSchema = z.object({
   petId: z.number(),
   date: z
     .string()
-    .datetime({ message: '올바른 날짜 형식이 아닙니다. ISO 8601 형식이어야 합니다.' })
+    .datetime({ message: '올바른 날짜 형식이 아닙니다.' })
     .refine(
       (dateString) => {
         const date = new Date(dateString);
@@ -50,7 +50,7 @@ export const vaccinationSchema = z.object({
   petId: z.number().min(1, { message: '유효한 반려동물 ID를 입력해주세요.' }),
   vaccinationDate: z
     .string()
-    .datetime({ message: '올바른 날짜 형식이 아닙니다. ISO 8601 형식이어야 합니다.' })
+    .datetime({ message: '올바른 날짜 형식이 아닙니다.' })
     .refine(
       (dateString) => {
         const date = new Date(dateString);
@@ -65,5 +65,29 @@ export const vaccinationSchema = z.object({
       }
     ),
   vaccinationName: z.string().min(1, { message: '백신 이름을 입력해주세요.' }),
-  description: z.string().min(1, { message: '백신에 대한 설명을 입력해주세요.' }).optional(), // 설명은 선택사항일 경우 optional로 처리
+  description: z.string().min(1, { message: '백신에 대한 설명을 입력해주세요.' }).optional(),
+});
+
+export const feedSchema = z.object({
+  date: z
+    .string()
+    .datetime({ message: '올바른 날짜 형식이 아닙니다.' })
+    .refine(
+      (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getUTCFullYear();
+        const isValidYear = year <= currentYear;
+        return isValidYear;
+      },
+      {
+        message: '올바른 날짜를 입력해주세요.',
+      }
+    ),
+  amount: z.number().min(1, { message: '먹이 양은 1 이상이어야 합니다.' }),
+  amount_type: z.string().refine((value) => ['l', 'ml', 'g', 'kg'].includes(value.toLowerCase()), {
+    message: '유효한 양의 단위(ml, l, g, kg)를 선택해주세요.',
+  }),
+  feed_type: z.string().refine((value) => ['meal', 'snack'].includes(value.toLowerCase()), {
+    message: '유효한 먹이 종류(meal, snack)를 선택해주세요.',
+  }),
 });
