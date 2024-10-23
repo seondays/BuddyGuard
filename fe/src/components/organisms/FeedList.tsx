@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from 'react';
 
 import CommonCard from '@/components/molecules/CommonCard';
-import { useHospitalsInfoQuery, useDeleteHospitalRecordMutation } from '@/hooks/useHospitalQuery';
+import { useFeedQuery, useDeleteFeedMutation } from '@/hooks/useFeedQuery';
 
 import DetailModal from '../molecules/DetailModal';
 
-interface HospitalRecord {
+interface FeedRecord {
   id: number;
   petId: number;
   date: string;
   mainCategory: string;
   subCategory: string;
-  title: string;
-  description: string;
+  amount: number;
+  amountType: string;
+  feedType: string;
 }
 
-export default function HospitalList() {
+export default function FeedList() {
   const [petId, setPetId] = useState<number | null>(null);
-  const [selectedHospital, setSelectedHospital] = useState<HospitalRecord | null>(null);
+  const [selectedFeed, setSelectedFeed] = useState<FeedRecord | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const deleteHospitalMutation = useDeleteHospitalRecordMutation();
+  const deleteFeedMutation = useDeleteFeedMutation();
 
-  const handleHospitalClick = (hospital: HospitalRecord) => {
-    setSelectedHospital(hospital);
+  const handleFeedClick = (feed: FeedRecord) => {
+    setSelectedFeed(feed);
     setIsPopupOpen(true);
   };
 
@@ -30,10 +31,10 @@ export default function HospitalList() {
     setIsPopupOpen(false);
   };
 
-  const handleDeleteHospital = () => {
-    if (selectedHospital && petId) {
-      deleteHospitalMutation.mutate(
-        { petId, id: selectedHospital.id },
+  const handleDeleteFeed = () => {
+    if (selectedFeed && petId) {
+      deleteFeedMutation.mutate(
+        { petId, feedId: selectedFeed.id },
         {
           onSuccess: () => {
             closePopup();
@@ -67,7 +68,7 @@ export default function HospitalList() {
     return () => clearInterval(interval);
   }, []);
 
-  const { data: HospitalList, isLoading, isError } = useHospitalsInfoQuery(petId ?? undefined);
+  const { data: feedList, isLoading, isError } = useFeedQuery(petId ?? undefined);
 
   if (!petId) return <div>반려동물을 선택해 주세요.</div>;
   if (isLoading) return <div>로딩 중...</div>;
@@ -93,26 +94,26 @@ export default function HospitalList() {
 
   return (
     <div>
-      {HospitalList &&
-        HospitalList.map((hospital: HospitalRecord) => (
+      {feedList &&
+        feedList.map((feed: FeedRecord) => (
           <CommonCard
-            key={hospital.id}
-            subCategory={hospital.subCategory}
-            title={hospital.title}
-            time={formatDateToYMD(hospital.date)}
-            onClick={() => handleHospitalClick(hospital)}
+            key={feed.id}
+            title={`${feed.feedType}`}
+            time={formatDateToYMD(feed.date)}
+            onClick={() => handleFeedClick(feed)}
           >
-            {hospital.description}
+            먹이량: {feed.amount}
+            {feed.amountType}
           </CommonCard>
         ))}
-      {isPopupOpen && selectedHospital && (
+      {isPopupOpen && selectedFeed && (
         <DetailModal
-          subCategory={selectedHospital.subCategory}
-          title={selectedHospital.title}
-          time={formatDateToYMDHM(selectedHospital.date)}
-          content={selectedHospital.description}
+          title={`${selectedFeed.feedType}`}
+          time={formatDateToYMDHM(selectedFeed.date)}
+          content={`먹이량: ${selectedFeed.amount}
+          ${selectedFeed.amountType}`}
           onClose={closePopup}
-          onDelete={handleDeleteHospital}
+          onDelete={handleDeleteFeed}
         />
       )}
     </div>
