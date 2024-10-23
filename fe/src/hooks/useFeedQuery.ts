@@ -3,11 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getFeedsRecord, createFeedRecord, deleteFeedRecord } from '@/apis/feedAPI';
 
 // 먹이 기록을 전체 조회
-export const useFeedQuery = (petId: number) => {
+export const useFeedQuery = (petId?: number) => {
   return useQuery({
     queryKey: ['feedsInfo', petId],
-    queryFn: () => getFeedsRecord(petId),
-    enabled: !petId,
+    queryFn: () => getFeedsRecord(petId!),
+    enabled: !!petId,
   });
 };
 

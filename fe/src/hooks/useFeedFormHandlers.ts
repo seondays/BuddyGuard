@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
-import { useCreateFeedMutation } from '@/hooks/useFeedQuery';
 import { feedSchema } from '@/schema/formSchema';
 
-export const useFeedFormHandlers = (petId: number) => {
+export const useFeedFormHandlers = (petId: number, createFeedMutation: any, navigate: any) => {
   const [formData, setFormData] = useState({
     petId: petId || 0,
     date: '',
@@ -15,8 +13,6 @@ export const useFeedFormHandlers = (petId: number) => {
   });
 
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
-  const createFeedMutation = useCreateFeedMutation(petId);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const petsStorage = localStorage.getItem('petsStorage');
@@ -29,7 +25,12 @@ export const useFeedFormHandlers = (petId: number) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'amount') {
+      setFormData((prev) => ({ ...prev, [name]: Number(value) }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,27 +41,20 @@ export const useFeedFormHandlers = (petId: number) => {
     e.preventDefault();
     const convertToISO = (localDateTime: string) => new Date(localDateTime).toISOString();
 
-    const formDataToSubmit = new FormData();
-    formDataToSubmit.append('petId', String(formData.petId));
-    formDataToSubmit.append('date', convertToISO(formData.date));
-    formDataToSubmit.append('amount', String(formData.amount));
-    formDataToSubmit.append('amount_type', formData.amount_type);
-    formDataToSubmit.append('feed_type', formData.feed_type);
+    const formDataToSubmit = {
+      petId: formData.petId,
+      date: convertToISO(formData.date),
+      amount: formData.amount,
+      amount_type: formData.amount_type,
+      feed_type: formData.feed_type,
+    };
 
     try {
-      const validationData = {
-        petId: formData.petId,
-        date: convertToISO(formData.date),
-        amount: formData.amount,
-        amount_type: formData.amount_type,
-        feed_type: formData.feed_type,
-      };
-
-      feedSchema.parse(validationData);
+      feedSchema.parse(formDataToSubmit);
       createFeedMutation.mutate(formDataToSubmit, {
         onSuccess: () => {
           alert('먹이 기록이 성공적으로 등록되었습니다!');
-          navigate('/menu/feeds');
+          navigate('/menu/feed');
         },
         onError: (error: any) => {
           console.error('먹이 기록 등록 실패:', error);

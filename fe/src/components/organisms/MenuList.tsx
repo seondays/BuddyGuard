@@ -13,7 +13,7 @@ export default function MenuList() {
     },
     { id: 2, backgroundColor: 'white', title: '', src: '/assets/images/mascot.png', path: '' },
     { id: 3, backgroundColor: 'white', title: '건강', src: '/assets/icons/menu_health.png', path: '/menu/hospital' },
-    { id: 4, backgroundColor: 'white', title: '식사', src: '/assets/icons/menu_meal.png', path: '/menu/food' },
+    { id: 4, backgroundColor: 'white', title: '식사', src: '/assets/icons/menu_meal.png', path: '/menu/feed' },
     { id: 5, backgroundColor: 'white', title: '산책', src: '/assets/icons/menu_walk.png', path: '/menu/walk' },
     { id: 6, backgroundColor: 'white', title: '체중', src: '/assets/icons/menu_weight.png', path: '/menu/weight' },
   ];
