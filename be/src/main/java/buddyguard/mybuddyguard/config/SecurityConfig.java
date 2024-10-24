@@ -81,7 +81,10 @@ public class SecurityConfig {
                     config.setAllowedOrigins(Arrays.asList(
                             "https://buddyguard.site:5173",
                             "http://localhost:5173",
-                            "https://buddyguard.site"
+                            "https://buddyguard.site",
+                            "http://192.168.19.1:5173",
+                            "http://172.16.1.38:5173",
+                            "http://192.168.55.244:5173"
                     ));
                     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowCredentials(true);
