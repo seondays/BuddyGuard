@@ -2,6 +2,13 @@ import axios from 'axios';
 
 import { fetchAccessToken } from '@/apis/authAPI';
 
+/** fetchAccessToken 전용 Axios 인스턴스 */
+export const tokenClient = axios.create({
+  baseURL: import.meta.env.VITE_SERVER_URL,
+  timeout: 10000,
+  withCredentials: true,
+});
+
 /** Axios 인스턴스 */
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
