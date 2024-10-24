@@ -18,11 +18,14 @@ export function useLoadUserInfo() {
 
 export function useLoadPetsInfo() {
   const { data: petsData, isSuccess: isPetsInfoSuccess } = usePetsInfoQuery();
-  const { setPetsInfo } = usePetStore();
+  const { setPetsInfo, setSelectedBuddy } = usePetStore();
 
   useEffect(() => {
     if (isPetsInfoSuccess && petsData) {
       setPetsInfo(petsData);
     }
-  }, [isPetsInfoSuccess, petsData, setPetsInfo]);
+    if (!petsData?.length) {
+      setSelectedBuddy(null);
+    }
+  }, [isPetsInfoSuccess, petsData, setPetsInfo, setSelectedBuddy]);
 }

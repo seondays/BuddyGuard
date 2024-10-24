@@ -11,28 +11,31 @@ import { PetInfo } from '@/types/pet';
 
 export default function MyBuddy() {
   const defaultProfileImage = '/assets/images/mascot.png';
-  const { petsInfo, setPetsInfo } = usePetStore();
-  const [selectedBuddy, setSelectedBuddy] = useState<PetInfo | null>(null);
+  const { petsInfo, setPetsInfo, setSelectedBuddy } = usePetStore();
+  const [titleBuddy, setTitleBuddy] = useState<PetInfo | null>(null);
 
   const deletePetMutation = useDeletePetMutation();
 
   const handleSelectBuddy = (buddy: PetInfo) => {
-    setSelectedBuddy(buddy);
+    setTitleBuddy(buddy);
   };
 
   const handleDeleteBuddy = () => {
-    if (!selectedBuddy) return;
+    if (!titleBuddy) return;
 
-    deletePetMutation.mutate(selectedBuddy.petId, {
+    deletePetMutation.mutate(titleBuddy.petId, {
       onSuccess: () => {
-        const updatedPets = petsInfo.filter((buddy) => buddy.petId !== selectedBuddy.petId);
+        const updatedPets = petsInfo.filter((buddy) => buddy.petId !== titleBuddy.petId);
         setPetsInfo(updatedPets);
 
-        // selectedBuddy가 삭제된 경우 null로 설정
-        if (updatedPets.length === 0 || selectedBuddy.petId === updatedPets[0].petId) {
+        // titleBuddy가 삭제된 경우 null로 설정
+        if (updatedPets.length === 0 || titleBuddy.petId === updatedPets[0].petId) {
+          setTitleBuddy(null);
           setSelectedBuddy(null);
         } else {
-          setSelectedBuddy(updatedPets[0]); // 다른 버디가 있으면 첫 번째 버디 선택
+          // 다른 버디가 있으면 첫 번째 버디 선택
+          setTitleBuddy(updatedPets[0]);
+          setSelectedBuddy(updatedPets[0]);
         }
 
         message.success('버디가 성공적으로 삭제되었습니다.');
@@ -49,18 +52,18 @@ export default function MyBuddy() {
     if (storedBuddy) {
       try {
         const parsedBuddy = JSON.parse(storedBuddy);
-        const selectedBuddyFromStorage = parsedBuddy?.state?.selectedBuddy;
+        const titleBuddyFromStorage = parsedBuddy?.state?.titleBuddy;
 
-        if (selectedBuddyFromStorage) {
-          setSelectedBuddy(selectedBuddyFromStorage);
+        if (titleBuddyFromStorage) {
+          setTitleBuddy(titleBuddyFromStorage);
         } else if (petsInfo.length > 0) {
-          setSelectedBuddy(petsInfo[0]);
+          setTitleBuddy(petsInfo[0]);
         }
       } catch (error) {
         console.error('로컬 스토리지에서 데이터를 파싱하는 중 오류가 발생했습니다.', error);
       }
     } else if (petsInfo.length > 0) {
-      setSelectedBuddy(petsInfo[0]);
+      setTitleBuddy(petsInfo[0]);
     }
   }, [petsInfo]);
 
@@ -75,9 +78,9 @@ export default function MyBuddy() {
       <InfoSection>
         <InfoContent>
           <Span style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#FF7D29' }}>
-            {selectedBuddy ? selectedBuddy.petName + ' - ' : '버디가 없습니다.'}
+            {titleBuddy ? titleBuddy.petName + ' - ' : '버디가 없습니다.'}
           </Span>
-          <Span style={{ fontSize: '1rem', color: '#FF7D29' }}>{selectedBuddy ? '품종 정보' : ''}</Span>
+          <Span style={{ fontSize: '1rem', color: '#FF7D29' }}>{titleBuddy ? '품종 정보' : ''}</Span>
         </InfoContent>
       </InfoSection>
 
@@ -99,13 +102,13 @@ export default function MyBuddy() {
             <BuddyButton
               key={buddy.petId}
               onClick={() => handleSelectBuddy(buddy)}
-              selected={selectedBuddy?.petId === buddy.petId || false}
+              selected={titleBuddy?.petId === buddy.petId || false}
             >
               {buddy.petName}
             </BuddyButton>
           ))}
         </div>
-        {selectedBuddy && <DeleteButton onClick={handleDeleteBuddy}>{selectedBuddy.petName} 삭제하기</DeleteButton>}
+        {titleBuddy && <DeleteButton onClick={handleDeleteBuddy}>{titleBuddy.petName} 삭제하기</DeleteButton>}
       </BuddyList>
     </MyBuddyContainer>
   );
