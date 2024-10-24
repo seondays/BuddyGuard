@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -34,11 +35,11 @@ export default function MyBuddy() {
           setSelectedBuddy(updatedPets[0]); // 다른 버디가 있으면 첫 번째 버디 선택
         }
 
-        alert('버디가 성공적으로 삭제되었습니다.');
+        message.success('버디가 성공적으로 삭제되었습니다.');
       },
       onError: (error) => {
         console.error('버디 삭제 실패:', error);
-        alert('버디 삭제에 실패했습니다. 다시 시도해 주세요.');
+        message.error('버디 삭제에 실패했습니다. 다시 시도해 주세요.');
       },
     });
   };

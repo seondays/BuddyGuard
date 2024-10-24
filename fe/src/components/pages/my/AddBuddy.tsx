@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -16,7 +17,7 @@ export default function AddBuddy() {
     const petsInfo = petsStorage ? JSON.parse(petsStorage) : [];
     const petsData = petsInfo.state.petsInfo;
     if (petsData.length >= 3) {
-      alert('버디는 3마리까지만 등록 가능합니다.');
+      message.warning('버디는 3마리까지만 등록 가능합니다.');
       navigate(-1);
     }
   }, [navigate]);
@@ -39,12 +40,12 @@ export default function AddBuddy() {
     validateAndSubmit((formDataToSubmit) => {
       createPetMutation.mutate(formDataToSubmit, {
         onSuccess: () => {
-          alert('버디 등록 성공!');
+          message.success('버디 등록 성공!');
           navigate('/');
         },
         onError: (error) => {
           console.error('버디 추가 실패:', error);
-          alert('버디 등록에 실패했습니다. 다시 시도해 주세요.');
+          message.error('버디 등록에 실패했습니다. 다시 시도해 주세요.');
         },
       });
     });
