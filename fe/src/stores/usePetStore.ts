@@ -12,7 +12,7 @@ type PetState = {
   petsInfo: PetInfo[];
   selectedBuddy: PetInfo | null;
   setPetsInfo: (pets: PetInfo[]) => void;
-  setSelectedBuddy: (buddy: PetInfo) => void;
+  setSelectedBuddy: (buddy: PetInfo | null) => void;
 };
 
 export const usePetStore = create<PetState>()(

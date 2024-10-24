@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { useState, useEffect } from 'react';
 import { z } from 'zod';
 
@@ -53,12 +54,12 @@ export const useFeedFormHandlers = (petId: number, createFeedMutation: any, navi
       feedSchema.parse(formDataToSubmit);
       createFeedMutation.mutate(formDataToSubmit, {
         onSuccess: () => {
-          alert('먹이 기록이 성공적으로 등록되었습니다!');
+          message.success('먹이 기록이 성공적으로 등록되었습니다!');
           navigate('/menu/feed');
         },
         onError: (error: any) => {
           console.error('먹이 기록 등록 실패:', error);
-          alert('먹이 기록 등록에 실패했습니다. 다시 시도해 주세요.');
+          message.error('먹이 기록 등록에 실패했습니다. 다시 시도해 주세요.');
         },
       });
     } catch (err) {

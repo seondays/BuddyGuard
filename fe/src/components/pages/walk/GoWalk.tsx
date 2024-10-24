@@ -1,4 +1,6 @@
+import { message } from 'antd';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import PlayIcon from '@/components/icons/PlayIcon';
@@ -51,6 +53,7 @@ export default function GoWalk() {
   const [isTargetClicked, setIsTargetClicked] = useState(false);
   const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
 
+  const navigate = useNavigate();
   useEffect(() => {
     const petsStorage = localStorage.getItem('petsStorage');
     if (!petsStorage) return;
@@ -83,8 +86,16 @@ export default function GoWalk() {
   });
 
   const startGoWalk = () => {
+    console.log('buddyList: ', buddyList);
+    console.log('buddyList.length: ', buddyList.length);
+
+    if (!buddyList.length) {
+      message.info('버디를 등록해주세요!');
+      navigate('/MyPage/AddBuddy');
+      return;
+    }
     if (!selectedBuddys.length) {
-      alert('산책할 버디를 선택해주세요! (임시 alert)');
+      message.warning('산책할 버디를 선택해주세요!');
       return;
     }
     setIsStarted('start');

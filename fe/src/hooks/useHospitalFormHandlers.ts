@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { useState, useEffect } from 'react';
 import { z } from 'zod';
 
@@ -52,12 +53,12 @@ export const useHospitalFormHandlers = (petId: number, createHospitalMutation: a
       hospitalSchema.parse(validationData);
       createHospitalMutation.mutate(formDataToSubmit, {
         onSuccess: () => {
-          alert('건강 기록 등록 성공!');
+          message.success('건강 기록 등록 성공!');
           navigate('/menu/hospital');
         },
         onError: (error: any) => {
           console.error('건강 기록 등록 실패:', error);
-          alert('건강 기록 등록에 실패했습니다. 다시 시도해 주세요.');
+          message.error('건강 기록 등록에 실패했습니다. 다시 시도해 주세요.');
         },
       });
     } catch (err) {

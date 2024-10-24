@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
@@ -74,11 +75,11 @@ export default function WalkModal({
   const navigate = useNavigate();
 
   const onErrorFn = () => {
-    alert('😿 등록에 실패하였습니다.');
+    message.error('😿 등록에 실패하였습니다.');
     navigate('/');
   };
   const onSuccessFn = () => {
-    alert('🐶 등록에 성공하였습니다.');
+    message.success('🐶 등록에 성공하였습니다.');
     navigate('/menu/walk');
   };
 
