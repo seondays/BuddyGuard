@@ -16,8 +16,8 @@ export default function CommonCard({ subCategory, title, time, onClick, children
     <CardContainer onClick={onClick}>
       <CardHeader>
         <div>
-          <Title>{title} - </Title>
-          <SubCategory>{subCategory}</SubCategory>
+          <Title>{title}</Title>
+          {subCategory ? <SubCategory> - {subCategory}</SubCategory> : null}
         </div>
         <Time>{time}</Time>
       </CardHeader>
