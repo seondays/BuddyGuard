@@ -47,6 +47,7 @@ export default function Image({
 }
 
 const StyledImage = styled.img<ImageProps & { $isClicked: boolean }>`
+  object-fit: contain;
   ${({ style }) => {
     const { width, height, border, marginTop } = style || {};
     return `
