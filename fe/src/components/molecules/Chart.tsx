@@ -44,7 +44,7 @@ export default function Chart({ records }: ChartProps) {
     const dataRange = type === 'monthly' ? getCurrentMonthRange() : getCurrentWeekRange();
 
     const updatedData = dataRange.map(({ name }) => {
-      const recordForDay = records.find((record) => dayjs(record.startDate).format('YY-MM-DD') === name);
+      const recordForDay = records?.find((record) => dayjs(record.startDate).format('YY-MM-DD') === name);
       return {
         name: name,
         distance: recordForDay ? recordForDay.distance : 0,

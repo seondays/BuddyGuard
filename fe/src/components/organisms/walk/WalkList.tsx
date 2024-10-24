@@ -36,7 +36,7 @@ export default function WalkList({ records, selectedData, type }: WalkListProps)
         <NoRecordBox />
       );
     } else {
-      return records.length > 0 ? (
+      return records?.length > 0 ? (
         records.map((record, idx) => (
           <ListBox key={`record-${idx}`} record={record} onClickHandler={() => onClickHandler(record)} />
         ))
