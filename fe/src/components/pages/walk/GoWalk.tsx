@@ -171,9 +171,10 @@ const StyledBlockLayer = styled.div`
 `;
 
 const StyledMap = styled.div`
-  min-width: 100%;
-  min-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  ${fillAvailable}
 `;
 
 const StyledPlayIcon = styled(PlayIcon)`
