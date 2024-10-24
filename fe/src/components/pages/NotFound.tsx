@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { flexColumnCenter } from '@/styles/layoutStyles';
+import { fillAvailable, flexColumnCenter } from '@/styles/layoutStyles';
 
 export default function NotFound() {
   return (
@@ -15,6 +15,7 @@ const StyledContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: ${({ theme }) => theme.currentTheme.modalBackground2};
+  ${fillAvailable}
 `;
 const StyledText = styled.h1`
   color: ${({ theme }) => theme.currentTheme.textPrimary};

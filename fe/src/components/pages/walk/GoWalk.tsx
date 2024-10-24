@@ -9,6 +9,7 @@ import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import WalkModal from '@/components/organisms/walk/WalkModal';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
+import { fillAvailable } from '@/styles/layoutStyles';
 import {
   BuddysType,
   CheckboxChangeHandler,
@@ -86,9 +87,6 @@ export default function GoWalk() {
   });
 
   const startGoWalk = () => {
-    console.log('buddyList: ', buddyList);
-    console.log('buddyList.length: ', buddyList.length);
-
     if (!buddyList.length) {
       message.info('버디를 등록해주세요!');
       navigate('/MyPage/AddBuddy');
@@ -190,4 +188,5 @@ export const StyledWalkWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  ${fillAvailable}
 `;

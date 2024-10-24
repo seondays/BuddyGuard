@@ -40,7 +40,7 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
     setSelectedDate(newDate);
     setActiveDate(newDate);
 
-    const selectedRecord = data.records.find(({ startDate }: { startDate: string }) =>
+    const selectedRecord = data.records?.find(({ startDate }: { startDate: string }) =>
       dayjs(startDate).isSame(newDate, 'day')
     );
 
