@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from '@/components/atoms/Button';
 import Checkbox from '@/components/atoms/Checkbox';
 import { LOGIN_API_SRC } from '@/constants/urlConstants';
+import { fillAvailable, flexColumnCenter } from '@/styles/layoutStyles';
 import KakaoLogo from '@/svg/kakao_logo.svg';
 import Logo from '@/svg/logo.svg';
 
@@ -11,9 +12,10 @@ export default function Login() {
   const KAKAO_LOGO_COLOR = '#391d1d';
 
   return (
-    <div style={{ padding: '2rem', height: '100%', alignContent: 'center', backgroundColor: 'white' }}>
+    <StyledLoginContainer>
       <StyledLogo />
-      <div>
+
+      <StyledButtonWrapper>
         <a href={LOGIN_API_SRC}>
           <Button
             $bgColor={KAKAO_BG_COLOR}
@@ -23,15 +25,19 @@ export default function Login() {
             <StyledButtonText style={{ width: '70%', fontSize: '1.2rem' }}>카카오 로그인</StyledButtonText>
           </Button>
         </a>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {/* <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Checkbox size="medium" label="로그인 유지" />
-        </div>
-      </div>
-    </div>
+        </div> */}
+      </StyledButtonWrapper>
+    </StyledLoginContainer>
   );
 }
+
+const StyledButtonWrapper = styled.div`
+  width: 100%;
+`;
+
 const StyledLogo = styled(Logo)`
-  margin-bottom: 3rem;
   width: 100%;
 `;
 
@@ -49,4 +55,13 @@ const StyledKakaoLogo = styled(KakaoLogo)<{ $color?: string }>`
   & path {
     fill: ${(props) => props.$color || ''};
   }
+`;
+
+const StyledLoginContainer = styled.div`
+  padding: 2rem;
+  height: 100%;
+  background-color: white;
+  ${flexColumnCenter}
+  gap: 3rem;
+  ${fillAvailable}
 `;

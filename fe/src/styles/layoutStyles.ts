@@ -21,3 +21,10 @@ export const flexColumnCenter = css`
   align-items: center;
   justify-content: center;
 `;
+
+/* iOS에서 화면 꽉 채우기 */
+export const fillAvailable = css`
+  @supports (-webkit-touch-callout: none) {
+    height: -webkit-fill-available;
+  }
+`;
