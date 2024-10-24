@@ -27,8 +27,11 @@ export default function MyBuddy() {
         const updatedPets = petsInfo.filter((buddy) => buddy.petId !== selectedBuddy.petId);
         setPetsInfo(updatedPets);
 
-        if (updatedPets.length > 0) {
-          setSelectedBuddy(updatedPets[0]);
+        // selectedBuddy가 삭제된 경우 null로 설정
+        if (updatedPets.length === 0 || selectedBuddy.petId === updatedPets[0].petId) {
+          setSelectedBuddy(null);
+        } else {
+          setSelectedBuddy(updatedPets[0]); // 다른 버디가 있으면 첫 번째 버디 선택
         }
 
         alert('버디가 성공적으로 삭제되었습니다.');
@@ -82,6 +85,7 @@ export default function MyBuddy() {
           나의 버디 정보
         </Span>
         <div>
+          {/* TODO: 버디 연동 */}
           <DetailItem>생일 : 2024년 4월 25일</DetailItem>
           <DetailItem>몸무게 : 3.5kg</DetailItem>
         </div>
