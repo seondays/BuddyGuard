@@ -13,7 +13,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "https://buddyguard.site:5173",
                         "http://localhost:5173",
-                        "https://buddyguard.site"
+                        "https://buddyguard.site",
+                        "http://192.168.19.1:5173"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드 설정
                 .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더 설정
