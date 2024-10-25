@@ -36,7 +36,6 @@ export interface FormDataType {
   distance: number;
 }
 
-// export default function WalkDetailModal({ detailRecords }: { detailRecords: WalkDetailModalProps }) {
 export default function WalkDetailModal({ detailRecords }: { detailRecords: record }) {
   // const { handleSubmit, setValue, getValues } = useForm<FormDataType>({
   //   defaultValues: initFormData,

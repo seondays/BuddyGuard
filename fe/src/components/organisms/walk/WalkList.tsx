@@ -6,8 +6,6 @@ import { flexColumn } from '@/styles/layoutStyles';
 import Puppy from '@/svg/puppy.svg';
 import { FilterType, record } from '@/types/walk';
 
-// import WalkModal from './WalkModal';
-
 interface WalkListProps {
   records: record[];
   selectedData?: record | null;

@@ -9,9 +9,8 @@ import Statistics from '@/components/molecules/Statistics';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
-import WalkDetailModal, { WalkDetailModalProps } from '@/components/organisms/walk/WalkDetailModal';
+import WalkDetailModal from '@/components/organisms/walk/WalkDetailModal';
 import WalkList from '@/components/organisms/walk/WalkList';
-import WalkModal from '@/components/organisms/walk/WalkModal';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { usePetStore } from '@/stores/usePetStore';
@@ -44,9 +43,8 @@ export default function Walk() {
 
   const { data, isLoading } = useWalkQuery(queryProps);
 
-  const [selectedData, setSelectedData] = useState<record | null>(null);
   const [isClickedDetail, setIsClickedDetail] = useState(false);
-  // const [selectedData, setSelectedData] = useState<WalkDetailModalProps | null>(null);
+  const [selectedData, setSelectedData] = useState<record | null>(null);
 
   useEffect(() => {
     if (data?.records) {
@@ -116,7 +114,7 @@ export default function Walk() {
         </StyledAllTypeWrapper>
       )}
 
-      {isClickedDetail && <WalkDetailModal detailRecords={selectedData} />}
+      {isWeeklyOrMonthly && isClickedDetail && selectedData && <WalkDetailModal detailRecords={selectedData} />}
     </StyledWalkContainer>
   );
 }

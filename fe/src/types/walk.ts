@@ -4,19 +4,20 @@ export type path = { latitude: number; longitude: number };
 
 export type record = {
   id: number;
-  buddyIds: [string, string];
+  buddyIds: number[];
+  centerPosition: path;
   startDate: string;
   endDate: string;
   startTime: string;
   endTime: string;
   totalTime: string;
   note: string;
-  centerPosition: [string, string];
   mapLevel: number;
   path: path[];
   distance: number;
   fileUrl: string;
 };
+
 export interface Buddy {
   id: number;
   image: string;
