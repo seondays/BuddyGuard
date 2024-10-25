@@ -4,8 +4,11 @@ import styled from 'styled-components';
 import Input from '@/components/atoms/Input';
 import {
   centerChangedEventListener,
+  createBasicMarker,
   createMap,
+  createMarker,
   createPolyline,
+  createStartEndMarker,
   drawPolylineOnMap,
   loadKakaoMapScript,
   moveMapTo,
@@ -43,7 +46,7 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
   // 타겟버튼 클릭 시 지도 재조정
   useEffect(() => {
     if (isTargetClicked && map) handleMapMoveAndStateUpdate();
-  }, [isTargetClicked, map]);
+  }, [isTargetClicked, map, handleMapMoveAndStateUpdate]);
 
   // 최초에만 Kakao Map을 초기화 (초기 한 번만 실행)
   useEffect(() => {
@@ -52,13 +55,29 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
         // 스크립트 로드
         await loadKakaoMapScript();
 
-        const currentLocation = [detailRecords.centerPosition.latitude, detailRecords.centerPosition.longitude];
+        const { latitude, longitude } = detailRecords.centerPosition;
+        const centerLocation: PositionType = [latitude, longitude];
+
+        const endLocation: PositionType = [
+          detailRecords.path[detailRecords.path.length - 1].latitude,
+          detailRecords.path[detailRecords.path.length - 1].longitude,
+        ];
 
         // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
         window.kakao.maps.load(() => {
-          const mapInstance = createMap(currentLocation, mapRef, setChangedPosition, detailRecords.mapLevel + 1);
-          // const newMarker = createMarker(currentLocation, mapInstance);
+          const mapInstance = createMap(centerLocation, mapRef, setChangedPosition, detailRecords.mapLevel + 1);
+
+          const startMarker = createStartEndMarker(endLocation, mapInstance, 'end');
+          const startLatLng = new kakao.maps.LatLng(endLocation[0], endLocation[1]);
+          startMarker.setPosition(startLatLng);
+
+          const startLocation: PositionType = [detailRecords.path[0].latitude, detailRecords.path[0].longitude];
+
+          const endMarker = createStartEndMarker(startLocation, mapInstance, 'start');
+          const endLatLng = new kakao.maps.LatLng(startLocation[0], startLocation[1]);
+          endMarker.setPosition(endLatLng);
+
           setMap(mapInstance);
           // markerRef.current = newMarker;
           const pathCoordinates = detailRecords.path.map(
@@ -175,7 +194,7 @@ const StyledTargetIcon = styled.div`
 const StyledMapWrapper = styled.div`
   position: relative;
   width: 100%;
-  height: 25vh;
+  height: 30vh;
 `;
 
 const StyledMap = styled.div`

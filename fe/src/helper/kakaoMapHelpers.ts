@@ -144,6 +144,24 @@ export const createCustomOverLay = (
   return newOverlay;
 };
 
+export const createStartEndMarker = (
+  currentLocation: PositionType,
+  mapInstance: kakao.maps.Map,
+  type: 'start' | 'end'
+) => {
+  const markerColor = type === 'start' ? '#FF0000' : '#20dd20';
+  const markerPosition = new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]);
+
+  const dotOverlay = new kakao.maps.CustomOverlay({
+    content: `<div style="background-color: ${markerColor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #FFFFFF;"></div>`,
+    position: markerPosition,
+    map: mapInstance,
+    yAnchor: 0.5,
+  });
+
+  return dotOverlay;
+};
+
 export const createMarker = (currentLocation: PositionType, mapInstance: kakao.maps.Map) => {
   const imageSize = new kakao.maps.Size(65, 65);
   const imageOption = { offset: new kakao.maps.Point(27, 69) };
