@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { UseFormSetValue } from 'react-hook-form';
 import styled from 'styled-components';
 
 import Image from '@/components/atoms/Image';
 import Input from '@/components/atoms/Input';
+import { FormDataType } from '@/components/organisms/walk/WalkModal';
 import {
   centerChangedEventListener,
   createBasicMarker,
@@ -20,14 +22,18 @@ import { path, record } from '@/types/walk';
 import targetIcon from '@public/assets/icons/targetIcon.png';
 import mascot from '@public/assets/images/mascot.png';
 
-export default function WalkDetailFormItem({ detailRecords }: { detailRecords: record }) {
+interface WalkDetailFormItemProps {
+  detailRecords: record;
+  setValue: UseFormSetValue<FormDataType>;
+}
+
+export default function WalkDetailFormItem({ detailRecords, setValue }: WalkDetailFormItemProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [isTargetClicked, setIsTargetClicked] = useState(false);
   const [buddyList, setBuddyList] = useState<BuddysType[]>([{ id: 0, img: '', name: '' }]);
-  const [filterdBuddys, setFilterdBuddys] = useState<BuddysType[]>([]);
-  const [note, setNote] = useState<string>('');
+  const [note, setNote] = useState<string>(detailRecords?.note);
 
   useEffect(() => {
     const petsStorage = localStorage.getItem('petsStorage');
@@ -45,8 +51,8 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
   }, [detailRecords.buddyIds]);
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // setNote(e.target.value);
-    // setValue('note', e.target.value);
+    setNote(e.target.value);
+    setValue('note', e.target.value);
   };
 
   /** 현재위치로 이동 및 위치 상태 업데이트 */
@@ -189,7 +195,7 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
         <Input
           id="note"
           type="text"
-          value={detailRecords?.note || ''}
+          value={note || ''}
           onChange={handleNoteChange}
           $isBottomLine={false}
           style={{ marginBottom: '0rem' }}

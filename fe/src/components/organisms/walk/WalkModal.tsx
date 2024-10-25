@@ -43,6 +43,11 @@ export interface FormDataType {
   distance: number;
 }
 
+export interface FormDataPutType extends Omit<FormDataType, 'pathImage' | 'buddysId'> {
+  id: number;
+  buddyIds: number[];
+}
+
 const initFormData: FormDataType = {
   startDate: '',
   endDate: '',

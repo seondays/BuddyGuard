@@ -8,13 +8,15 @@ import styled from 'styled-components';
 import Button from '@/components/atoms/Button';
 import WalkDetailFormItem from '@/components/molecules/walk/WalkDetailFormItem';
 import WalkFormItem from '@/components/molecules/walk/WalkFormItem';
-import { useWalkMutation } from '@/hooks/useWalkQuery';
+import { useWalkMutation, useWalkPutMutation } from '@/hooks/useWalkQuery';
+import { usePetStore } from '@/stores/usePetStore';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
 import { BuddysType, PositionType, SelectedBuddysType, TimeRef } from '@/types/map';
 import { path, record } from '@/types/walk';
 
 import { NAV_HEIGHT } from '../Nav';
+import { FormDataPutType } from './WalkModal';
 
 export interface FormDataType {
   startDate: string;
@@ -36,23 +38,31 @@ interface WalkDetailModalProps {
   setIsClickedDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const initForm = (detailRecords: record) => {
+  const { id, buddyIds, fileUrl, ...others } = detailRecords;
+  return { ...others, pets: buddyIds };
+};
+
 export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: WalkDetailModalProps) {
-  // const { handleSubmit, setValue, getValues } = useForm<FormDataType>({
-  //   defaultValues: initFormData,
-  // });
+  const { selectedBuddy } = usePetStore();
+  const { handleSubmit, setValue, getValues } = useForm<FormDataPutType>({
+    defaultValues: initForm(detailRecords),
+  });
+
+  console.log(detailRecords);
 
   const navigate = useNavigate();
 
   const onErrorFn = () => {
-    message.error('😿 등록에 실패하였습니다.');
-    navigate('/');
+    message.error('😿 수정에 실패하였습니다.');
+    navigate('/menu/walk');
   };
   const onSuccessFn = () => {
-    message.success('🐶 등록에 성공하였습니다.');
+    message.success('🐶 수정되었습니다.');
     navigate('/menu/walk');
   };
 
-  const walkMutation = useWalkMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
+  const putMutation = useWalkPutMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
 
   const onClose = () => {
     setIsClickedDetail(false);
@@ -60,11 +70,22 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: W
 
   const handleDelete = () => {
     console.log('삭제');
+    // const petId = selectedBuddy?.petId;
+    // const recordId = detailRecords.id;
+
+    // if (!petId) return;
+  };
+
+  const onSubmit = async (formData: FormDataPutType) => {
+    const petId = selectedBuddy?.petId;
+    const recordId = detailRecords.id;
+
+    if (!petId) return;
+
+    putMutation.mutate({ formData, petId, recordId });
   };
   const defaultColor = theme.colorValues.special.textForce;
   const defaultGray = theme.colorValues.grayscale[200];
-  console.log(2);
-
   return (
     <>
       <Overlay onClick={onClose} />
@@ -75,7 +96,7 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: W
         </ModalHeader>
 
         <FormItemWrapper>
-          <WalkDetailFormItem detailRecords={detailRecords}></WalkDetailFormItem>
+          <WalkDetailFormItem detailRecords={detailRecords} setValue={setValue}></WalkDetailFormItem>
         </FormItemWrapper>
 
         <ButtonWrapper>
@@ -87,7 +108,7 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: W
             <TrashIcon />
           </Button>
           <Button
-            // onClick={handleSubmit(onSubmit)}
+            onClick={handleSubmit(onSubmit)}
             $bgColor={defaultColor}
             style={{ border: 'none', borderRadius: '1rem', color: 'white', fontSize: '1.2rem', fontWeight: 'bold' }}
           >
