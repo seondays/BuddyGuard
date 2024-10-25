@@ -14,6 +14,7 @@ import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
 import { BuddysType, PositionType, SelectedBuddysType, TimeRef } from '@/types/map';
 import { path, record } from '@/types/walk';
+import { getCurrentDate } from '@/utils/timeUtils';
 
 import { NAV_HEIGHT } from '../Nav';
 import { FormDataPutType } from './WalkModal';
@@ -39,8 +40,17 @@ interface WalkDetailModalProps {
 }
 
 const initForm = (detailRecords: record) => {
-  const { id, buddyIds, fileUrl, ...others } = detailRecords;
-  return { ...others, pets: buddyIds };
+  const { id, buddyIds, startDate, endDate, fileUrl, ...others } = detailRecords;
+  const formatStartDate = getCurrentDate({ isDay: true, isTime: false, dateString: startDate })
+    .split(' ')
+    .slice(0, -1)
+    .join(' ');
+  const formatEndDate = getCurrentDate({ isDay: true, isTime: false, dateString: endDate })
+    .split(' ')
+    .slice(0, -1)
+    .join(' ');
+
+  return { ...others, buddysId: buddyIds, startDate: formatStartDate, endDate: formatEndDate };
 };
 
 export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: WalkDetailModalProps) {
