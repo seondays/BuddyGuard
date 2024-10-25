@@ -111,11 +111,12 @@ export const centerChangedEventListener = (
 export const createMap = (
   currentLocation: PositionType,
   mapRef: React.RefObject<HTMLDivElement>,
-  setChangedPosition: React.Dispatch<React.SetStateAction<PositionType | null>>
+  setChangedPosition: React.Dispatch<React.SetStateAction<PositionType | null>>,
+  level?: number
 ) => {
   const mapOptions = {
     center: new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]),
-    level: 3,
+    level: level || 3,
   };
   const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
 

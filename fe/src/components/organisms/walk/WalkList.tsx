@@ -6,19 +6,23 @@ import { flexColumn } from '@/styles/layoutStyles';
 import Puppy from '@/svg/puppy.svg';
 import { FilterType, record } from '@/types/walk';
 
-import WalkModal from './WalkModal';
+// import WalkModal from './WalkModal';
 
 interface WalkListProps {
   records: record[];
   selectedData?: record | null;
   type: FilterType;
+  setIsClickedDetail: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedData: React.Dispatch<React.SetStateAction<record | null>>;
 }
 
-export default function WalkList({ records, selectedData, type }: WalkListProps) {
-  const [isClickDetail, setIsClickDetail] = useState(false);
-  const onClickHandler = (selectedData: record) => {
-    console.log(selectedData);
-    // setIsClickDetail(true);
+export default function WalkList({ records, selectedData, type, setIsClickedDetail, setSelectedData }: WalkListProps) {
+  const onClickHandler = (record: record) => {
+    console.log(record);
+    if (type !== 'all') {
+      setIsClickedDetail(true);
+      setSelectedData(record);
+    }
   };
 
   const NoRecordBox = () => (

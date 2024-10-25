@@ -9,7 +9,9 @@ import Statistics from '@/components/molecules/Statistics';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
+import WalkDetailModal, { WalkDetailModalProps } from '@/components/organisms/walk/WalkDetailModal';
 import WalkList from '@/components/organisms/walk/WalkList';
+import WalkModal from '@/components/organisms/walk/WalkModal';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { usePetStore } from '@/stores/usePetStore';
@@ -43,6 +45,8 @@ export default function Walk() {
   const { data, isLoading } = useWalkQuery(queryProps);
 
   const [selectedData, setSelectedData] = useState<record | null>(null);
+  const [isClickedDetail, setIsClickedDetail] = useState(false);
+  // const [selectedData, setSelectedData] = useState<WalkDetailModalProps | null>(null);
 
   useEffect(() => {
     if (data?.records) {
@@ -85,23 +89,34 @@ export default function Walk() {
           </>
         )}
       </StyledStaticWrapper>
-
       {isWeeklyOrMonthly && (
         <StyledSection $height={30} $responsiveHeight={40}>
-          <WalkList records={data?.records} type={type} />
+          <WalkList
+            records={data?.records}
+            type={type}
+            setIsClickedDetail={setIsClickedDetail}
+            setSelectedData={setSelectedData}
+          />
         </StyledSection>
       )}
-
       {type === 'all' && (
         <StyledAllTypeWrapper>
           <StyledCalendarSection>
             <WalkCalendar setSelectedData={setSelectedData} />
           </StyledCalendarSection>
           <StyledWalkListSection>
-            <WalkList records={data?.records} selectedData={selectedData} type={type} />
+            <WalkList
+              records={data?.records}
+              selectedData={selectedData}
+              type={type}
+              setIsClickedDetail={setIsClickedDetail}
+              setSelectedData={setSelectedData}
+            />
           </StyledWalkListSection>
         </StyledAllTypeWrapper>
       )}
+
+      {isClickedDetail && <WalkDetailModal detailRecords={selectedData} />}
     </StyledWalkContainer>
   );
 }
