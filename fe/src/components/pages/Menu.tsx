@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import BuddyInfoBar from '@/components/organisms/BuddyInfoBar';
 import MenuList from '@/components/organisms/MenuList';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
+import { fillAvailable } from '@/styles/layoutStyles';
 
 export default function Menu() {
   return (
@@ -17,11 +18,15 @@ export default function Menu() {
 
 const StyledMenuContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100% - ${NAV_HEIGHT});
+  background-color: ${({ theme }) => theme.currentTheme.backgroundPrimary};
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  ${fillAvailable};
 `;
 
 const StyledMenuListWrapper = styled.div<{ $navHeight: string }>`
   margin-top: 1.5rem;
-  height: ${({ $navHeight }) => `calc(85% - ${$navHeight})`};
+  height: calc(100% - ${NAV_HEIGHT});
 `;
