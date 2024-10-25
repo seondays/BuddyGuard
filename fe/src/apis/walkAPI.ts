@@ -1,5 +1,5 @@
 import apiClient from '@/apis/axiosInstance';
-import { UseWalkQueryProps } from '@/hooks/useWalkQuery';
+import { MutationParams, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 
 const WALK_BASE_URL = '/api/walkRecords';
 
@@ -18,13 +18,43 @@ export const getWalkRecords = async ({ filterKey, buddyId, month, year }: UseWal
   }
 };
 
-/** 폼 데이터를 서버에 전송하는 함수 */
+/** 폼 데이터 저장 */
 export const postWalkData = async (form: FormData) => {
   try {
     const { status } = await apiClient.post(WALK_BASE_URL, form);
     return status;
   } catch (error) {
     console.error('Upload failed:', error);
+    throw error;
+  }
+};
+
+/** 폼 데이터 수정
+ * 200 ok
+ */
+export const putWalkData = async ({ formData, petId, recordId }: MutationParams) => {
+  try {
+    const { status } = await apiClient.put(`${WALK_BASE_URL}/${petId}/detail/${recordId}`, formData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return status;
+  } catch (error) {
+    console.error('edit failed:', error);
+    throw error;
+  }
+};
+
+/** 폼 데이터 삭제
+ * 200 ok
+ */
+export const deleteWalkData = async (petId: number, recordId: number) => {
+  try {
+    const { status } = await apiClient.delete(`${WALK_BASE_URL}/${petId}/${recordId}`);
+    return status;
+  } catch (error) {
+    console.error('delete failed:', error);
     throw error;
   }
 };

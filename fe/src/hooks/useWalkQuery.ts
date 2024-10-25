@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { getWalkRecords, postWalkData } from '@/apis/walkAPI';
+import { getWalkRecords, postWalkData, putWalkData } from '@/apis/walkAPI';
+import { FormDataPutType, FormDataType } from '@/components/organisms/walk/WalkModal';
 import { FilterType } from '@/types/walk';
 
 export type UseWalkQueryProps = {
@@ -31,6 +32,28 @@ export const useWalkQuery = ({ filterKey, buddyId, month, year }: UseWalkQueryPr
 export const useWalkMutation = ({ onSuccessFn, onErrorFn }: useWalkMutationProps) => {
   return useMutation({
     mutationFn: (formData: FormData) => postWalkData(formData),
+    onSuccess: (status) => {
+      if (status === 201 || status === 200) {
+        onSuccessFn();
+      }
+    },
+    onError: (error) => {
+      console.error('Upload failed:', error);
+      onErrorFn();
+    },
+  });
+};
+
+export interface MutationParams {
+  formData: FormDataPutType;
+  petId: number;
+  recordId: number;
+}
+
+/** 수정 뮤테이션 */
+export const useWalkPutMutation = ({ onSuccessFn, onErrorFn }: useWalkMutationProps) => {
+  return useMutation({
+    mutationFn: ({ formData, petId, recordId }: MutationParams) => putWalkData({ formData, petId, recordId }),
     onSuccess: (status) => {
       if (status === 201 || status === 200) {
         onSuccessFn();

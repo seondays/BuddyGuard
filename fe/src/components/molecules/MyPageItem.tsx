@@ -1,7 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { flexRow } from '@/styles/layoutStyles';
+import Paw from '@/svg/paw.svg';
 
 import Image from '../atoms/Image';
-import Span from '../atoms/Span';
 
 interface MyPageItemProps {
   title: string;
@@ -24,20 +27,34 @@ export default function MyPageItem({ title, router, onClick }: MyPageItemProps) 
     <div
       onClick={handleClick}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
         borderBottom: '1px solid #ddd',
-        margin: '2rem 0',
-        paddingBottom: '1rem',
+        margin: '0.1rem 0',
         cursor: 'pointer',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-        <Image src="/assets/icons/My_Buddies.png" style={{ width: '2rem' }} />
-        <Span style={{ fontSize: '1.3rem', fontWeight: 'bold' }}>{title}</Span>
-      </div>
-      <Image src="/assets/icons/arrow_right.png" style={{ width: '0.5rem' }} />
+      <StyledTextWrapper>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          <StyledIcon />
+          <StyledText>{title}</StyledText>
+        </div>
+        <Image src="/assets/icons/arrow_right.png" style={{ width: '0.5rem' }} />
+      </StyledTextWrapper>
     </div>
   );
 }
+
+const StyledTextWrapper = styled.div`
+  padding: 0 1.5rem;
+  ${flexRow}
+  justify-content: space-between;
+`;
+const StyledIcon = styled(Paw)`
+  width: 1.5rem;
+  fill: ${({ theme }) => theme.currentTheme.textAccentSecondary};
+`;
+
+const StyledText = styled.span`
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: ${({ theme }) => theme.currentTheme.textPrimary};
+`;

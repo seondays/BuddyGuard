@@ -111,11 +111,12 @@ export const centerChangedEventListener = (
 export const createMap = (
   currentLocation: PositionType,
   mapRef: React.RefObject<HTMLDivElement>,
-  setChangedPosition: React.Dispatch<React.SetStateAction<PositionType | null>>
+  setChangedPosition: React.Dispatch<React.SetStateAction<PositionType | null>>,
+  level?: number
 ) => {
   const mapOptions = {
     center: new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]),
-    level: 3,
+    level: level || 3,
   };
   const mapInstance = new kakao.maps.Map(mapRef.current as HTMLElement, mapOptions);
 
@@ -141,6 +142,24 @@ export const createCustomOverLay = (
   });
 
   return newOverlay;
+};
+
+export const createStartEndMarker = (
+  currentLocation: PositionType,
+  mapInstance: kakao.maps.Map,
+  type: 'start' | 'end'
+) => {
+  const markerColor = type === 'start' ? '#FF0000' : '#20dd20';
+  const markerPosition = new window.kakao.maps.LatLng(currentLocation[0], currentLocation[1]);
+
+  const dotOverlay = new kakao.maps.CustomOverlay({
+    content: `<div style="background-color: ${markerColor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #FFFFFF;"></div>`,
+    position: markerPosition,
+    map: mapInstance,
+    yAnchor: 0.5,
+  });
+
+  return dotOverlay;
 };
 
 export const createMarker = (currentLocation: PositionType, mapInstance: kakao.maps.Map) => {

@@ -18,14 +18,17 @@ export const Default = Template.bind({});
 Default.args = {
   record: {
     id: 1,
-    buddyIds: ['1', '2'],
+    buddyIds: [1, 2],
     startDate: '2024-10-17',
     endDate: '2024-10-17',
     startTime: '00:10:00',
     endTime: '00:13:00',
     totalTime: '00:03:00',
     note: '우디랑 산책했다.',
-    centerPosition: ['37.776929', '126.942293'],
+    centerPosition: {
+      latitude: 37.776929,
+      longitude: 126.942293,
+    },
     mapLevel: 3,
     path: [
       {

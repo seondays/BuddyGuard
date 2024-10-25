@@ -1,9 +1,10 @@
+import { message } from 'antd';
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import Nav from '@/components/organisms/Nav';
 import { HOME_DESCRIPTION_TEXT1, HOME_DESCRIPTION_TEXT2 } from '@/constants/textConstants';
-import { fillAvailable } from '@/styles/layoutStyles';
+import { fillAvailable, flexRowCenter } from '@/styles/layoutStyles';
 
 interface ResponsiveLayoutProps {
   children: ReactNode;
@@ -11,6 +12,15 @@ interface ResponsiveLayoutProps {
 
 export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
   const { toggleDarkMode } = useTheme();
+  const handleDarkMode = () => {
+    if (localStorage.getItem('theme') === 'light') {
+      message.success('🌘 다크 모드로 변경되었습니다.');
+    }
+    if (localStorage.getItem('theme') === 'dark') {
+      message.success('💡 라이트 모드로 변경되었습니다.');
+    }
+    toggleDarkMode();
+  };
 
   return (
     <StyledScreenWrapper>
@@ -26,7 +36,9 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
               <Nav />
             </StyledNavWrapper>
           </StyledMobileFrame>
-          <StyledToggleTheme onClick={toggleDarkMode}>🌗</StyledToggleTheme>
+          <StyledToggleTheme onClick={handleDarkMode}>
+            <div>🌗</div>
+          </StyledToggleTheme>
         </StyledMain>
       </StyledContentWrapper>
     </StyledScreenWrapper>
@@ -48,7 +60,8 @@ const StyledToggleTheme = styled.button`
   border: 0.1rem solid black;
   width: 3rem;
   height: 3rem;
-
+  cursor: pointer;
+  ${flexRowCenter}
   @media (max-width: 60rem) {
     display: none;
   }
