@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+import Image from '@/components/atoms/Image';
 import Input from '@/components/atoms/Input';
 import {
   centerChangedEventListener,
@@ -13,18 +14,35 @@ import {
   loadKakaoMapScript,
   moveMapTo,
 } from '@/helper/kakaoMapHelpers';
+import { PetInfo } from '@/stores/usePetStore';
 import { BuddysType, PositionType } from '@/types/map';
 import { path, record } from '@/types/walk';
 import targetIcon from '@public/assets/icons/targetIcon.png';
+import mascot from '@public/assets/images/mascot.png';
 
 export default function WalkDetailFormItem({ detailRecords }: { detailRecords: record }) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [changedPosition, setChangedPosition] = useState<PositionType | null>(null);
   const [isTargetClicked, setIsTargetClicked] = useState(false);
-
+  const [buddyList, setBuddyList] = useState<BuddysType[]>([{ id: 0, img: '', name: '' }]);
   const [filterdBuddys, setFilterdBuddys] = useState<BuddysType[]>([]);
   const [note, setNote] = useState<string>('');
+
+  useEffect(() => {
+    const petsStorage = localStorage.getItem('petsStorage');
+    if (!petsStorage) return;
+    const buddysList = JSON.parse(petsStorage)?.state?.petsInfo?.map(({ petId, petName, profileImage }: PetInfo) => ({
+      id: petId,
+      img: profileImage,
+      name: petName,
+    }));
+
+    if (buddysList) {
+      const filteredBuddysList = buddysList.filter(({ id }: { id: number }) => detailRecords.buddyIds.includes(id));
+      setBuddyList(filteredBuddysList);
+    }
+  }, [detailRecords.buddyIds]);
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // setNote(e.target.value);
@@ -41,7 +59,13 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
     setIsTargetClicked(false);
     moveMapTo(map, moveLatLon, detailRecords.mapLevel + 1);
     setChangedPosition([moveLatLon.getLat(), moveLatLon.getLng()]);
-  }, [map, setIsTargetClicked]);
+  }, [
+    map,
+    setIsTargetClicked,
+    detailRecords.centerPosition.latitude,
+    detailRecords.centerPosition.longitude,
+    detailRecords.mapLevel,
+  ]);
 
   // 타겟버튼 클릭 시 지도 재조정
   useEffect(() => {
@@ -67,7 +91,7 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
     endMarker.setPosition(endLatLng);
   };
 
-  // 최초에만 Kakao Map을 초기화 (초기 한 번만 실행)
+  // 최초에만 Kakao Map을 초기화
   useEffect(() => {
     const initMap = async () => {
       try {
@@ -108,7 +132,7 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
           centerChangedEventListener(map, setChangedPosition)
         );
     };
-  }, [map, detailRecords.centerPosition]);
+  }, [map, detailRecords.centerPosition, detailRecords.mapLevel, detailRecords.path]);
 
   return (
     <>
@@ -144,7 +168,7 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
       <InfoItem>
         <Label>버디</Label>
         <BuddysWrapper>
-          {/* {filterdBuddys.map(({ id, img, name }) => (
+          {buddyList.map(({ id, img, name }) => (
             <BuddyWrapper key={`select-${id}`}>
               <Image
                 style={{ width: '2.5rem', border: '0.2rem solid white', backgroundColor: 'beige' }}
@@ -156,7 +180,7 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
               />
               <SubValue>{`${name}`}</SubValue>
             </BuddyWrapper>
-          ))} */}
+          ))}
         </BuddysWrapper>
       </InfoItem>
 

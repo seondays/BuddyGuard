@@ -16,11 +16,6 @@ import { path, record } from '@/types/walk';
 
 import { NAV_HEIGHT } from '../Nav';
 
-export interface WalkDetailModalProps extends Omit<record, 'buddyIds' | 'centerPosition'> {
-  buddyIds: number[];
-  centerPosition: path;
-}
-
 export interface FormDataType {
   startDate: string;
   endDate: string;
@@ -36,12 +31,15 @@ export interface FormDataType {
   distance: number;
 }
 
-export default function WalkDetailModal({ detailRecords }: { detailRecords: record }) {
+interface WalkDetailModalProps {
+  detailRecords: record;
+  setIsClickedDetail: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: WalkDetailModalProps) {
   // const { handleSubmit, setValue, getValues } = useForm<FormDataType>({
   //   defaultValues: initFormData,
   // });
-
-  console.log(detailRecords);
 
   const navigate = useNavigate();
 
@@ -56,7 +54,9 @@ export default function WalkDetailModal({ detailRecords }: { detailRecords: reco
 
   const walkMutation = useWalkMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
 
-  const onClose = () => {};
+  const onClose = () => {
+    setIsClickedDetail(false);
+  };
 
   const handleDelete = () => {
     console.log('삭제');

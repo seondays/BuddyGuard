@@ -114,7 +114,9 @@ export default function Walk() {
         </StyledAllTypeWrapper>
       )}
 
-      {isWeeklyOrMonthly && isClickedDetail && selectedData && <WalkDetailModal detailRecords={selectedData} />}
+      {isWeeklyOrMonthly && isClickedDetail && selectedData && (
+        <WalkDetailModal detailRecords={selectedData} setIsClickedDetail={setIsClickedDetail} />
+      )}
     </StyledWalkContainer>
   );
 }
