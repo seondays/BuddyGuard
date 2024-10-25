@@ -14,7 +14,7 @@ import {
   moveMapTo,
 } from '@/helper/kakaoMapHelpers';
 import { BuddysType, PositionType } from '@/types/map';
-import { record } from '@/types/walk';
+import { path, record } from '@/types/walk';
 import targetIcon from '@public/assets/icons/targetIcon.png';
 
 export default function WalkDetailFormItem({ detailRecords }: { detailRecords: record }) {
@@ -48,6 +48,25 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
     if (isTargetClicked && map) handleMapMoveAndStateUpdate();
   }, [isTargetClicked, map, handleMapMoveAndStateUpdate]);
 
+  const drawStartEndMarker = (paths: path[], mapInstance: kakao.maps.Map) => {
+    // 시작 및 종료 위치 설정
+    const { latitude: startLatitude, longitude: startLongitude } = paths[0];
+    const { latitude: endLatitude, longitude: endLongitude } = paths[paths.length - 1];
+
+    const startLocation: PositionType = [startLatitude, startLongitude];
+    const endLocation: PositionType = [endLatitude, endLongitude];
+
+    // 시작 위치에 마커 생성 및 위치 설정
+    const startLatLng = new kakao.maps.LatLng(startLocation[0], startLocation[1]);
+    const startMarker = createStartEndMarker(startLocation, mapInstance, 'start');
+    startMarker.setPosition(startLatLng);
+
+    // 종료 위치에 마커 생성 및 위치 설정
+    const endLatLng = new kakao.maps.LatLng(endLocation[0], endLocation[1]);
+    const endMarker = createStartEndMarker(endLocation, mapInstance, 'end');
+    endMarker.setPosition(endLatLng);
+  };
+
   // 최초에만 Kakao Map을 초기화 (초기 한 번만 실행)
   useEffect(() => {
     const initMap = async () => {
@@ -58,36 +77,22 @@ export default function WalkDetailFormItem({ detailRecords }: { detailRecords: r
         const { latitude, longitude } = detailRecords.centerPosition;
         const centerLocation: PositionType = [latitude, longitude];
 
-        const endLocation: PositionType = [
-          detailRecords.path[detailRecords.path.length - 1].latitude,
-          detailRecords.path[detailRecords.path.length - 1].longitude,
-        ];
-
         // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
         window.kakao.maps.load(() => {
           const mapInstance = createMap(centerLocation, mapRef, setChangedPosition, detailRecords.mapLevel + 1);
 
-          const startMarker = createStartEndMarker(endLocation, mapInstance, 'end');
-          const startLatLng = new kakao.maps.LatLng(endLocation[0], endLocation[1]);
-          startMarker.setPosition(startLatLng);
+          const paths: path[] = detailRecords.path;
 
-          const startLocation: PositionType = [detailRecords.path[0].latitude, detailRecords.path[0].longitude];
-
-          const endMarker = createStartEndMarker(startLocation, mapInstance, 'start');
-          const endLatLng = new kakao.maps.LatLng(startLocation[0], startLocation[1]);
-          endMarker.setPosition(endLatLng);
-
-          setMap(mapInstance);
-          // markerRef.current = newMarker;
-          const pathCoordinates = detailRecords.path.map(
-            (point) => new kakao.maps.LatLng(point.latitude, point.longitude)
-          );
-
+          const pathCoordinates = paths.map((point) => new kakao.maps.LatLng(point.latitude, point.longitude));
           if (mapInstance && pathCoordinates.length > 1) {
             const polyline = createPolyline(pathCoordinates);
             drawPolylineOnMap(mapInstance, polyline);
           }
+
+          if (paths.length) drawStartEndMarker(paths, mapInstance);
+
+          setMap(mapInstance);
         });
       } catch (error) {
         console.error('Map initialization error', error);
