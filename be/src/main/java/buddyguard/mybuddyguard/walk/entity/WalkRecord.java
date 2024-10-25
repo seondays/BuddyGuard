@@ -88,4 +88,8 @@ public class WalkRecord {
         return petWalkRecords.stream()
                 .anyMatch(petWalkRecord -> petWalkRecord.getPetId().equals(petId));
     }
+
+    public void updatePetWalkRecords(List<PetWalkRecord> petWalkRecords) {
+        this.petWalkRecords = petWalkRecords;
+    }
 }

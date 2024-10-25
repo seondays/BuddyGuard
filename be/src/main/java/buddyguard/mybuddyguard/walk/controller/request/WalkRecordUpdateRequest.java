@@ -4,20 +4,27 @@ import buddyguard.mybuddyguard.walk.entity.PetWalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordCenterPosition;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordPath;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public record WalkRecordUpdateRequest(
         @NotNull
-        List<Long> pets,       // 추가된 반려동물들의 ID 배열 (문자열)
+        List<Long> buddysId,       // 추가된 반려동물들의 ID 배열 (문자열)
+
+        @JsonFormat(pattern = "yyyy년 MM월 dd일")
         @NotNull
         LocalDate startDate,   // 산책 시작 날짜
+
+        @JsonFormat(pattern = "yyyy년 MM월 dd일")
         @NotNull
         LocalDate endDate,     // 산책 종료 날짜
+
         @NotNull
         String startTime,   // 산책 시작 시간
         @NotNull
@@ -38,7 +45,7 @@ public record WalkRecordUpdateRequest(
         public WalkRecord toWalkRecord(Long recordId) {
                 return WalkRecord.builder()
                         .id(recordId)
-                        .petWalkRecords(this.pets().stream()
+                        .petWalkRecords(this.buddysId().stream()
                                 .map(id -> PetWalkRecord.builder()
                                         .id(id)
                                         .build())
@@ -61,6 +68,7 @@ public record WalkRecordUpdateRequest(
 
         @Getter
         @AllArgsConstructor
+        @NoArgsConstructor(force = true)
         @Builder
         public static class WalkRecordPathRequest {
 

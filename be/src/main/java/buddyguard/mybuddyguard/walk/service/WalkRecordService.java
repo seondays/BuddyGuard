@@ -133,7 +133,11 @@ public class WalkRecordService {
         }
 
         WalkRecord walkRecordForUpdate = request.toWalkRecord(id);
+        WalkRecordCenterPosition centerPositionForUpdate = walkRecordForUpdate.getCenterPosition();
+        walkRecordCenterPositionRepository.save(centerPositionForUpdate);
 
+        List<PetWalkRecord> petWalkRecords = walkRecord.getPetWalkRecords();
+        walkRecordForUpdate.updatePetWalkRecords(petWalkRecords);
         walkRecordRepository.save(walkRecordForUpdate);
     }
 
