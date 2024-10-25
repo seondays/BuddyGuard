@@ -4,12 +4,10 @@ import styled from 'styled-components';
 
 import Image from '@/components/atoms/Image';
 import Input from '@/components/atoms/Input';
-import { FormDataType } from '@/components/organisms/walk/WalkModal';
+import { FormDataPutType } from '@/components/organisms/walk/WalkModal';
 import {
   centerChangedEventListener,
-  createBasicMarker,
   createMap,
-  createMarker,
   createPolyline,
   createStartEndMarker,
   drawPolylineOnMap,
@@ -24,7 +22,7 @@ import mascot from '@public/assets/images/mascot.png';
 
 interface WalkDetailFormItemProps {
   detailRecords: record;
-  setValue: UseFormSetValue<FormDataType>;
+  setValue: UseFormSetValue<FormDataPutType>;
 }
 
 export default function WalkDetailFormItem({ detailRecords, setValue }: WalkDetailFormItemProps) {
