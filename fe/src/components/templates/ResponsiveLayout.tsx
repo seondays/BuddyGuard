@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
@@ -11,6 +12,15 @@ interface ResponsiveLayoutProps {
 
 export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
   const { toggleDarkMode } = useTheme();
+  const handleDarkMode = () => {
+    if (localStorage.getItem('theme') === 'light') {
+      message.success('🌘 다크 모드로 변경되었습니다.');
+    }
+    if (localStorage.getItem('theme') === 'dark') {
+      message.success('💡 라이트 모드로 변경되었습니다.');
+    }
+    toggleDarkMode();
+  };
 
   return (
     <StyledScreenWrapper>
@@ -26,7 +36,7 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
               <Nav />
             </StyledNavWrapper>
           </StyledMobileFrame>
-          <StyledToggleTheme onClick={toggleDarkMode}>
+          <StyledToggleTheme onClick={handleDarkMode}>
             <div>🌗</div>
           </StyledToggleTheme>
         </StyledMain>
