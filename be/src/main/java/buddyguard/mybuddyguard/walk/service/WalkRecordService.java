@@ -132,13 +132,10 @@ public class WalkRecordService {
             throw new RecordNotFoundException(); // petId가 기록에 없을 때 예외 처리
         }
 
-        WalkRecord walkRecordForUpdate = request.toWalkRecord(id);
-        WalkRecordCenterPosition centerPositionForUpdate = walkRecordForUpdate.getCenterPosition();
-        walkRecordCenterPositionRepository.save(centerPositionForUpdate);
+        // 요청 데이터를 이용해 필요한 필드만 업데이트 (applyUpdates 호출)
+        request.updateWalkRecord(walkRecord);  // 필요한 필드만 업데이트
 
-        List<PetWalkRecord> petWalkRecords = walkRecord.getPetWalkRecords();
-        walkRecordForUpdate.updatePetWalkRecords(petWalkRecords);
-        walkRecordRepository.save(walkRecordForUpdate);
+        walkRecordRepository.save(walkRecord);
     }
 
     @Transactional
