@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "WALK_RECORD")
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 public class WalkRecord {
 
     @Id
@@ -87,7 +89,14 @@ public class WalkRecord {
                 .anyMatch(petWalkRecord -> petWalkRecord.getPetId().equals(petId));
     }
 
-    public void updatePetWalkRecords(List<PetWalkRecord> petWalkRecords) {
-        this.petWalkRecords = petWalkRecords;
+    public void replaceWith(WalkRecord updatedRecord) {
+        // startDate, endDate, endTime, totalTime, note, distance 만 업데이트
+        this.startDate = updatedRecord.getStartDate();
+        this.endDate = updatedRecord.getEndDate();
+        this.endTime = updatedRecord.getEndTime();
+        this.totalTime = updatedRecord.getTotalTime();
+        this.note = updatedRecord.getNote();
+        this.distance = updatedRecord.getDistance();
     }
+
 }
