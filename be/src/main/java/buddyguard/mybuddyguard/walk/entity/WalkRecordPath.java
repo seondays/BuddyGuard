@@ -36,6 +36,11 @@ public class WalkRecordPath {
     // 경로의 경도
     @Column(name = "longitude", nullable = false)
     private Double longitude;
+
+    // WalkRecord와의 ManyToOne 관계 설정 (단방향 1:N 관계의 N쪽)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "walk_record_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), nullable = false)
+    private WalkRecord walkRecord;
     
 
 }

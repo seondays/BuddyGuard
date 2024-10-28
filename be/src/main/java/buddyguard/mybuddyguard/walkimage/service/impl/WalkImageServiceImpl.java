@@ -67,15 +67,4 @@ public class WalkImageServiceImpl implements WalkImageService {
             throw new RuntimeException("Failed to upload file", e);
         }
     }
-
-    @Override
-    public WalkS3Image getWalkImageById(Long id) {
-        return walkS3ImageRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Image not found for id: " + id));
-    }
-
-    @Override
-    public void createDir(String bucketName, String folderName) {
-        amazonS3Client.putObject(bucketName, folderName + "/", new ByteArrayInputStream(new byte[0]), new ObjectMetadata());
-    }
 }

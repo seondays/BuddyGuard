@@ -29,11 +29,6 @@ public class WalkRecordCenterPosition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // WalkRecord와 1:1 관계 설정
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "walk_record_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private WalkRecord walkRecord;
-
     // 위도 정보
     @Column(name = "latitude", nullable = false)
     private Double latitude;

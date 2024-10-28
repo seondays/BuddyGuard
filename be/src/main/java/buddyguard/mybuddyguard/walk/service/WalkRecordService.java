@@ -11,15 +11,14 @@ import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordCenterPosition;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordPath;
 import buddyguard.mybuddyguard.walk.mapper.WalkRecordMapper;
+import buddyguard.mybuddyguard.walk.repository.PetWalkRecordRepository;
 import buddyguard.mybuddyguard.walk.repository.WalkRecordCenterPositionRepository;
+import buddyguard.mybuddyguard.walk.repository.WalkRecordPathRepository;
 import buddyguard.mybuddyguard.walk.repository.WalkRecordRepository;
 import buddyguard.mybuddyguard.walkimage.entity.WalkS3Image;
 import buddyguard.mybuddyguard.walkimage.service.WalkImageService;
 import jakarta.persistence.EntityNotFoundException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +37,8 @@ public class WalkRecordService {
     private final WalkRecordCenterPositionRepository walkRecordCenterPositionRepository;
     private final WalkImageService walkImageService;
     private final PetRepository petRepository;
+    private final WalkRecordPathRepository walkRecordPathRepository;
+    private final PetWalkRecordRepository petWalkRecordRepository;
 
     // 특정 반려동물의 전체 산책 기록 조회
     public List<WalkRecordResponse> getAllWalkRecords(Long petId) {
@@ -64,11 +65,6 @@ public class WalkRecordService {
             walkS3Image = walkImageService.uploadWalkImage(file);
         }
 
-        // 날짜 형식 변환 로직 추가
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 EEEE", Locale.KOREAN);
-        LocalDate startDate = LocalDate.parse(request.startDate(), formatter);
-        LocalDate endDate = LocalDate.parse(request.endDate(), formatter);
-
         // WalkRecordCenterPosition 생성 및 저장
         WalkRecordCenterPosition centerPosition = request.centerPosition().toWalkRecordCenterPosition();
         walkRecordCenterPositionRepository.save(centerPosition);  // CenterPosition 저장
@@ -76,8 +72,8 @@ public class WalkRecordService {
 
         // WalkRecord 엔티티 생성 (필요한 값들로만 생성)
         WalkRecord walkRecord = WalkRecord.builder()
-                .startDate(startDate)
-                .endDate(endDate)
+                .startDate(request.startDate())
+                .endDate(request.endDate())
                 .startTime(request.startTime())
                 .endTime(request.endTime())
                 .totalTime(request.totalTime())
@@ -103,15 +99,17 @@ public class WalkRecordService {
                             .walkRecord(savedWalkRecord)
                             .build();
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         // WalkRecordPath 생성
         List<WalkRecordPath> walkRecordPaths = request.path().stream()
-                .map(pathRequest -> WalkRecordPath.builder()
-                        .latitude(pathRequest.getLatitude())
-                        .longitude(pathRequest.getLongitude())
+                .map(pathRequest ->
+                        WalkRecordPath.builder()
+                                .latitude(pathRequest.getLatitude())
+                                .longitude(pathRequest.getLongitude())
+                                .walkRecord(savedWalkRecord)
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         // 연관된 엔티티 추가 후 업데이트
         savedWalkRecord.getPetWalkRecords().addAll(petWalkRecords);  // PetWalkRecord 리스트 추가
@@ -119,6 +117,8 @@ public class WalkRecordService {
 
         // WalkRecord 업데이트
         walkRecordRepository.save(savedWalkRecord);
+        petWalkRecordRepository.saveAll(petWalkRecords);
+        walkRecordPathRepository.saveAll(walkRecordPaths);
 
         log.info("SAVED WALK RECORD: {}", savedWalkRecord);
     }
