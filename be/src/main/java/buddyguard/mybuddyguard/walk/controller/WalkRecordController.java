@@ -52,7 +52,7 @@ public class WalkRecordController {
 
     // 산책 기록 업데이트
     @Operation(summary = "산책 기록 업데이트", description = "petid와 산책 기록id를 이용하여 특정 산책 기록 업데이트")
-    @PutMapping("{petId}/detail/{id}")
+    @PatchMapping("{petId}/detail/{id}")
     public ResponseEntity<Void> updateWalkRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id,
