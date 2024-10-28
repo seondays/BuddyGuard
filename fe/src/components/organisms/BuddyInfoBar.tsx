@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -7,6 +7,8 @@ import Span from '@/components/atoms/Span';
 import { usePetStore } from '@/stores/usePetStore';
 
 export default function BuddyInfoBar() {
+  const [petInfo, setPetInfo] = useState([]);
+
   const { petsInfo, selectedBuddy, setSelectedBuddy } = usePetStore();
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -19,6 +21,12 @@ export default function BuddyInfoBar() {
     }
   };
 
+  useEffect(() => {
+    if (Array.isArray(petsInfo)) {
+      setPetInfo(petsInfo);
+    }
+  }, [petsInfo]); // petsInfo가 변경될 때마다 실행
+
   return (
     <StyledBarWrapper>
       <TopInfo>
@@ -28,7 +36,7 @@ export default function BuddyInfoBar() {
         </BuddyInfo>
         <SelectWrapper>
           <SelectBox value={selectedBuddy?.petId} onChange={handleBuddyChange}>
-            {petsInfo.map((buddy) => (
+            {petInfo.map((buddy) => (
               <option key={buddy.petId} value={buddy.petId}>
                 {buddy.petName}
               </option>
