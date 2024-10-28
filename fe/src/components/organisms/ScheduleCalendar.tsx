@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import CommonCalendar from '@/components/molecules/CommonCalendar';
+import { useHospitalsInfoQuery } from '@/hooks/useHospitalQuery';
 
 import Span from '../atoms/Span';
 
@@ -36,7 +37,7 @@ const schedulesData = [
   { id: 5, date: '2024-09-15', category: '산책', title: '예방 접종', time: '10:00', description: '독감 예방 접종' },
   { id: 6, date: '2024-09-10', category: '식사', title: '산책', time: '17:00', description: '반려견과 산책' },
 ];
-
+const { data: Schedule, isLoading, isError } = useHospitalsInfoQuery();
 // 메인 컴포넌트
 export default function ScheduleCalendar() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
