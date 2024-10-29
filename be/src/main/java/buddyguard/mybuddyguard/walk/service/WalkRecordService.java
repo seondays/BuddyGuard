@@ -19,7 +19,6 @@ import buddyguard.mybuddyguard.walk.repository.WalkRecordRepository;
 import buddyguard.mybuddyguard.walkimage.entity.WalkS3Image;
 import buddyguard.mybuddyguard.walkimage.service.WalkImageService;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -72,22 +71,8 @@ public class WalkRecordService {
         WalkRecordCenterPosition centerPosition = request.centerPosition().toWalkRecordCenterPosition();
         walkRecordCenterPositionRepository.save(centerPosition);  // CenterPosition 저장
 
-
         // WalkRecord 엔티티 생성 (필요한 값들로만 생성)
-        WalkRecord walkRecord = WalkRecord.builder()
-                .startDate(request.startDate())
-                .endDate(request.endDate())
-                .startTime(request.startTime())
-                .endTime(request.endTime())
-                .totalTime(request.totalTime())
-                .note(request.note())
-                .centerPosition(centerPosition)
-                .mapLevel(request.mapLevel())
-                .distance(request.distance())
-                .path(new ArrayList<>())  // 빈 리스트로 가변 리스트 초기화
-                .petWalkRecords(new ArrayList<>())  // 빈 리스트로 가변 리스트 초기화
-                .pathImage(walkS3Image)
-                .build();
+        WalkRecord walkRecord = request.toWalkRecord(walkS3Image,centerPosition);
 
         // 먼저 WalkRecord 저장
         WalkRecord savedWalkRecord = walkRecordRepository.save(walkRecord);
