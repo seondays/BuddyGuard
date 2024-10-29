@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { vi } from 'vitest';
 
+import { initTimeRef } from '@/components/pages/walk/GoWalk';
 import { getTimeFormatString } from '@/helper/timerHelpers';
 import useStopWatch from '@/hooks/useStopWatch';
 import { StatusOfTime, TimeRef } from '@/types/map';
@@ -16,7 +17,7 @@ describe('useStopWatch Hook', () => {
 
   // 각 테스트 전에 실행
   beforeEach(() => {
-    timeRef = { current: { start: { day: '', time: '' }, end: { day: '', time: '' }, total: '' } };
+    timeRef = { current: initTimeRef };
     // 가상 타이머를 사용하여 타이머를 제어
     vi.useFakeTimers();
   });
