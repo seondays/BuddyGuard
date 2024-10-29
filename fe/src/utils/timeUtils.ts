@@ -25,3 +25,5 @@ export const getCurrentDate = ({ isDay = true, isTime = false, dateString }: get
 
   return formattedDate;
 };
+
+export const formatDate = (date: Date) => date.toISOString().split('T')[0];

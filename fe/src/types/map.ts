@@ -18,7 +18,7 @@ export interface CheckboxChangeHandler {
 }
 
 export interface TimeRef {
-  start: { day: string; time: string };
-  end: { day: string; time: string };
+  start: { day: Date; time: string };
+  end: { day: Date; time: string };
   total: string;
 }

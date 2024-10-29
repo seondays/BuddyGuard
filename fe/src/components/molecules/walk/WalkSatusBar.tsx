@@ -20,7 +20,7 @@ export default function WalkSatusBar({ walkStatus, setWalkStatus, timeRef }: Wal
   const stopHandler = () => {
     setWalkStatus('stop');
     timeRef.current.end.time = getCurrentDate({ isDay: false, isTime: true });
-    timeRef.current.end.day = getCurrentDate({ isDay: true, isTime: false });
+    timeRef.current.end.day = new Date();
   };
   const playHandler = () => setWalkStatus('start');
 

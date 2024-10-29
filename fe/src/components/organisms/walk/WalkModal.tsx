@@ -1,6 +1,4 @@
 import { message } from 'antd';
-import axios from 'axios';
-import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -8,13 +6,14 @@ import styled from 'styled-components';
 
 import Button from '@/components/atoms/Button';
 import WalkFormItem from '@/components/molecules/walk/WalkFormItem';
+import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { useWalkMutation } from '@/hooks/useWalkQuery';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
 import { BuddysType, PositionType, SelectedBuddysType, TimeRef } from '@/types/map';
 import { path } from '@/types/walk';
+import { formatDate } from '@/utils/timeUtils';
 
-import { NAV_HEIGHT } from '../Nav';
 export interface WalkModalProps {
   titleLabel?: string;
   timeLabel?: string;
@@ -159,14 +158,13 @@ export default function WalkModal({
   useEffect(() => {
     if (!timeRef.current) return;
     const { start, end, total } = timeRef.current;
-    setValue('startDate', start.day);
-    setValue('endDate', end.day);
+
+    setValue('startDate', formatDate(start.day));
+    setValue('endDate', formatDate(end.day));
     setValue('startTime', start.time);
     setValue('endTime', end.time);
     setValue('totalTime', total);
   }, [timeRef, setValue]);
-
-  useEffect(() => {});
 
   const defaultColor = theme.colorValues.special.textForce;
   const defaultGray = theme.colorValues.grayscale[200];

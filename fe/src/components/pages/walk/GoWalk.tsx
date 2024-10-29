@@ -30,7 +30,11 @@ const playIconStyle = {
 };
 
 const PLAY_ICON_GAP = '5rem';
-export const initTimeRef: TimeRef = { start: { day: '', time: '' }, end: { day: '', time: '' }, total: '' };
+export const initTimeRef: TimeRef = {
+  start: { day: new Date(), time: '' },
+  end: { day: new Date(), time: '' },
+  total: '',
+};
 export type IsStartedType = 'ready' | 'start' | 'done';
 
 const getTitlePetId = () => {
@@ -97,7 +101,8 @@ export default function GoWalk() {
       return;
     }
     setIsStarted('start');
-    timeRef.current.start.day = getCurrentDate({ isDay: true, isTime: false });
+    // timeRef.current.start.day = getCurrentDate({ isDay: true, isTime: false });
+    timeRef.current.start.day = new Date();
     timeRef.current.start.time = getCurrentDate({ isDay: false, isTime: true });
   };
 
