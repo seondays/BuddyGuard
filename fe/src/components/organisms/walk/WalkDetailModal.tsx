@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { message } from 'antd';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +12,7 @@ import { useWalkPatchMutation } from '@/hooks/useWalkQuery';
 import { usePetStore } from '@/stores/usePetStore';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
-import { path, record } from '@/types/walk';
+import { FilterType, path, record } from '@/types/walk';
 
 export interface FormDataType {
   startDate: string;
@@ -31,6 +32,8 @@ export interface FormDataType {
 interface WalkDetailModalProps {
   detailRecords: record;
   setIsClickedDetail: React.Dispatch<React.SetStateAction<boolean>>;
+  type: FilterType;
+  month: number;
 }
 
 const initForm = (detailRecords: record) => {
@@ -39,24 +42,35 @@ const initForm = (detailRecords: record) => {
   return { note };
 };
 
-export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: WalkDetailModalProps) {
+export default function WalkDetailModal({ detailRecords, setIsClickedDetail, type, month }: WalkDetailModalProps) {
   const { selectedBuddy } = usePetStore();
   const { handleSubmit, setValue } = useForm<FormDataPatchType>({
     defaultValues: initForm(detailRecords),
   });
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const onErrorFn = () => {
     message.error('😿 수정에 실패하였습니다.');
     navigate('/menu/walk');
   };
+
   const onSuccessFn = () => {
     message.success('🐶 수정되었습니다.');
+    const petId = selectedBuddy?.petId;
+    if (petId && type === 'weekly') {
+      queryClient.invalidateQueries({ queryKey: ['walkRecords', type, petId] });
+    }
+
+    if (petId && type === 'monthly' && month) {
+      queryClient.invalidateQueries({ queryKey: ['walkRecords', type, petId, month] });
+    }
+
     navigate('/menu/walk');
   };
 
-  const putMutation = useWalkPatchMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
+  const putMutation = useWalkPatchMutation({ onSuccessFn, onErrorFn });
 
   const onClose = () => {
     setIsClickedDetail(false);
