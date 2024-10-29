@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.walk.service;
 
+import buddyguard.mybuddyguard.exception.ImageFileRequiredException;
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.pet.repository.PetRepository;
@@ -58,11 +59,13 @@ public class WalkRecordService {
 
     @Transactional
     public void createWalkRecord(WalkRecordCreateRequest request, MultipartFile file) {
-        WalkS3Image walkS3Image = null;
+        WalkS3Image walkS3Image;
 
         // 이미지 파일 존재하면 S3에 업로드 후 WalkS3Image 엔티티 생성
         if (file != null && !file.isEmpty()) {
             walkS3Image = walkImageService.uploadWalkImage(file);
+        } else {
+            throw new ImageFileRequiredException();
         }
 
         // WalkRecordCenterPosition 생성 및 저장
