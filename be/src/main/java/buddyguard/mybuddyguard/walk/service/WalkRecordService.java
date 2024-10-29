@@ -1,5 +1,6 @@
 package buddyguard.mybuddyguard.walk.service;
 
+import buddyguard.mybuddyguard.exception.ImageFileRequiredException;
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.pet.repository.PetRepository;
@@ -18,7 +19,6 @@ import buddyguard.mybuddyguard.walk.repository.WalkRecordRepository;
 import buddyguard.mybuddyguard.walkimage.entity.WalkS3Image;
 import buddyguard.mybuddyguard.walkimage.service.WalkImageService;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,33 +58,21 @@ public class WalkRecordService {
 
     @Transactional
     public void createWalkRecord(WalkRecordCreateRequest request, MultipartFile file) {
-        WalkS3Image walkS3Image = null;
+        WalkS3Image walkS3Image;
 
         // 이미지 파일 존재하면 S3에 업로드 후 WalkS3Image 엔티티 생성
         if (file != null && !file.isEmpty()) {
             walkS3Image = walkImageService.uploadWalkImage(file);
+        } else {
+            throw new ImageFileRequiredException();
         }
 
         // WalkRecordCenterPosition 생성 및 저장
         WalkRecordCenterPosition centerPosition = request.centerPosition().toWalkRecordCenterPosition();
         walkRecordCenterPositionRepository.save(centerPosition);  // CenterPosition 저장
 
-
         // WalkRecord 엔티티 생성 (필요한 값들로만 생성)
-        WalkRecord walkRecord = WalkRecord.builder()
-                .startDate(request.startDate())
-                .endDate(request.endDate())
-                .startTime(request.startTime())
-                .endTime(request.endTime())
-                .totalTime(request.totalTime())
-                .note(request.note())
-                .centerPosition(centerPosition)
-                .mapLevel(request.mapLevel())
-                .distance(request.distance())
-                .path(new ArrayList<>())  // 빈 리스트로 가변 리스트 초기화
-                .petWalkRecords(new ArrayList<>())  // 빈 리스트로 가변 리스트 초기화
-                .pathImage(walkS3Image)
-                .build();
+        WalkRecord walkRecord = request.toWalkRecord(walkS3Image,centerPosition);
 
         // 먼저 WalkRecord 저장
         WalkRecord savedWalkRecord = walkRecordRepository.save(walkRecord);

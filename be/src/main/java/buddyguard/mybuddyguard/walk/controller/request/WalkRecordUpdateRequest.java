@@ -1,10 +1,8 @@
 package buddyguard.mybuddyguard.walk.controller.request;
 
-import buddyguard.mybuddyguard.walk.entity.PetWalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecord;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordCenterPosition;
 import buddyguard.mybuddyguard.walk.entity.WalkRecordPath;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,13 +14,8 @@ import lombok.NoArgsConstructor;
 
 public record WalkRecordUpdateRequest(
         List<Long> buddysId,       // 추가된 반려동물들의 ID 배열 (문자열)
-
-        @JsonFormat(pattern = "yyyy년 MM월 dd일")
         LocalDate startDate,   // 산책 시작 날짜
-
-        @JsonFormat(pattern = "yyyy년 MM월 dd일")
         LocalDate endDate,     // 산책 종료 날짜
-
         String startTime,   // 산책 시작 시간
         String endTime,     // 산책 종료 시간
         String totalTime,      // 총 산책 시간 (00:00:46 형식의 문자열)
