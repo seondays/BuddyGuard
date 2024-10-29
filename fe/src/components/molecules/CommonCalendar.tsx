@@ -8,6 +8,8 @@ const categoryColors: { [key: string]: string } = {
   산책: '#99ccff',
   식사: '#ffcc99',
   체중: '#A6C8DD',
+  병원: '#ffb3b3',
+  백신: '#ffb366',
 };
 
 interface Schedule {
@@ -17,6 +19,7 @@ interface Schedule {
   title: string;
   time: string;
   description: string;
+  subCategory: string;
 }
 
 interface CommonCalendarProps {
@@ -32,9 +35,19 @@ export const CommonCalendar: React.FC<CommonCalendarProps> = ({ schedules = [], 
   const [date, setDate] = useState<Value>(today);
 
   const handleDateChange = (newDate: Value) => {
-    const formattedDate = moment(newDate).format('YYYY-MM-DD');
+    let formattedDate;
+
+    if (newDate instanceof Date) {
+      formattedDate = moment(newDate).format('YYYY-MM-DD');
+    } else if (Array.isArray(newDate) && newDate[0] instanceof Date) {
+      formattedDate = moment(newDate[0]).format('YYYY-MM-DD');
+    }
+
     setDate(newDate);
-    onDateChange(formattedDate);
+
+    if (formattedDate) {
+      onDateChange(formattedDate);
+    }
   };
 
   const tileContent = ({ date, view }: { date: Date; view: string }) => {

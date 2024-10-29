@@ -6,8 +6,13 @@ import Image from '@/components/atoms/Image';
 import Span from '@/components/atoms/Span';
 import { usePetStore } from '@/stores/usePetStore';
 
+interface PetInfo {
+  petId: number;
+  petName: string;
+}
+
 export default function BuddyInfoBar() {
-  const [petInfo, setPetInfo] = useState([]);
+  const [petInfo, setPetInfo] = useState<PetInfo[]>([]);
 
   const { petsInfo, selectedBuddy, setSelectedBuddy } = usePetStore();
   const location = useLocation();
@@ -23,9 +28,9 @@ export default function BuddyInfoBar() {
 
   useEffect(() => {
     if (Array.isArray(petsInfo)) {
-      setPetInfo(petsInfo);
+      setPetInfo(petsInfo as PetInfo[]);
     }
-  }, [petsInfo]); // petsInfo가 변경될 때마다 실행
+  }, [petsInfo]);
 
   return (
     <StyledBarWrapper>
