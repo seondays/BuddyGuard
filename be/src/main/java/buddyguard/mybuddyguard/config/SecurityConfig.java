@@ -86,7 +86,7 @@ public class SecurityConfig {
                             "http://172.16.1.38:5173",
                             "http://192.168.55.244:5173"
                     ));
-                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(Collections.singletonList("*"));
                     config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
