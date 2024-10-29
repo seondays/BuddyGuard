@@ -18,7 +18,7 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://172.16.1.38:5173",
                         "http://192.168.55.244:5173"
                 )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드 설정
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH") // 허용할 HTTP 메서드 설정
                 .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더 설정
                 .allowCredentials(true); // 인증 정보 허용
     }
