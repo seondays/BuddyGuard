@@ -1,23 +1,17 @@
 import { message } from 'antd';
-import confirm from 'antd/es/modal/confirm';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Button from '@/components/atoms/Button';
 import WalkDetailFormItem from '@/components/molecules/walk/WalkDetailFormItem';
-import WalkFormItem from '@/components/molecules/walk/WalkFormItem';
-import { useWalkMutation, useWalkPutMutation } from '@/hooks/useWalkQuery';
+import { NAV_HEIGHT } from '@/components/organisms/Nav';
+import { FormDataPatchType } from '@/components/organisms/walk/WalkModal';
+import { useWalkPatchMutation } from '@/hooks/useWalkQuery';
 import { usePetStore } from '@/stores/usePetStore';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
-import { BuddysType, PositionType, SelectedBuddysType, TimeRef } from '@/types/map';
 import { path, record } from '@/types/walk';
-import { getCurrentDate } from '@/utils/timeUtils';
-
-import { NAV_HEIGHT } from '../Nav';
-import { FormDataPutType } from './WalkModal';
 
 export interface FormDataType {
   startDate: string;
@@ -40,26 +34,16 @@ interface WalkDetailModalProps {
 }
 
 const initForm = (detailRecords: record) => {
-  const { id, buddyIds, startDate, endDate, fileUrl, ...others } = detailRecords;
-  const formatStartDate = getCurrentDate({ isDay: true, isTime: false, dateString: startDate })
-    .split(' ')
-    .slice(0, -1)
-    .join(' ');
-  const formatEndDate = getCurrentDate({ isDay: true, isTime: false, dateString: endDate })
-    .split(' ')
-    .slice(0, -1)
-    .join(' ');
+  const { note } = detailRecords;
 
-  return { ...others, buddysId: buddyIds, startDate: formatStartDate, endDate: formatEndDate };
+  return { note };
 };
 
 export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: WalkDetailModalProps) {
   const { selectedBuddy } = usePetStore();
-  const { handleSubmit, setValue, getValues } = useForm<FormDataPutType>({
+  const { handleSubmit, setValue } = useForm<FormDataPatchType>({
     defaultValues: initForm(detailRecords),
   });
-
-  console.log(detailRecords);
 
   const navigate = useNavigate();
 
@@ -72,7 +56,7 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: W
     navigate('/menu/walk');
   };
 
-  const putMutation = useWalkPutMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
+  const putMutation = useWalkPatchMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
 
   const onClose = () => {
     setIsClickedDetail(false);
@@ -86,7 +70,7 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail }: W
     // if (!petId) return;
   };
 
-  const onSubmit = async (formData: FormDataPutType) => {
+  const onSubmit = async (formData: FormDataPatchType) => {
     const petId = selectedBuddy?.petId;
     const recordId = detailRecords.id;
 

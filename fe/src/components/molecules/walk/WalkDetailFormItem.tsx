@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Image from '@/components/atoms/Image';
 import Input from '@/components/atoms/Input';
-import { FormDataPutType } from '@/components/organisms/walk/WalkModal';
+import { FormDataPatchType } from '@/components/organisms/walk/WalkModal';
 import {
   centerChangedEventListener,
   createMap,
@@ -17,12 +17,13 @@ import {
 import { PetInfo } from '@/stores/usePetStore';
 import { BuddysType, PositionType } from '@/types/map';
 import { path, record } from '@/types/walk';
+import { getCurrentDate } from '@/utils/timeUtils';
 import targetIcon from '@public/assets/icons/targetIcon.png';
 import mascot from '@public/assets/images/mascot.png';
 
 interface WalkDetailFormItemProps {
   detailRecords: record;
-  setValue: UseFormSetValue<FormDataPutType>;
+  setValue: UseFormSetValue<FormDataPatchType>;
 }
 
 export default function WalkDetailFormItem({ detailRecords, setValue }: WalkDetailFormItemProps) {
@@ -152,7 +153,9 @@ export default function WalkDetailFormItem({ detailRecords, setValue }: WalkDeta
 
       <InfoItem>
         <Label>날짜</Label>
-        <Value className="date">{detailRecords?.startDate || ''}</Value>
+        <Value className="date">
+          {getCurrentDate({ isDay: true, isTime: false, dateString: detailRecords?.startDate })}
+        </Value>
       </InfoItem>
 
       <InfoItem>
