@@ -7,6 +7,7 @@ import Input from '@/components/atoms/Input';
 import { FormDataType } from '@/components/organisms/walk/WalkModal';
 import { BuddysType, SelectedBuddysType } from '@/types/map';
 import { calculateTotalDistance } from '@/utils/mapUtils';
+import { getCurrentDate } from '@/utils/timeUtils';
 import mascot from '@public/assets/images/mascot.png';
 
 interface WalkFormItemProps {
@@ -54,7 +55,9 @@ export default function WalkFormItem({
     <>
       <InfoItem>
         <Label>날짜</Label>
-        <Value className="date">{getValues('startDate')}</Value>
+        <Value className="date">
+          {getCurrentDate({ isDay: true, isTime: false, dateString: getValues('startDate') })}
+        </Value>
       </InfoItem>
 
       <InfoItem>

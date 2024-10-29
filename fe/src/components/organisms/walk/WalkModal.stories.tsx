@@ -54,11 +54,11 @@ const Template: StoryFn<WalkModalProps> = (args) => {
 
 const TimeRef = {
   start: {
-    day: '2024년 10월 7일 월요일',
+    day: new Date(),
     time: '15:53',
   },
   end: {
-    day: '2024년 10월 7일 월요일',
+    day: new Date(),
     time: '15:53',
   },
   total: '00:00:04',

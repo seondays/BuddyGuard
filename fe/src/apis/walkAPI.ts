@@ -32,13 +32,14 @@ export const postWalkData = async (form: FormData) => {
 /** 폼 데이터 수정
  * 200 ok
  */
-export const putWalkData = async ({ formData, petId, recordId }: MutationParams) => {
+export const patchWalkData = async ({ formData, petId, recordId }: MutationParams) => {
   try {
-    const { status } = await apiClient.put(`${WALK_BASE_URL}/${petId}/detail/${recordId}`, formData, {
+    const { status } = await apiClient.patch(`${WALK_BASE_URL}/${petId}/detail/${recordId}`, formData, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
+
     return status;
   } catch (error) {
     console.error('edit failed:', error);

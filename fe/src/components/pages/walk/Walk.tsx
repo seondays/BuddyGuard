@@ -115,7 +115,12 @@ export default function Walk() {
       )}
 
       {isWeeklyOrMonthly && isClickedDetail && selectedData && (
-        <WalkDetailModal detailRecords={selectedData} setIsClickedDetail={setIsClickedDetail} />
+        <WalkDetailModal
+          detailRecords={selectedData}
+          setIsClickedDetail={setIsClickedDetail}
+          type={type}
+          month={month}
+        />
       )}
     </StyledWalkContainer>
   );
