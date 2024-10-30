@@ -12,7 +12,7 @@ import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
 import WalkDetailModal from '@/components/organisms/walk/WalkDetailModal';
 import WalkList from '@/components/organisms/walk/WalkList';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
-// import { testData } from '@/mocks/walkTest';
+import { testData } from '@/mocks/walkTest';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { usePetStore } from '@/stores/usePetStore';
 import { flexColumn } from '@/styles/layoutStyles';
@@ -106,7 +106,7 @@ export default function Walk() {
           <CalendarSection>
             <WalkCalendar setSelectedData={setSelectedData} />
           </CalendarSection>
-          <WalkListSection>
+          <ListWrapper>
             <WalkList
               records={data?.records}
               selectedData={selectedData}
@@ -114,7 +114,7 @@ export default function Walk() {
               setIsClickedDetail={setIsClickedDetail}
               setSelectedData={setSelectedData}
             />
-          </WalkListSection>
+          </ListWrapper>
         </AllTypeWrapper>
       )}
 
@@ -170,16 +170,4 @@ const AllTypeWrapper = styled.div`
   overflow: hidden;
 `;
 
-const CalendarSection = styled.div`
-  max-height: 80%;
-  @media (min-width: 60rem) {
-    max-height: 70%;
-  }
-`;
-
-const WalkListSection = styled.div`
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-`;
+const CalendarSection = styled.div``;
