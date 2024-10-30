@@ -1,3 +1,5 @@
+export type successType = 'save' | 'edit' | 'delete';
+
 export type FilterType = 'weekly' | 'monthly' | 'all';
 
 export type path = { latitude: number; longitude: number };

@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { getWalkRecords, postWalkData, patchWalkData } from '@/apis/walkAPI';
+import { getWalkRecords, postWalkData, patchWalkData, deleteWalkData } from '@/apis/walkAPI';
 import { FormDataPatchType } from '@/components/organisms/walk/WalkModal';
-import { FilterType } from '@/types/walk';
+import { FilterType, successType } from '@/types/walk';
 
 export type UseWalkQueryProps = {
   buddyId: number;
@@ -12,9 +12,10 @@ export type UseWalkQueryProps = {
 };
 
 interface useWalkMutationProps {
-  onSuccessFn: () => void;
+  onSuccessFn: (successAction: successType) => void;
   onErrorFn: () => void;
 }
+
 /** getWalkRecords */
 export const useWalkQuery = ({ filterKey, buddyId, month, year }: UseWalkQueryProps) => {
   return useQuery({
@@ -34,7 +35,7 @@ export const useWalkMutation = ({ onSuccessFn, onErrorFn }: useWalkMutationProps
     mutationFn: (formData: FormData) => postWalkData(formData),
     onSuccess: (status) => {
       if (status === 201 || status === 200) {
-        onSuccessFn();
+        onSuccessFn('save');
       }
     },
     onError: (error) => {
@@ -50,15 +51,31 @@ export interface MutationParams {
   recordId: number;
 }
 
+export type MutationDeleteParams = Pick<MutationParams, 'petId' | 'recordId'>;
+
 /** 수정 뮤테이션 */
 export const useWalkPatchMutation = ({ onSuccessFn, onErrorFn }: useWalkMutationProps) => {
   return useMutation({
     mutationFn: ({ formData, petId, recordId }: MutationParams) => patchWalkData({ formData, petId, recordId }),
     onSuccess: (status) => {
-      if (status === 201 || status === 200) onSuccessFn();
+      if (status === 201 || status === 200) onSuccessFn('edit');
     },
     onError: (error) => {
       console.error('Upload failed:', error);
+      onErrorFn();
+    },
+  });
+};
+
+/** 삭제 뮤테이션 */
+export const useWalkDeleteMutation = ({ onSuccessFn, onErrorFn }: useWalkMutationProps) => {
+  return useMutation({
+    mutationFn: ({ petId, recordId }: MutationDeleteParams) => deleteWalkData({ petId, recordId }),
+    onSuccess: (status) => {
+      if (status === 204 || status === 201 || status === 200) onSuccessFn('delete');
+    },
+    onError: (error) => {
+      console.error('Delete failed:', error);
       onErrorFn();
     },
   });
