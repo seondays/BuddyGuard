@@ -96,7 +96,7 @@ export const StyledMobileFrame = styled.div`
   margin: 0 auto;
   overflow: hidden;
 
-  ${flexColumn}
+  /* ${flexColumn} */
 
   // 화면 너비가 30rem(480px) 이상일 때 조건 적용
   @media (min-width: 30rem) {
