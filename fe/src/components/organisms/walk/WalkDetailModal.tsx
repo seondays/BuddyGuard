@@ -51,13 +51,11 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail, typ
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const onErrorFn = () => {
-    message.error('😿 수정에 실패하였습니다.');
-    navigate('/menu/walk');
+  const onClose = () => {
+    setIsClickedDetail(false);
   };
 
-  const onSuccessFn = () => {
-    message.success('🐶 수정되었습니다.');
+  const invalidateQueries = () => {
     const petId = selectedBuddy?.petId;
     if (petId && type === 'weekly') {
       queryClient.invalidateQueries({ queryKey: ['walkRecords', type, petId] });
@@ -66,15 +64,23 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail, typ
     if (petId && type === 'monthly' && month) {
       queryClient.invalidateQueries({ queryKey: ['walkRecords', type, petId, month] });
     }
+  };
 
+  const onErrorFn = () => {
+    message.error('😿 수정에 실패하였습니다.');
+    onClose();
+    invalidateQueries();
+    navigate('/menu/walk');
+  };
+
+  const onSuccessFn = () => {
+    message.success('🐶 수정되었습니다.');
+    onClose();
+    invalidateQueries();
     navigate('/menu/walk');
   };
 
   const putMutation = useWalkPatchMutation({ onSuccessFn, onErrorFn });
-
-  const onClose = () => {
-    setIsClickedDetail(false);
-  };
 
   const handleDelete = () => {
     console.log('삭제');
