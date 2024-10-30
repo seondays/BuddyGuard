@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
 import Image from '@/components/atoms/Image';
+import { PetInfo, usePetStore } from '@/stores/usePetStore';
 import { flexColumn, flexRowCenter } from '@/styles/layoutStyles';
 import { record } from '@/types/walk';
 import { getCurrentDate } from '@/utils/timeUtils';
-import testProfile01 from '@public/images/profile01.png';
+import mascot from '@public/assets/images/mascot.png';
 
 export interface ListBoxProps {
   record: record;
@@ -12,11 +13,23 @@ export interface ListBoxProps {
 }
 
 export default function ListBox({ record, onClickHandler }: ListBoxProps) {
+  const { petsInfo } = usePetStore();
+
+  const getPetInfo = (
+    petsInfo: PetInfo[],
+    petInfoId: number
+  ): { petName: string | undefined; petSrc: string | undefined } => {
+    const filteredInfo = petsInfo.find(({ petId }) => petId === petInfoId);
+    return { petName: filteredInfo?.petName, petSrc: filteredInfo?.profileImage };
+  };
+
   const pathImageStyle = { width: `3rem`, borderRadius: `0.5rem`, marginRight: `1rem` };
   const buddyImageStyle = {
     width: ` 1.5rem`,
+    height: ` 1.5rem`,
     borderRadius: `50%`,
     border: `0.1rem solid white`,
+    backgroundColor: 'beige',
   };
   return (
     <StyledListBoxWrapper onClick={() => onClickHandler(record)}>
@@ -42,15 +55,25 @@ export default function ListBox({ record, onClickHandler }: ListBoxProps) {
           </Item>
 
           <ImageItem>
-            {record.buddyIds.map((_, idx) => (
-              <Image
-                key={`listbox${idx}`}
-                // TODO: 프로필 연동
-                src={testProfile01}
-                $position="absolute"
-                style={{ ...buddyImageStyle, left: `${idx}rem` }}
-              ></Image>
-            ))}
+            {record.buddyIds.map((id, idx) => {
+              const { petName, petSrc } = getPetInfo(petsInfo, id);
+              const src = petSrc && petSrc !== 'none' ? petSrc : mascot;
+              return (
+                <Image
+                  key={`listbox-${idx}`}
+                  style={{
+                    ...buddyImageStyle,
+                    left: `${idx}rem`,
+                  }}
+                  src={src}
+                  alt={petName || ''}
+                  $borderRadius={'50%'}
+                  $isHover={false}
+                  $isPointer={false}
+                  $position="absolute"
+                />
+              );
+            })}
           </ImageItem>
         </StyledSubInfo>
       </StyledInfoWrapper>
