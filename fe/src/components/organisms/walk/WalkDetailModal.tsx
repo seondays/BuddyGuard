@@ -8,7 +8,7 @@ import WalkDetailFormItem from '@/components/molecules/walk/WalkDetailFormItem';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { FormDataPatchType } from '@/components/organisms/walk/WalkModal';
 import { useWalkOnSuccess } from '@/hooks/useWalkOnSuccess';
-import { useWalkPatchMutation } from '@/hooks/useWalkQuery';
+import { useWalkDeleteMutation, useWalkPatchMutation } from '@/hooks/useWalkQuery';
 import { usePetStore } from '@/stores/usePetStore';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
@@ -64,6 +64,7 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail, typ
   };
 
   const patchMutation = useWalkPatchMutation({ onSuccessFn, onErrorFn });
+  const deleteMutation = useWalkDeleteMutation({ onSuccessFn, onErrorFn });
 
   const getPetIdAndRecordId = () => {
     const petId = selectedBuddy?.petId;
@@ -72,7 +73,11 @@ export default function WalkDetailModal({ detailRecords, setIsClickedDetail, typ
     return { petId, recordId };
   };
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    const { petId, recordId } = getPetIdAndRecordId();
+    if (!petId) return;
+    deleteMutation.mutate({ petId, recordId });
+  };
 
   const onSubmit = async (formData: FormDataPatchType) => {
     const { petId, recordId } = getPetIdAndRecordId();

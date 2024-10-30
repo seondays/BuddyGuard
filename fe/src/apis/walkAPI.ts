@@ -1,5 +1,5 @@
 import apiClient from '@/apis/axiosInstance';
-import { MutationParams, UseWalkQueryProps } from '@/hooks/useWalkQuery';
+import { MutationDeleteParams, MutationParams, UseWalkQueryProps } from '@/hooks/useWalkQuery';
 
 const WALK_BASE_URL = '/api/walkRecords';
 
@@ -47,12 +47,10 @@ export const patchWalkData = async ({ formData, petId, recordId }: MutationParam
   }
 };
 
-/** 폼 데이터 삭제
- * 200 ok
- */
-export const deleteWalkData = async (petId: number, recordId: number) => {
+/** 데이터 삭제 */
+export const deleteWalkData = async ({ petId, recordId }: MutationDeleteParams) => {
   try {
-    const { status } = await apiClient.delete(`${WALK_BASE_URL}/${petId}/${recordId}`);
+    const { status } = await apiClient.delete(`${WALK_BASE_URL}/${petId}/detail/${recordId}`);
     return status;
   } catch (error) {
     console.error('delete failed:', error);

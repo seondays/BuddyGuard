@@ -72,7 +72,7 @@ export const useWalkDeleteMutation = ({ onSuccessFn, onErrorFn }: useWalkMutatio
   return useMutation({
     mutationFn: ({ petId, recordId }: MutationDeleteParams) => deleteWalkData({ petId, recordId }),
     onSuccess: (status) => {
-      if (status === 201 || status === 200) onSuccessFn('delete');
+      if (status === 204 || status === 201 || status === 200) onSuccessFn('delete');
     },
     onError: (error) => {
       console.error('Delete failed:', error);
