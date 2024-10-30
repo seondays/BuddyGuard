@@ -49,5 +49,4 @@ export default function MyPageList() {
 const StyledListWrapper = styled.div`
   overflow-y: auto;
   margin-bottom: 1.5rem;
-  ${fillAvailable}
 `;
