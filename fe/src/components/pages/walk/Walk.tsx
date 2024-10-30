@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import Chart from '@/components/molecules/Chart';
 import PageTitleBar from '@/components/molecules/PageTitleBar';
@@ -12,6 +12,7 @@ import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
 import WalkDetailModal from '@/components/organisms/walk/WalkDetailModal';
 import WalkList from '@/components/organisms/walk/WalkList';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
+// import { testData } from '@/mocks/walkTest';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { usePetStore } from '@/stores/usePetStore';
 import { flexColumn } from '@/styles/layoutStyles';
@@ -42,6 +43,7 @@ export default function Walk() {
   }, [type, month, year, titlePetId]);
 
   const { data, isLoading } = useWalkQuery(queryProps);
+  // const data = testData;
 
   const [isClickedDetail, setIsClickedDetail] = useState(false);
   const [selectedData, setSelectedData] = useState<record | null>(null);
@@ -58,51 +60,53 @@ export default function Walk() {
     setType('weekly');
   }, [setType]);
 
-  if (isLoading) return <p>Loading...</p>;
-
   const isWeeklyOrMonthly = isWeekly(type) || isMonthly(type);
 
   return (
     <StyledWalkContainer>
-      <StyledStaticWrapper $isSchedule={type === 'all'}>
-        <StyledSection>
+      <StyledStaticWrapper>
+        <Section>
           <PageTitleBar title="산책 관리" />
-        </StyledSection>
-        <StyledSection>
+        </Section>
+
+        <Section>
           <BuddyInfoBar />
-        </StyledSection>
-        <StyledSection>
+        </Section>
+
+        <Section>
           <PeriodFilter />
-        </StyledSection>
+        </Section>
 
         {isWeeklyOrMonthly && (
           <>
-            <StyledSection $height={10}>
+            <Section>
               <Statistics stats={data?.stats} />
-            </StyledSection>
+            </Section>
 
-            <StyledSection $height={55} $responsiveHeight={55}>
+            <Section $height={20} $responsiveHeight={30}>
               <Chart records={data?.records} />
-            </StyledSection>
+            </Section>
           </>
         )}
       </StyledStaticWrapper>
+
       {isWeeklyOrMonthly && (
-        <StyledSection $height={30} $responsiveHeight={40}>
+        <ListWrapper>
           <WalkList
             records={data?.records}
             type={type}
             setIsClickedDetail={setIsClickedDetail}
             setSelectedData={setSelectedData}
           />
-        </StyledSection>
+        </ListWrapper>
       )}
+
       {type === 'all' && (
-        <StyledAllTypeWrapper>
-          <StyledCalendarSection>
+        <AllTypeWrapper>
+          <CalendarSection>
             <WalkCalendar setSelectedData={setSelectedData} />
-          </StyledCalendarSection>
-          <StyledWalkListSection>
+          </CalendarSection>
+          <WalkListSection>
             <WalkList
               records={data?.records}
               selectedData={selectedData}
@@ -110,8 +114,8 @@ export default function Walk() {
               setIsClickedDetail={setIsClickedDetail}
               setSelectedData={setSelectedData}
             />
-          </StyledWalkListSection>
-        </StyledAllTypeWrapper>
+          </WalkListSection>
+        </AllTypeWrapper>
       )}
 
       {isWeeklyOrMonthly && isClickedDetail && selectedData && (
@@ -126,57 +130,56 @@ export default function Walk() {
   );
 }
 
-// 공통된 섹션 스타일을 함수로 추출
-const StyledSection = styled.div<{ $height?: number; $responsiveHeight?: number }>`
-  flex-shrink: 0;
-  height: ${({ $height }) => $height}%;
+const StyledWalkContainer = styled.div`
+  flex: 1;
+  min-height: 0;
+  padding-bottom: ${NAV_HEIGHT};
+  background-color: ${({ theme }) => theme.currentTheme.backgroundPrimary};
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
 
-  // 화면 너비가 60rem(960px) 이상일 때 조건 적용
+const StyledStaticWrapper = styled.div`
+  padding: 0.1rem 1rem;
+  ${flexColumn}
+`;
+
+const Section = styled.div<{ $height?: number; $responsiveHeight?: number }>`
+  flex-shrink: 0;
+  height: ${({ $height }) => $height}vh;
+
   @media (min-width: 60rem) {
-    height: ${({ $responsiveHeight, $height }) => $responsiveHeight || $height}%;
+    height: ${({ $responsiveHeight, $height }) => $responsiveHeight || $height}vh;
   }
 `;
 
-const StyledWalkListSection = styled.div`
-  flex-grow: 1;
-  overflow-y: auto;
+const ListWrapper = styled.div`
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 1rem 1rem 0.5rem 1rem;
+  background-color: ${({ theme }) => theme.currentTheme.grayLighter};
+  ${flexColumn}
 `;
 
-const StyledCalendarSection = styled.div`
+const AllTypeWrapper = styled.div`
+  flex: 1;
+  min-height: 0;
+  ${flexColumn}
+  overflow: hidden;
+`;
+
+const CalendarSection = styled.div`
   max-height: 80%;
   @media (min-width: 60rem) {
     max-height: 70%;
   }
 `;
 
-const StyledAllTypeWrapper = styled.div`
-  flex-grow: 1;
-  ${flexColumn}
-  overflow: hidden;
-`;
-
-const StyledStaticWrapper = styled.div<{ $isSchedule: boolean }>`
-  padding: 0.1rem 1rem;
-  ${flexColumn}
-
-  ${({ $isSchedule }) =>
-    $isSchedule
-      ? css`
-          height: 22%;
-          @media (min-width: 60rem) {
-            height: 21%;
-          }
-        `
-      : css`
-          height: 70%;
-          @media (min-width: 60rem) {
-            height: 60%;
-          }
-        `}
-`;
-
-const StyledWalkContainer = styled.div`
-  height: calc(100% - ${NAV_HEIGHT});
-  background-color: ${({ theme }) => theme.currentTheme.backgroundPrimary};
-  ${flexColumn}
+const WalkListSection = styled.div`
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 `;

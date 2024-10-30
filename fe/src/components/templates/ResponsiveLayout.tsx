@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 
 import Nav from '@/components/organisms/Nav';
 import { HOME_DESCRIPTION_TEXT1, HOME_DESCRIPTION_TEXT2 } from '@/constants/textConstants';
-import { fillAvailable, flexRowCenter } from '@/styles/layoutStyles';
+import { fillAvailable, flexColumn, flexRowCenter } from '@/styles/layoutStyles';
 
 interface ResponsiveLayoutProps {
   children: ReactNode;
@@ -95,6 +95,8 @@ export const StyledMobileFrame = styled.div`
 
   margin: 0 auto;
   overflow: hidden;
+
+  ${flexColumn}
 
   // 화면 너비가 30rem(480px) 이상일 때 조건 적용
   @media (min-width: 30rem) {
