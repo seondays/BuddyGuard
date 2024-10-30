@@ -1,47 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import CommonCalendar from '@/components/molecules/CommonCalendar';
+import { useScheduleQuery } from '@/hooks/useScheduleQuery';
 
 import Span from '../atoms/Span';
 
-// 카테고리별 색상 맵
 const categoryColors: { [key: string]: string } = {
   건강: '#ff9999',
   산책: '#99ccff',
   식사: '#ffcc99',
   체중: '#A6C8DD',
+  병원: '#ffb3b3',
+  백신: '#ffb366',
 };
 
-// 일정 데이터
-const schedulesData = [
-  {
-    id: 1,
-    date: '2024-09-01',
-    category: '건강',
-    title: '수잔이 병원 방문',
-    time: '15:00',
-    description: '정기 건강검진',
-  },
-  { id: 2, date: '2024-09-05', category: '산책', title: '예방 접종', time: '10:00', description: '독감 예방 접종' },
-  { id: 3, date: '2024-09-10', category: '식사', title: '산책', time: '17:00', description: '반려견과 산책' },
-  {
-    id: 4,
-    date: '2024-09-21',
-    category: '건강',
-    title: '수잔이 병원 방문',
-    time: '15:00',
-    description: '정기 건강검진',
-  },
-  { id: 5, date: '2024-09-15', category: '산책', title: '예방 접종', time: '10:00', description: '독감 예방 접종' },
-  { id: 6, date: '2024-09-10', category: '식사', title: '산책', time: '17:00', description: '반려견과 산책' },
-];
-
-// 메인 컴포넌트
 export default function ScheduleCalendar() {
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
 
-  const filteredSchedules = schedulesData.filter((schedule) => selectedDate === schedule.date);
+  useEffect(() => {
+    const date = new Date(selectedDate);
+    setYear(date.getFullYear());
+    setMonth(date.getMonth() + 1);
+  }, [selectedDate]);
+
+  const petId = 56;
+  const { data, isLoading, error } = useScheduleQuery(petId, year, month);
+  console.log(data);
+  if (isLoading) return <div>로딩 중...</div>;
+  if (error) return <div>에러가 발생했습니다.</div>;
+
+  const schedulesData = [
+    ...(data?.hospitalRecords || []).map((record: any) => ({
+      id: record.id,
+      date: record.date.split('T')[0],
+      category: record.subCategory || record.mainCategory,
+      title: record.title,
+      time: new Date(record.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      description: record.description,
+      subCategory: record.subCategory || '병원',
+    })),
+    ...(data?.weightRecords || []).map((record: any) => ({
+      id: record.id,
+      date: record.recordedAt.split('T')[0],
+      category: record.mainCategory,
+      title: `체중 기록: ${record.weight}kg`,
+      time: new Date(record.recordedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      description: record.description,
+      subCategory: '체중',
+    })),
+  ];
+
+  const filteredSchedules = schedulesData.filter((schedule) => schedule.date === selectedDate);
 
   return (
     <div style={{ padding: '1rem' }}>
@@ -51,11 +63,10 @@ export default function ScheduleCalendar() {
   );
 }
 
-// 일정 리스트 컴포넌트
 function ScheduleList({
   schedules,
 }: {
-  schedules: { id: number; category: string; time: string; description: string }[];
+  schedules: { id: number; category: string; time: string; description: string; subCategory: string }[];
 }) {
   return (
     <div>
@@ -67,9 +78,12 @@ function ScheduleList({
               <Span $color="white" style={{ margin: '0 0.5rem' }}>
                 |
               </Span>
+              <Span $color="white">{schedule.subCategory}</Span>
+              <Span $color="white" style={{ margin: '0 0.5rem' }}>
+                |
+              </Span>
               <Span $color="white">{schedule.description}</Span>
             </ScheduleContent>
-            <DeleteButton>삭제</DeleteButton>
           </ScheduleCard>
         ))
       ) : (
@@ -79,7 +93,6 @@ function ScheduleList({
   );
 }
 
-// 일정 카드 스타일
 const ScheduleCard = styled.div<{ category: string }>`
   display: flex;
   justify-content: space-between;
@@ -94,14 +107,6 @@ const ScheduleCard = styled.div<{ category: string }>`
 const ScheduleContent = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const DeleteButton = styled.button`
-  background: transparent;
-  border: none;
-  color: red;
-  font-size: 1rem;
-  cursor: pointer;
 `;
 
 const NoSchedule = styled.div`

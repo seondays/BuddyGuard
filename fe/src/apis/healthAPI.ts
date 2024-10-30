@@ -7,7 +7,7 @@ const VACCINATION_BASE_URL = '/vaccination';
 export const getHospitalsRecord = async (petId: number) => {
   try {
     const response = await apiClient.get(`${HOSPITAL_BASE_URL}/${petId}`);
-    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error(error);
@@ -18,7 +18,7 @@ export const getHospitalsRecord = async (petId: number) => {
 export const getHospitalRecord = async (petId: number, id: number) => {
   try {
     const response = await apiClient.get(`${HOSPITAL_BASE_URL}/${petId}/detail/${id}`);
-    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error(error);
@@ -54,7 +54,7 @@ export const deleteHospitalRecord = async (petId: number, id: number) => {
 export const getVaccinationsRecord = async (petId: number) => {
   try {
     const response = await apiClient.get(`${VACCINATION_BASE_URL}/${petId}`);
-    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error(error);
@@ -65,7 +65,7 @@ export const getVaccinationsRecord = async (petId: number) => {
 export const getVaccinationRecord = async (petId: number, id: number) => {
   try {
     const response = await apiClient.get(`${VACCINATION_BASE_URL}/${petId}/detail/${id}`);
-    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error(error);

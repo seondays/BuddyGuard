@@ -75,5 +75,6 @@ const StyledGraphContainer = styled.div`
   width: 100%;
   height: 100%;
   padding-right: 1rem;
+  padding-bottom: 0.5rem;
   margin: 0 auto;
 `;
