@@ -132,16 +132,15 @@ const StyledCalendarWrapper = styled.div`
   }
 
   & .react-calendar__tile {
+    position: relative;
+    display: flex;
+    justify-content: center;
     height: 2rem;
     @media (min-width: 60rem) {
       height: 4rem;
     }
 
-    position: relative;
-    display: flex;
-    justify-content: center;
-
-    abbr {
+    & abbr {
       position: absolute;
       top: 0.5rem;
       @media (min-width: 60rem) {
@@ -174,7 +173,16 @@ const StyledCalendar = styled(Calendar)`
 `;
 
 const StyledStamp = styled(Stamp)`
-  width: 1rem;
-  height: 1rem;
   opacity: 70%;
+  position: absolute;
+
+  top: 0rem;
+  width: 2rem;
+  height: 2rem;
+
+  @media (min-width: 60rem) {
+    top: 0.4rem;
+    width: 3rem;
+    height: 3rem;
+  }
 `;
