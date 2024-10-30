@@ -39,11 +39,12 @@ const StyledFilterButton = styled.button<{ $isClicked: boolean }>`
   border-radius: 3rem;
   border: ${({ theme }) => `${theme.themeValues.colorValues.special.textForce02} solid 0.1rem`};
   font-size: 1rem;
-  color: ${({ theme }) => theme.themeValues.colorValues.grayscale[900]};
+  color: ${({ $isClicked, theme }) =>
+    $isClicked ? theme.themeValues.colorValues.grayscale[900] : theme.currentTheme.textPrimary};
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: ${({ $isClicked, theme }) =>
-    $isClicked ? theme.themeValues.colorValues.special.modalBg : 'white'};
+    $isClicked ? theme.themeValues.colorValues.special.modalBg : theme.currentTheme.modalBackground};
   box-shadow: ${({ $isClicked, theme }) =>
     $isClicked ? `0.1rem 0.15rem 0.25rem ${theme.currentTheme.shadow}` : 'none'};
   transform: ${({ $isClicked }) => ($isClicked ? 'translateY(-2px)' : 'none')};
