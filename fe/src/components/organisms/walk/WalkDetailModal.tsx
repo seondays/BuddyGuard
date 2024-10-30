@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { message } from 'antd';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +7,7 @@ import Button from '@/components/atoms/Button';
 import WalkDetailFormItem from '@/components/molecules/walk/WalkDetailFormItem';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
 import { FormDataPatchType } from '@/components/organisms/walk/WalkModal';
+import { useWalkOnSuccess } from '@/hooks/useWalkOnSuccess';
 import { useWalkPatchMutation } from '@/hooks/useWalkQuery';
 import { usePetStore } from '@/stores/usePetStore';
 import { theme } from '@/styles/theme';
@@ -43,63 +43,43 @@ const initForm = (detailRecords: record) => {
 };
 
 export default function WalkDetailModal({ detailRecords, setIsClickedDetail, type, month }: WalkDetailModalProps) {
-  const { selectedBuddy } = usePetStore();
+  const themeColor = theme.colorValues;
+  const defaultColor = themeColor.special.textForce;
+  const defaultGray = themeColor.grayscale[200];
+
   const { handleSubmit, setValue } = useForm<FormDataPatchType>({
     defaultValues: initForm(detailRecords),
   });
+  const onClose = () => setIsClickedDetail(false);
 
+  const { selectedBuddy } = usePetStore();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const onClose = () => {
-    setIsClickedDetail(false);
-  };
-
-  const invalidateQueries = () => {
-    const petId = selectedBuddy?.petId;
-    if (petId && type === 'weekly') {
-      queryClient.invalidateQueries({ queryKey: ['walkRecords', type, petId] });
-    }
-
-    if (petId && type === 'monthly' && month) {
-      queryClient.invalidateQueries({ queryKey: ['walkRecords', type, petId, month] });
-    }
-  };
+  const onSuccessFn = useWalkOnSuccess({ onClose, petId: selectedBuddy?.petId, type, month });
 
   const onErrorFn = () => {
     message.error('😿 수정에 실패하였습니다.');
     onClose();
-    invalidateQueries();
     navigate('/menu/walk');
   };
 
-  const onSuccessFn = () => {
-    message.success('🐶 수정되었습니다.');
-    onClose();
-    invalidateQueries();
-    navigate('/menu/walk');
-  };
+  const patchMutation = useWalkPatchMutation({ onSuccessFn, onErrorFn });
 
-  const putMutation = useWalkPatchMutation({ onSuccessFn, onErrorFn });
-
-  const handleDelete = () => {
-    console.log('삭제');
-    // const petId = selectedBuddy?.petId;
-    // const recordId = detailRecords.id;
-
-    // if (!petId) return;
-  };
-
-  const onSubmit = async (formData: FormDataPatchType) => {
+  const getPetIdAndRecordId = () => {
     const petId = selectedBuddy?.petId;
     const recordId = detailRecords.id;
 
-    if (!petId) return;
-
-    putMutation.mutate({ formData, petId, recordId });
+    return { petId, recordId };
   };
-  const defaultColor = theme.colorValues.special.textForce;
-  const defaultGray = theme.colorValues.grayscale[200];
+
+  const handleDelete = () => {};
+
+  const onSubmit = async (formData: FormDataPatchType) => {
+    const { petId, recordId } = getPetIdAndRecordId();
+    if (!petId) return;
+    patchMutation.mutate({ formData, petId, recordId });
+  };
+
   return (
     <>
       <Overlay onClick={onClose} />

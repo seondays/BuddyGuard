@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 
 import ListBox, { StyledListBoxWrapper } from '@/components/molecules/walk/ListBox';

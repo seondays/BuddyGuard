@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Button from '@/components/atoms/Button';
 import WalkFormItem from '@/components/molecules/walk/WalkFormItem';
 import { NAV_HEIGHT } from '@/components/organisms/Nav';
+import { useWalkOnSuccess } from '@/hooks/useWalkOnSuccess';
 import { useWalkMutation } from '@/hooks/useWalkQuery';
 import { theme } from '@/styles/theme';
 import TrashIcon from '@/svg/trash.svg';
@@ -79,12 +80,10 @@ export default function WalkModal({
     message.error('😿 등록에 실패하였습니다.');
     navigate('/');
   };
-  const onSuccessFn = () => {
-    message.success('🐶 등록에 성공하였습니다.');
-    navigate('/menu/walk');
-  };
 
-  const walkMutation = useWalkMutation({ onSuccessFn, onErrorFn }); // 뮤테이션 훅 사용
+  const onSuccessFn = useWalkOnSuccess({});
+
+  const walkMutation = useWalkMutation({ onSuccessFn, onErrorFn });
 
   const onSubmit = async (data: FormDataType) => {
     if (!canvasRef.current) return;
