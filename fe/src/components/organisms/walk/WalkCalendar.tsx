@@ -70,9 +70,7 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
 
   return (
     <StyledCalendarWrapper>
-      {isLoading ? (
-        <div>🥚 🐣 🐤 🐥 Loading...</div> // 또는 <LoadingSpinner /> 등의 로딩 컴포넌트
-      ) : (
+      {!isLoading && (
         <StyledCalendar
           value={selectedDate}
           onChange={handleDateChange}
@@ -103,18 +101,29 @@ const StyledCalendarWrapper = styled.div`
     border: none;
     border-radius: 0.5rem;
     box-shadow: ${({ theme }) => `0 0 0.81rem 0.125rem ${theme.currentTheme.shadow}`};
-    padding: 1% 1.5%;
     background-color: transparent;
+    padding: 0.5rem;
   }
 
   & abbr {
     color: ${({ theme }) => theme.currentTheme.textPrimary};
   }
 
+  & .react-calendar__navigation {
+    margin-bottom: 0rem;
+    height: 2rem;
+
+    @media (min-width: 60rem) {
+      margin-bottom: 1rem;
+      height: 3rem;
+    }
+  }
+
   & .react-calendar__navigation * {
     background-color: ${({ theme }) => theme.currentTheme.widgetBlue};
     color: ${({ theme }) => theme.currentTheme.textSecondary};
   }
+
   & .react-calendar__navigation__prev-button {
     border-radius: 0.5rem 0 0 0.5rem;
   }
@@ -122,18 +131,23 @@ const StyledCalendarWrapper = styled.div`
     border-radius: 0 0.5rem 0.5rem 0;
   }
 
-  & .react-calendar__viewContainer {
-    padding: 0 2% 2% 2%;
-  }
   & .react-calendar__tile {
-    height: 3rem;
+    height: 2rem;
+    @media (min-width: 60rem) {
+      height: 4rem;
+    }
+
     position: relative;
     display: flex;
     justify-content: center;
 
     abbr {
       position: absolute;
-      top: 1.1rem;
+      top: 0.5rem;
+      @media (min-width: 60rem) {
+        top: 1.5rem;
+      }
+
       z-index: 999;
     }
   }
@@ -155,10 +169,12 @@ const StyledCalendarWrapper = styled.div`
   }
 `;
 
-const StyledCalendar = styled(Calendar)``;
+const StyledCalendar = styled(Calendar)`
+  height: 20%;
+`;
 
 const StyledStamp = styled(Stamp)`
-  width: 2rem;
-  height: 2rem;
+  width: 1rem;
+  height: 1rem;
   opacity: 70%;
 `;
