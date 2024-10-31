@@ -58,8 +58,6 @@ public class PetService {
             imageUrl = "None";
         }
 
-        System.out.println(imageUrl);
-
         Users user = userRepository.findById(userId).orElseThrow(
                 UserInformationNotFoundException::new);
         if (!validateUser(user)) {
@@ -133,12 +131,33 @@ public class PetService {
         Pet pet = repository.findById(petId).orElseThrow(PetNotFoundException::new);
 
         pet.update(petUpdateInformationRequest.name(),
-                petUpdateInformationRequest.profileImage(),
                 petUpdateInformationRequest.birth());
 
         repository.save(pet);
 
         log.info("UPDATE PET : {}번 펫 정보 수정 완료", petId);
+    }
+
+    @Transactional
+    public void updateProfileImage(Long userId, Long petId, MultipartFile imageFile) {
+        String imageUrl;
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            imageUrl = petProfileImageService.uploadPetProfileImage(imageFile);
+        } else {
+            imageUrl = null;
+        }
+
+        if (!userPetRepository.existsByUserIdAndPetId(userId, petId)) {
+            throw new UserPetGroupException();
+        }
+        Pet pet = repository.findById(petId).orElseThrow(PetNotFoundException::new);
+
+        pet.updateProfileImage(imageUrl);
+
+        repository.save(pet);
+
+        log.info("UPDATE PET : {}번 펫 프로필 이미지 수정 완료", petId);
     }
 
     /**

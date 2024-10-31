@@ -5,7 +5,6 @@ import java.time.LocalDate;
 
 public record PetUpdateInformationRequest(
         String name,
-        @JsonProperty("profile_image") String profileImage,
         LocalDate birth
 ) {
 
