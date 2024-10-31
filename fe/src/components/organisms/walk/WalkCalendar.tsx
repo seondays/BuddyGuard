@@ -49,6 +49,7 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
 
   const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
     if (!activeStartDate) return;
+    setSelectedDate(activeStartDate);
     setActiveDate(activeStartDate);
   };
 
@@ -72,9 +73,9 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
     <StyledCalendarWrapper>
       {!isLoading && (
         <StyledCalendar
-          value={selectedDate}
-          onChange={handleDateChange}
-          onActiveStartDateChange={handleMonthChange}
+          value={selectedDate} // 현재 선택된 날짜
+          onChange={handleDateChange} // 날짜 선택 시 호출되는 함수
+          onActiveStartDateChange={handleMonthChange} // 달력의 네비게이션이 변경될 때 호출되는 함수
           tileContent={tileContent}
           calendarType="gregory"
           showNeighboringMonth={false}
