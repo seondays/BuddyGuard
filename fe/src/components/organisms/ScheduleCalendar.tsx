@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import CommonCalendar from '@/components/molecules/CommonCalendar';
 import { useScheduleQuery } from '@/hooks/useScheduleQuery';
+import { usePetStore } from '@/stores/usePetStore';
 
 import Span from '../atoms/Span';
 
@@ -19,6 +20,7 @@ export default function ScheduleCalendar() {
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const { selectedBuddy } = usePetStore();
 
   useEffect(() => {
     const date = new Date(selectedDate);
@@ -26,9 +28,13 @@ export default function ScheduleCalendar() {
     setMonth(date.getMonth() + 1);
   }, [selectedDate]);
 
-  const petId = 56;
-  const { data, isLoading, error } = useScheduleQuery(petId, year, month);
-  console.log(data);
+  // selectedBuddy가 없는 경우
+  if (!selectedBuddy) {
+    return <div>반려동물을 선택해주세요.</div>;
+  }
+
+  const { data, isLoading, error } = useScheduleQuery(selectedBuddy.petId, year, month);
+
   if (isLoading) return <div>로딩 중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
 
