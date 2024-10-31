@@ -101,18 +101,22 @@ const SelectWrapper = styled.div`
 const SelectBox = styled.select`
   padding: 0.5rem;
   padding-right: 1.5rem; // 화살표 공간 확보
-  font-size: 0rem;
+  /* font-size: 1rem; */
   border: none;
   background-color: transparent;
+  /* color: black; */
   color: transparent;
   outline: none;
   cursor: pointer;
   appearance: none;
 
   // SVG 배경 이미지 절대 경로로
-  background-image: url('/src/svg/arrow_down.svg');
+  /* background-image: url('/src/svg/arrow_down.svg'); */
+  // Base64로 인코딩된 SVG 사용
+  background-image: url("data:image/svg+xml,%3Csvg width='13' height='7' viewBox='0 0 13 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6.5 6L12 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
+  /* background-size: 12px; */
 
   &:focus {
     outline: none;
