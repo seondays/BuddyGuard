@@ -5,7 +5,9 @@ import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 
 import { useWalkQuery } from '@/hooks/useWalkQuery';
+// import { testData } from '@/mocks/walkTest';
 import { useFilterStore } from '@/stores/useFilterStore';
+import { usePetStore } from '@/stores/usePetStore';
 import Stamp from '@/svg/walk_stamp.svg';
 import { FilterType, record } from '@/types/walk';
 
@@ -17,6 +19,7 @@ interface WalkCalendarProps {
 }
 export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   const { setAll } = useFilterStore();
+  const { selectedBuddy } = usePetStore();
 
   const [activeDate, setActiveDate] = useState<Date | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -29,7 +32,7 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   const queryParams = useMemo(
     () => ({
       filterKey: 'all' as FilterType,
-      buddyId: 2,
+      buddyId: selectedBuddy?.petId ?? 0,
       month: (activeDate?.getMonth() ?? new Date().getMonth()) + 1,
       year: activeDate?.getFullYear() ?? new Date().getFullYear(),
     }),
@@ -37,6 +40,8 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   );
 
   const { data, isLoading, refetch } = useWalkQuery(queryParams);
+  // const { isLoading, refetch, error } = useWalkQuery(queryParams);
+  // const data = testData;
 
   const handleDateChange = (newDate: Value) => {
     if (!(newDate instanceof Date)) return;
@@ -50,6 +55,7 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
     );
 
     if (selectedRecord) setSelectedData(selectedRecord);
+    else setSelectedData(null);
   };
 
   const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
@@ -71,12 +77,12 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
     const newMonth = (activeDate?.getMonth() ?? new Date().getMonth()) + 1;
     const newYear = activeDate?.getFullYear() ?? new Date().getFullYear();
     setAll(newMonth, newYear);
-    refetch();
+    // refetch();
   }, [activeDate]);
 
   return (
     <StyledCalendarWrapper>
-      {!isLoading && (
+      {!isLoading && activeDate && (
         <StyledCalendar
           value={selectedDate} // 현재 선택된 날짜
           onChange={handleDateChange} // 날짜 선택 시 호출되는 함수
