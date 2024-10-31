@@ -1,18 +1,19 @@
 import { createGlobalStyle } from 'styled-components';
 
 import { theme } from './theme';
+import '@/styles/fonts.css';
 
 export const GlobalStyles = createGlobalStyle`
   *,*::before,*::after{
     box-sizing: border-box;
-    color: ${theme.colorValues.grayscale[800]};
+    color: ${theme.colorValues.grayscale[700]};
   }
   a {
     text-decoration: none;
   }
 
-  #root:hover,
-  #root:focus {
-    background-color: transparent !important;
+  #root {
+    font-family: 'HakgyoansimDunggeunmisoTTF-B', sans-serif;  
   }
+
 `;
