@@ -28,6 +28,7 @@ export default function MyPage() {
 const StyledMyPageContainer = styled.div`
   padding: 1rem;
   height: calc(100% - ${NAV_HEIGHT});
+  overflow: hidden;
   ${flexColumn}
   ${fillAvailable}
 `;

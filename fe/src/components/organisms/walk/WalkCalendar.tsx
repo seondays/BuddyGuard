@@ -16,17 +16,22 @@ interface WalkCalendarProps {
   setSelectedData: React.Dispatch<React.SetStateAction<record | null>>;
 }
 export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
-  const { setAll, month, year } = useFilterStore();
+  const { setAll } = useFilterStore();
 
-  const [activeDate, setActiveDate] = useState(new Date(year, month - 1, 1));
-  const [selectedDate, setSelectedDate] = useState(activeDate);
+  const [activeDate, setActiveDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setActiveDate(new Date());
+    setSelectedDate(new Date());
+  }, []);
 
   const queryParams = useMemo(
     () => ({
       filterKey: 'all' as FilterType,
       buddyId: 2,
-      month: activeDate.getMonth() + 1,
-      year: activeDate.getFullYear(),
+      month: (activeDate?.getMonth() ?? new Date().getMonth()) + 1,
+      year: activeDate?.getFullYear() ?? new Date().getFullYear(),
     }),
     [activeDate]
   );
@@ -49,6 +54,7 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
 
   const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
     if (!activeStartDate) return;
+    setSelectedDate(activeStartDate);
     setActiveDate(activeStartDate);
   };
 
@@ -62,8 +68,8 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   }, [data?.records]);
 
   useEffect(() => {
-    const newMonth = activeDate.getMonth() + 1;
-    const newYear = activeDate.getFullYear();
+    const newMonth = (activeDate?.getMonth() ?? new Date().getMonth()) + 1;
+    const newYear = activeDate?.getFullYear() ?? new Date().getFullYear();
     setAll(newMonth, newYear);
     refetch();
   }, [activeDate]);
@@ -72,9 +78,9 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
     <StyledCalendarWrapper>
       {!isLoading && (
         <StyledCalendar
-          value={selectedDate}
-          onChange={handleDateChange}
-          onActiveStartDateChange={handleMonthChange}
+          value={selectedDate} // 현재 선택된 날짜
+          onChange={handleDateChange} // 날짜 선택 시 호출되는 함수
+          onActiveStartDateChange={handleMonthChange} // 달력의 네비게이션이 변경될 때 호출되는 함수
           tileContent={tileContent}
           calendarType="gregory"
           showNeighboringMonth={false}
