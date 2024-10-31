@@ -12,7 +12,7 @@ export const GlobalStyles = createGlobalStyle`
     text-decoration: none;
   }
 
-  #root {
+  #root * {
     font-family: 'HakgyoansimDunggeunmisoTTF-B', sans-serif;  
   }
 
