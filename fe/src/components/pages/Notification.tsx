@@ -22,7 +22,7 @@ const StyledListWrapper = styled.div`
   overflow-y: scroll;
   scrollbar-width: none;
   height: 70vh;
-  padding-bottom: ${NAV_HEIGHT};
+  padding: 1rem 0.5rem ${NAV_HEIGHT} 0.5rem;
 `;
 const StyledNotificationContainer = styled.div`
   padding: 1rem;
