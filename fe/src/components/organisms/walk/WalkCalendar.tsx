@@ -5,7 +5,9 @@ import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 
 import { useWalkQuery } from '@/hooks/useWalkQuery';
+// import { testData } from '@/mocks/walkTest';
 import { useFilterStore } from '@/stores/useFilterStore';
+import { usePetStore } from '@/stores/usePetStore';
 import Stamp from '@/svg/walk_stamp.svg';
 import { FilterType, record } from '@/types/walk';
 
@@ -17,6 +19,7 @@ interface WalkCalendarProps {
 }
 export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   const { setAll } = useFilterStore();
+  const { selectedBuddy } = usePetStore();
 
   const [activeDate, setActiveDate] = useState<Date | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -29,7 +32,7 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   const queryParams = useMemo(
     () => ({
       filterKey: 'all' as FilterType,
-      buddyId: 2,
+      buddyId: selectedBuddy?.petId ?? 0,
       month: (activeDate?.getMonth() ?? new Date().getMonth()) + 1,
       year: activeDate?.getFullYear() ?? new Date().getFullYear(),
     }),
@@ -37,6 +40,8 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
   );
 
   const { data, isLoading, refetch } = useWalkQuery(queryParams);
+  // const { isLoading, refetch, error } = useWalkQuery(queryParams);
+  // const data = testData;
 
   const handleDateChange = (newDate: Value) => {
     if (!(newDate instanceof Date)) return;
@@ -50,6 +55,7 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
     );
 
     if (selectedRecord) setSelectedData(selectedRecord);
+    else setSelectedData(null);
   };
 
   const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
@@ -71,12 +77,12 @@ export default function WalkCalendar({ setSelectedData }: WalkCalendarProps) {
     const newMonth = (activeDate?.getMonth() ?? new Date().getMonth()) + 1;
     const newYear = activeDate?.getFullYear() ?? new Date().getFullYear();
     setAll(newMonth, newYear);
-    refetch();
+    // refetch();
   }, [activeDate]);
 
   return (
     <StyledCalendarWrapper>
-      {!isLoading && (
+      {!isLoading && activeDate && (
         <StyledCalendar
           value={selectedDate} // 현재 선택된 날짜
           onChange={handleDateChange} // 날짜 선택 시 호출되는 함수
@@ -119,10 +125,10 @@ const StyledCalendarWrapper = styled.div`
     margin-bottom: 0rem;
     height: 2rem;
 
-    @media (min-width: 60rem) {
-      margin-bottom: 1rem;
-      height: 3rem;
-    }
+    // @media (min-width: 60rem) {
+    //   margin-bottom: 1rem;
+    //   height: 3rem;
+    // }
   }
 
   & .react-calendar__navigation * {
@@ -142,16 +148,16 @@ const StyledCalendarWrapper = styled.div`
     display: flex;
     justify-content: center;
     height: 2rem;
-    @media (min-width: 60rem) {
-      height: 4rem;
-    }
+    // @media (min-width: 60rem) {
+    //   height: 4rem;
+    // }
 
     & abbr {
       position: absolute;
       top: 0.5rem;
-      @media (min-width: 60rem) {
-        top: 1.5rem;
-      }
+      // @media (min-width: 60rem) {
+      //   top: 1.5rem;
+      // }
 
       z-index: 999;
     }
@@ -186,9 +192,9 @@ const StyledStamp = styled(Stamp)`
   width: 2rem;
   height: 2rem;
 
-  @media (min-width: 60rem) {
-    top: 0.4rem;
-    width: 3rem;
-    height: 3rem;
-  }
+  // @media (min-width: 60rem) {
+  //   top: 0.4rem;
+  //   width: 3rem;
+  //   height: 3rem;
+  // }
 `;

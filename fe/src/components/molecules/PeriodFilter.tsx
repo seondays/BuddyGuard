@@ -44,7 +44,7 @@ const StyledFilterButton = styled.button<{ $isClicked: boolean }>`
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: ${({ $isClicked, theme }) =>
-    $isClicked ? theme.themeValues.colorValues.special.modalBg : theme.currentTheme.modalBackground};
+    $isClicked ? theme.themeValues.colorValues.special.modalBg : theme.currentTheme.modalBackground2};
   box-shadow: ${({ $isClicked, theme }) =>
     $isClicked ? `0.1rem 0.15rem 0.25rem ${theme.currentTheme.shadow}` : 'none'};
   transform: ${({ $isClicked }) => ($isClicked ? 'translateY(-2px)' : 'none')};

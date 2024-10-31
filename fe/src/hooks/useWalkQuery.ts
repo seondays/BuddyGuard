@@ -26,6 +26,7 @@ export const useWalkQuery = ({ filterKey, buddyId, month, year }: UseWalkQueryPr
       if (filterKey === 'all' && month && year) return getWalkRecords({ filterKey, buddyId, month, year });
       throw new Error('Invalid filter type');
     },
+    enabled: buddyId !== 0,
   });
 };
 
