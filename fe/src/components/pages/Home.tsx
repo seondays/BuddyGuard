@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div style={{ padding: '1rem' }}>
       <BuddyInfoBar />
-      <div style={{ height: '75vh', overflowY: 'scroll', scrollbarWidth: 'none' }}>
+      <div style={{ height: '75vh', overflowY: 'scroll', scrollbarWidth: 'none', padding: '0 0.5rem' }}>
         <DashBoardList />
       </div>
     </div>

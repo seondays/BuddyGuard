@@ -51,7 +51,6 @@ export default function BuddyInfoBar() {
       </TopInfo>
       {isHome && (
         <BottomInfo>
-          <Span>미해결</Span>
           <Span>일정</Span>
           <Span>건강</Span>
           <Span>체중</Span>
