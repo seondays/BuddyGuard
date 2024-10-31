@@ -59,7 +59,7 @@ export default function Chart({ records }: ChartProps) {
   return (
     <StyledGraphContainer>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} margin={{ top: 10, right: 15, left: 0, bottom: 10 }}>
+        <BarChart data={chartData} margin={{ top: 10, right: 15, left: 10, bottom: 10 }}>
           <CartesianGrid strokeDasharray="2 5" />
           <XAxis dataKey="name" tick={{ fill: axisFontColor, fontSize: 10 }} angle={-30} dy={10} />
           <YAxis tickFormatter={(value) => `${value}km`} tick={{ fill: axisFontColor }} />
