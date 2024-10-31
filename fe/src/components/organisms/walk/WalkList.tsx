@@ -14,10 +14,8 @@ interface WalkListProps {
 
 export default function WalkList({ records, selectedData, type, setIsClickedDetail, setSelectedData }: WalkListProps) {
   const onClickHandler = (record: record) => {
-    if (type !== 'all') {
-      setIsClickedDetail(true);
-      setSelectedData(record);
-    }
+    setIsClickedDetail(true);
+    setSelectedData(record);
   };
 
   const NoRecordBox = () => (

@@ -12,6 +12,7 @@ import WalkCalendar from '@/components/organisms/walk/WalkCalendar';
 import WalkDetailModal from '@/components/organisms/walk/WalkDetailModal';
 import WalkList from '@/components/organisms/walk/WalkList';
 import { useWalkQuery, UseWalkQueryProps } from '@/hooks/useWalkQuery';
+// import { testData } from '@/mocks/walkTest';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { usePetStore } from '@/stores/usePetStore';
 import { flexColumn } from '@/styles/layoutStyles';
@@ -117,7 +118,7 @@ export default function Walk() {
         </AllTypeWrapper>
       )}
 
-      {isWeeklyOrMonthly && isClickedDetail && selectedData && (
+      {isClickedDetail && selectedData && (
         <WalkDetailModal
           detailRecords={selectedData}
           setIsClickedDetail={setIsClickedDetail}
