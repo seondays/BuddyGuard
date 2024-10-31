@@ -100,21 +100,28 @@ const SelectWrapper = styled.div`
 
 const SelectBox = styled.select`
   padding: 0.5rem;
-  font-size: 1rem;
+  padding-right: 1.5rem; // 화살표 공간 확보
+  font-size: 0rem;
   border: none;
   background-color: transparent;
-  color: white;
+  color: transparent;
   outline: none;
   cursor: pointer;
   appearance: none;
-  box-shadow: none;
+
+  // SVG 배경 이미지 절대 경로로
+  background-image: url('/src/svg/arrow_down.svg');
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
 
   &:focus {
     outline: none;
   }
 
-  &:hover {
-    background-color: #f5f5f5;
+  option {
+    background-color: white;
+    color: black;
+    font-size: 1rem;
   }
 `;
 
