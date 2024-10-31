@@ -125,10 +125,10 @@ const StyledCalendarWrapper = styled.div`
     margin-bottom: 0rem;
     height: 2rem;
 
-    @media (min-width: 60rem) {
-      margin-bottom: 1rem;
-      height: 3rem;
-    }
+    // @media (min-width: 60rem) {
+    //   margin-bottom: 1rem;
+    //   height: 3rem;
+    // }
   }
 
   & .react-calendar__navigation * {
@@ -148,16 +148,16 @@ const StyledCalendarWrapper = styled.div`
     display: flex;
     justify-content: center;
     height: 2rem;
-    @media (min-width: 60rem) {
-      height: 4rem;
-    }
+    // @media (min-width: 60rem) {
+    //   height: 4rem;
+    // }
 
     & abbr {
       position: absolute;
       top: 0.5rem;
-      @media (min-width: 60rem) {
-        top: 1.5rem;
-      }
+      // @media (min-width: 60rem) {
+      //   top: 1.5rem;
+      // }
 
       z-index: 999;
     }
@@ -192,9 +192,9 @@ const StyledStamp = styled(Stamp)`
   width: 2rem;
   height: 2rem;
 
-  @media (min-width: 60rem) {
-    top: 0.4rem;
-    width: 3rem;
-    height: 3rem;
-  }
+  // @media (min-width: 60rem) {
+  //   top: 0.4rem;
+  //   width: 3rem;
+  //   height: 3rem;
+  // }
 `;
