@@ -3,6 +3,7 @@ package buddyguard.mybuddyguard.pet.contoller;
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
 import buddyguard.mybuddyguard.pet.contoller.request.PetRegisterRequest;
 import buddyguard.mybuddyguard.pet.contoller.request.PetUpdateInformationRequest;
+import buddyguard.mybuddyguard.pet.contoller.response.PetDetailResponse;
 import buddyguard.mybuddyguard.pet.contoller.response.PetWithUserListResponse;
 import buddyguard.mybuddyguard.pet.service.PetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,11 +55,11 @@ public class PetController {
 
     @Operation(summary = "펫 한 마리의 정보를 가져오는 api", description = "유저의 펫들 중에서 1마리의 정보만을 조회합니다")
     @GetMapping("/{petId}")
-    public ResponseEntity<PetWithUserListResponse> getOnePetWithUser(
+    public ResponseEntity<PetDetailResponse> getOnePetWithUser(
             @PathVariable("petId") Long petId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getId();
-        PetWithUserListResponse response = service.getOnePetWithUser(userId, petId);
+        PetDetailResponse response = service.getOnePetWithUser(userId, petId);
 
         return ResponseEntity.ok(response);
     }

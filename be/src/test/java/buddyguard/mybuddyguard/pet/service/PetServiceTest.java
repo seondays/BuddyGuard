@@ -14,6 +14,7 @@ import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.contoller.request.PetRegisterRequest;
 import buddyguard.mybuddyguard.pet.contoller.request.PetUpdateInformationRequest;
+import buddyguard.mybuddyguard.pet.contoller.response.PetDetailResponse;
 import buddyguard.mybuddyguard.pet.contoller.response.PetWithUserListResponse;
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.pet.entity.UserPet;
@@ -207,7 +208,7 @@ public class PetServiceTest {
                 Optional.of(userPet2));
 
         // WHEN
-        PetWithUserListResponse result = petService.getOnePetWithUser(user.getId(), pet2.getId());
+        PetDetailResponse result = petService.getOnePetWithUser(user.getId(), pet2.getId());
 
         // THEN
         assertThat(result.petId()).isEqualTo(2L);

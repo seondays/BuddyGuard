@@ -5,6 +5,7 @@ import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.contoller.request.PetRegisterRequest;
 import buddyguard.mybuddyguard.pet.contoller.request.PetUpdateInformationRequest;
+import buddyguard.mybuddyguard.pet.contoller.response.PetDetailResponse;
 import buddyguard.mybuddyguard.pet.contoller.response.PetWithUserListResponse;
 import buddyguard.mybuddyguard.pet.entity.Pet;
 import buddyguard.mybuddyguard.pet.entity.UserPet;
@@ -79,7 +80,10 @@ public class PetService {
     }
 
     /**
-     * 유저에게 등록되어 있는 펫들을 조회
+     * 유저에게 등록되어 있는 모든 펫들을 조회한다.
+     *
+     * @param userId
+     * @return
      */
     public List<PetWithUserListResponse> getPetWithUser(Long userId) {
         List<UserPet> petWithUsers = userPetRepository.findByUserId(userId);
@@ -87,16 +91,23 @@ public class PetService {
         for (UserPet userPet : petWithUsers) {
             Pet pet = userPet.getPet();
             Users user = userPet.getUser();
-            response.add(UserPetMapper.toResponse(user, pet));
+            response.add(UserPetMapper.toPetListResponse(user, pet));
         }
         return response;
     }
 
-    public PetWithUserListResponse getOnePetWithUser(Long userId, Long petId) {
+    /**
+     * 유저에게 등록되어 있는 단일 펫의 상세 정보를 조회한다.
+     *
+     * @param userId
+     * @param petId
+     * @return
+     */
+    public PetDetailResponse getOnePetWithUser(Long userId, Long petId) {
         UserPet userPetInfo = userPetRepository.findByUserIdAndPetId(userId, petId)
                 .orElseThrow(UserPetGroupException::new);
 
-        return UserPetMapper.toResponse(userPetInfo.getUser(), userPetInfo.getPet());
+        return UserPetMapper.toPetDetailResponse(userPetInfo.getUser(), userPetInfo.getPet());
     }
 
     /**
@@ -122,6 +133,13 @@ public class PetService {
         }
     }
 
+    /**
+     * 펫의 정보를 수정한다.
+     *
+     * @param userId
+     * @param petId
+     * @param petUpdateInformationRequest
+     */
     @Transactional
     public void update(Long userId, Long petId,
             PetUpdateInformationRequest petUpdateInformationRequest) {
@@ -138,6 +156,13 @@ public class PetService {
         log.info("UPDATE PET : {}번 펫 정보 수정 완료", petId);
     }
 
+    /**
+     * 펫의 프로필 이미지를 수정한다.
+     *
+     * @param userId
+     * @param petId
+     * @param imageFile
+     */
     @Transactional
     public void updateProfileImage(Long userId, Long petId, MultipartFile imageFile) {
         String imageUrl;
