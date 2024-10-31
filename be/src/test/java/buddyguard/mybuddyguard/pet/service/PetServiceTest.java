@@ -292,14 +292,13 @@ public class PetServiceTest {
     void 펫_정보_정상_수정() {
         // GIVEN
         PetUpdateInformationRequest updateInformationRequest = new PetUpdateInformationRequest(
-                "new name", "www.example.com", LocalDate.now());
+                "new name", LocalDate.now());
 
         when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenReturn(true);
         when(petRepository.findById(pet.getId())).thenReturn(Optional.of(pet));
         doAnswer(invocation -> {
             Pet afterPet = invocation.getArgument(0);
-            afterPet.update(updateInformationRequest.name(),
-                    updateInformationRequest.profileImage(), null);
+            afterPet.update(updateInformationRequest.name(), null);
             return afterPet;
         }).when(petRepository).save(pet);
 
@@ -309,7 +308,6 @@ public class PetServiceTest {
         // THEN
         verify(petRepository).save(pet);
         assertThat(pet.getName()).isEqualTo(updateInformationRequest.name());
-        assertThat(pet.getProfileImage()).isEqualTo(updateInformationRequest.profileImage());
 
     }
 
@@ -317,7 +315,7 @@ public class PetServiceTest {
     void 정보가_없는_경우_펫_정보_수정_시_예외_발생() {
         // GIVEN
         PetUpdateInformationRequest updateInformationRequest = new PetUpdateInformationRequest(
-                "new name", "www.example.com", LocalDate.now());
+                "new name", LocalDate.now());
 
         when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenThrow(
                 UserPetGroupException.class);
@@ -332,7 +330,7 @@ public class PetServiceTest {
     void 펫_정보가_없는_경우_펫_정보_수정_시_예외_발생() {
         // GIVEN
         PetUpdateInformationRequest updateInformationRequest = new PetUpdateInformationRequest(
-                "new name", "www.example.com", LocalDate.now());
+                "new name", LocalDate.now());
 
         when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenReturn(true);
         when(petRepository.findById(pet.getId())).thenReturn(Optional.empty());
@@ -340,6 +338,67 @@ public class PetServiceTest {
         // WHEN, THEN
         assertThatThrownBy(() -> petService.update(user.getId(), pet.getId(),
                 updateInformationRequest)).isInstanceOf(PetNotFoundException.class);
+
+    }
+
+    @Test
+    void 펫_프로필_이미지_정상_수정() {
+        // GIVEN
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
+
+        when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenReturn(true);
+        when(petRepository.findById(pet.getId())).thenReturn(Optional.of(pet));
+        when(petProfileImageService.uploadPetProfileImage(imageFile)).thenReturn("https://s3/imageFile.jpg");
+
+        // WHEN
+        petService.updateProfileImage(user.getId(), pet.getId(), imageFile);
+
+        // THEN
+        verify(petProfileImageService).uploadPetProfileImage(imageFile);
+        verify(petRepository).save(pet);
+        assertThat(pet.getProfileImage()).isEqualTo("https://s3/imageFile.jpg");
+    }
+
+    @Test
+    void 정보가_없는_경우_펫_프로필_이미지_수정_시_예외_발생() {
+        // GIVEN
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
+
+        when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenThrow(
+                UserPetGroupException.class);
+
+        // WHEN, THEN
+        assertThatThrownBy(() -> petService.updateProfileImage(user.getId(), pet.getId(),
+                imageFile)).isInstanceOf(UserPetGroupException.class);
+
+    }
+
+    @Test
+    void 펫_정보가_없는_경우_펫_프로필_이미지_수정_시_예외_발생() {
+        // GIVEN
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
+
+        when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenReturn(true);
+        when(petRepository.findById(pet.getId())).thenReturn(Optional.empty());
+
+        // WHEN, THEN
+        assertThatThrownBy(() -> petService.updateProfileImage(user.getId(), pet.getId(),
+                imageFile)).isInstanceOf(PetNotFoundException.class);
 
     }
 }
