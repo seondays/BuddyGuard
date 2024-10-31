@@ -16,11 +16,13 @@ import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
 import buddyguard.mybuddyguard.exception.PetNotFoundException;
 import buddyguard.mybuddyguard.exception.UserInformationNotFoundException;
+import buddyguard.mybuddyguard.walkimage.service.impl.PetProfileImageService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -29,29 +31,42 @@ public class PetService {
     private final PetRepository repository;
     private final UserPetRepository userPetRepository;
     private final UserRepository userRepository;
+    private final PetProfileImageService petProfileImageService;
 
     public PetService(PetRepository repository, UserPetRepository userPetRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository, PetProfileImageService petProfileImageService) {
         this.repository = repository;
         this.userPetRepository = userPetRepository;
         this.userRepository = userRepository;
+        this.petProfileImageService = petProfileImageService;
     }
 
     /**
      * 펫을 등록한다.
-     *
      * @param petRegisterRequest
+     * @param imageFile
      * @param userId
      */
     @Transactional
-    public void register(PetRegisterRequest petRegisterRequest, Long userId) {
+    public void register(PetRegisterRequest petRegisterRequest, MultipartFile imageFile,
+            Long userId) {
+        String imageUrl;
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            imageUrl = petProfileImageService.uploadPetProfileImage(imageFile);
+        } else {
+            imageUrl = "None";
+        }
+
+        System.out.println(imageUrl);
+
         Users user = userRepository.findById(userId).orElseThrow(
                 UserInformationNotFoundException::new);
         if (!validateUser(user)) {
             throw new InvalidPetRegisterException();
         }
 
-        Pet toPet = PetMapper.toEntity(petRegisterRequest);
+        Pet toPet = PetMapper.toEntity(petRegisterRequest, imageUrl);
         Pet pet = repository.save(toPet);
 
         UserPet userPet = UserPet.builder()

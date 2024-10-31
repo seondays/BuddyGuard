@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 public record PetRegisterRequest(
         @NotNull String name,
-        @JsonProperty("profile_image") String profileImage,
         @NotNull PetType type,
         @NotNull LocalDate birth
 ) {
