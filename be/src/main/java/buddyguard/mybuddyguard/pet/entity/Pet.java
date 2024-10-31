@@ -48,15 +48,18 @@ public class Pet {
     @OneToMany(mappedBy = "pet")
     private List<PetWalkRecord> petWalkRecords;
 
-    public void update(String name, String profileImage, LocalDate birth) {
+    public void update(String name, LocalDate birth) {
         if (name != null) {
             this.name = name;
         }
-        if (profileImage != null) {
-            this.profileImage = profileImage;
-        }
         if (birth != null) {
             this.birth = birth;
+        }
+    }
+
+    public void updateProfileImage(String profileImage) {
+        if (profileImage != null) {
+            this.profileImage = profileImage;
         }
     }
 }

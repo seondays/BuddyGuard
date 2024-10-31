@@ -16,11 +16,13 @@ import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
 import buddyguard.mybuddyguard.exception.PetNotFoundException;
 import buddyguard.mybuddyguard.exception.UserInformationNotFoundException;
+import buddyguard.mybuddyguard.walkimage.service.impl.PetProfileImageService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -29,29 +31,40 @@ public class PetService {
     private final PetRepository repository;
     private final UserPetRepository userPetRepository;
     private final UserRepository userRepository;
+    private final PetProfileImageService petProfileImageService;
 
     public PetService(PetRepository repository, UserPetRepository userPetRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository, PetProfileImageService petProfileImageService) {
         this.repository = repository;
         this.userPetRepository = userPetRepository;
         this.userRepository = userRepository;
+        this.petProfileImageService = petProfileImageService;
     }
 
     /**
      * 펫을 등록한다.
-     *
      * @param petRegisterRequest
+     * @param imageFile
      * @param userId
      */
     @Transactional
-    public void register(PetRegisterRequest petRegisterRequest, Long userId) {
+    public void register(PetRegisterRequest petRegisterRequest, MultipartFile imageFile,
+            Long userId) {
+        String imageUrl;
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            imageUrl = petProfileImageService.uploadPetProfileImage(imageFile);
+        } else {
+            imageUrl = "None";
+        }
+
         Users user = userRepository.findById(userId).orElseThrow(
                 UserInformationNotFoundException::new);
         if (!validateUser(user)) {
             throw new InvalidPetRegisterException();
         }
 
-        Pet toPet = PetMapper.toEntity(petRegisterRequest);
+        Pet toPet = PetMapper.toEntity(petRegisterRequest, imageUrl);
         Pet pet = repository.save(toPet);
 
         UserPet userPet = UserPet.builder()
@@ -118,12 +131,33 @@ public class PetService {
         Pet pet = repository.findById(petId).orElseThrow(PetNotFoundException::new);
 
         pet.update(petUpdateInformationRequest.name(),
-                petUpdateInformationRequest.profileImage(),
                 petUpdateInformationRequest.birth());
 
         repository.save(pet);
 
         log.info("UPDATE PET : {}번 펫 정보 수정 완료", petId);
+    }
+
+    @Transactional
+    public void updateProfileImage(Long userId, Long petId, MultipartFile imageFile) {
+        String imageUrl;
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            imageUrl = petProfileImageService.uploadPetProfileImage(imageFile);
+        } else {
+            imageUrl = null;
+        }
+
+        if (!userPetRepository.existsByUserIdAndPetId(userId, petId)) {
+            throw new UserPetGroupException();
+        }
+        Pet pet = repository.findById(petId).orElseThrow(PetNotFoundException::new);
+
+        pet.updateProfileImage(imageUrl);
+
+        repository.save(pet);
+
+        log.info("UPDATE PET : {}번 펫 프로필 이미지 수정 완료", petId);
     }
 
     /**

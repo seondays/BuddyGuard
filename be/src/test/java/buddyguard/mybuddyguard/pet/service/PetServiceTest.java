@@ -22,6 +22,7 @@ import buddyguard.mybuddyguard.pet.repository.PetRepository;
 import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.PetType;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
+import buddyguard.mybuddyguard.walkimage.service.impl.PetProfileImageService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 public class PetServiceTest {
@@ -48,9 +51,13 @@ public class PetServiceTest {
     @InjectMocks
     private PetService petService;
 
+    @Mock
+    private PetProfileImageService petProfileImageService;
+
     private Users user;
 
     private Pet pet;
+    private final String image = "www.naver.com";
 
     @BeforeEach
     void 유저와_펫_생성() {
@@ -64,22 +71,29 @@ public class PetServiceTest {
     @Test
     void 정상적으로_펫_등록() {
         // GIVEN
-        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto",
-                "www.naver.com", PetType.DOG, LocalDate.now());
+        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto", PetType.DOG,
+                LocalDate.now());
 
         Pet insertPet = Pet.builder().id(1L).birth(petRegisterRequest.birth())
-                .type(petRegisterRequest.type()).profileImage(petRegisterRequest.profileImage())
+                .type(petRegisterRequest.type()).profileImage(image)
                 .name(petRegisterRequest.name()).build();
 
         UserPet userPet = UserPet.builder().id(1L).user(user).pet(insertPet).role(
                 UserPetRole.HOST).build();
+
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(petRepository.save(any(Pet.class))).thenReturn(insertPet);
         when(userPetRepository.save(any(UserPet.class))).thenReturn(userPet);
 
         // WHEN
-        petService.register(petRegisterRequest, user.getId());
+        petService.register(petRegisterRequest, imageFile, user.getId());
 
         // THEN
         verify(petRepository).save(any(Pet.class));
@@ -89,36 +103,48 @@ public class PetServiceTest {
     @Test
     void 펫_3마리_이상_유저_펫_등록시_예외_발생() {
         // GIVEN
-        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto",
-                "www.naver.com", PetType.DOG, LocalDate.now());
+        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto", PetType.DOG,
+                LocalDate.now());
 
-        Pet insertPet = Pet.builder().id(1L).birth(petRegisterRequest.birth())
-                .type(petRegisterRequest.type()).profileImage(petRegisterRequest.profileImage())
-                .name(petRegisterRequest.name()).build();
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userPetRepository.existsByUserExceedPetCount(user.getId())).thenReturn(true);
 
         // WHEN, THEN
-        assertThatThrownBy(() -> petService.register(petRegisterRequest, user.getId())).isInstanceOf(
-                InvalidPetRegisterException.class);
+        assertThatThrownBy(() -> petService.register(petRegisterRequest, imageFile,
+                user.getId())).isInstanceOf(InvalidPetRegisterException.class);
 
     }
 
     @Test
     void 유저가_존재하지_않는_경우_펫_등록시_예외_발생() {
         // GIVEN
-        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto",
-                "www.naver.com", PetType.DOG, LocalDate.now());
+        PetRegisterRequest petRegisterRequest = new PetRegisterRequest("toto", PetType.DOG,
+                LocalDate.now());
 
         Pet insertPet = Pet.builder().id(1L).birth(petRegisterRequest.birth())
-                .type(petRegisterRequest.type()).profileImage(petRegisterRequest.profileImage())
+                .type(petRegisterRequest.type()).profileImage(image)
                 .name(petRegisterRequest.name()).build();
+
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
         // WHEN, THEN
-        assertThatThrownBy(() -> petService.register(petRegisterRequest, user.getId())).isInstanceOf(
+        assertThatThrownBy(
+                () -> petService.register(petRegisterRequest, imageFile,
+                        user.getId())).isInstanceOf(
                 UserInformationNotFoundException.class);
 
     }
@@ -266,14 +292,13 @@ public class PetServiceTest {
     void 펫_정보_정상_수정() {
         // GIVEN
         PetUpdateInformationRequest updateInformationRequest = new PetUpdateInformationRequest(
-                "new name", "www.example.com", LocalDate.now());
+                "new name", LocalDate.now());
 
         when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenReturn(true);
         when(petRepository.findById(pet.getId())).thenReturn(Optional.of(pet));
         doAnswer(invocation -> {
             Pet afterPet = invocation.getArgument(0);
-            afterPet.update(updateInformationRequest.name(),
-                    updateInformationRequest.profileImage(), null);
+            afterPet.update(updateInformationRequest.name(), null);
             return afterPet;
         }).when(petRepository).save(pet);
 
@@ -283,7 +308,6 @@ public class PetServiceTest {
         // THEN
         verify(petRepository).save(pet);
         assertThat(pet.getName()).isEqualTo(updateInformationRequest.name());
-        assertThat(pet.getProfileImage()).isEqualTo(updateInformationRequest.profileImage());
 
     }
 
@@ -291,7 +315,7 @@ public class PetServiceTest {
     void 정보가_없는_경우_펫_정보_수정_시_예외_발생() {
         // GIVEN
         PetUpdateInformationRequest updateInformationRequest = new PetUpdateInformationRequest(
-                "new name", "www.example.com", LocalDate.now());
+                "new name", LocalDate.now());
 
         when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenThrow(
                 UserPetGroupException.class);
@@ -306,7 +330,7 @@ public class PetServiceTest {
     void 펫_정보가_없는_경우_펫_정보_수정_시_예외_발생() {
         // GIVEN
         PetUpdateInformationRequest updateInformationRequest = new PetUpdateInformationRequest(
-                "new name", "www.example.com", LocalDate.now());
+                "new name", LocalDate.now());
 
         when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenReturn(true);
         when(petRepository.findById(pet.getId())).thenReturn(Optional.empty());
@@ -314,6 +338,67 @@ public class PetServiceTest {
         // WHEN, THEN
         assertThatThrownBy(() -> petService.update(user.getId(), pet.getId(),
                 updateInformationRequest)).isInstanceOf(PetNotFoundException.class);
+
+    }
+
+    @Test
+    void 펫_프로필_이미지_정상_수정() {
+        // GIVEN
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
+
+        when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenReturn(true);
+        when(petRepository.findById(pet.getId())).thenReturn(Optional.of(pet));
+        when(petProfileImageService.uploadPetProfileImage(imageFile)).thenReturn("https://s3/imageFile.jpg");
+
+        // WHEN
+        petService.updateProfileImage(user.getId(), pet.getId(), imageFile);
+
+        // THEN
+        verify(petProfileImageService).uploadPetProfileImage(imageFile);
+        verify(petRepository).save(pet);
+        assertThat(pet.getProfileImage()).isEqualTo("https://s3/imageFile.jpg");
+    }
+
+    @Test
+    void 정보가_없는_경우_펫_프로필_이미지_수정_시_예외_발생() {
+        // GIVEN
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
+
+        when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenThrow(
+                UserPetGroupException.class);
+
+        // WHEN, THEN
+        assertThatThrownBy(() -> petService.updateProfileImage(user.getId(), pet.getId(),
+                imageFile)).isInstanceOf(UserPetGroupException.class);
+
+    }
+
+    @Test
+    void 펫_정보가_없는_경우_펫_프로필_이미지_수정_시_예외_발생() {
+        // GIVEN
+        MultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "test.jpg",
+                "image/jpeg",
+                new byte[1]
+        );
+
+        when(userPetRepository.existsByUserIdAndPetId(user.getId(), pet.getId())).thenReturn(true);
+        when(petRepository.findById(pet.getId())).thenReturn(Optional.empty());
+
+        // WHEN, THEN
+        assertThatThrownBy(() -> petService.updateProfileImage(user.getId(), pet.getId(),
+                imageFile)).isInstanceOf(PetNotFoundException.class);
 
     }
 }
