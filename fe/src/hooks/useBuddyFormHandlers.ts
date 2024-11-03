@@ -59,7 +59,6 @@ export const useBuddyFormHandlers = () => {
       formDataToSubmit.append('name', mappedFormData.name);
       formDataToSubmit.append('type', mappedFormData.type);
       formDataToSubmit.append('birth', mappedFormData.birth);
-      console.log(formDataToSubmit);
       if (typeof file === 'string') {
         formDataToSubmit.append('profile_image', 'none');
       } else if (file) {

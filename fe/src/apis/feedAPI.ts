@@ -6,7 +6,6 @@ const FEED_BASE_URL = `/feed`;
 export const getFeedsRecord = async (petId: number) => {
   try {
     const response = await apiClient.get(`${FEED_BASE_URL}/${petId}`);
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);

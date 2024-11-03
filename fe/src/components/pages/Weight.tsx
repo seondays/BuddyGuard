@@ -9,7 +9,6 @@ import { createWeightRecord } from '@/utils/weightApi';
 export default function Weight() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleCreateWeight = async (newWeightData: any) => {
-    console.log(newWeightData);
     try {
       await createWeightRecord(newWeightData);
       setIsModalOpen(false);
