@@ -1,0 +1,66 @@
+name: buddyGuard Frontend CI/CD using github actions
+
+on:
+  push:
+    branches:
+      - dev-fe
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  CI-CD:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # 캐시 지우고 빌드 추가
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      # .env 파일 생성 (빌드 전에 실행)
+      - name: Create .env file in project root (fe)
+        working-directory: ./fe
+        run: |
+          touch .env
+          echo "VITE_KAKAOMAP_JS_KEY=${{ secrets.VITE_KAKAOMAP_JS_KEY }}" >> .env
+          echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}" >> .env
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" >> .env
+          echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}" >> .env
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}" >> .env
+          echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" >> .env
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> .env
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}" >> .env
+          echo "VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }}" >> .env
+          echo "VITE_SERVER_URL=${{ secrets.VITE_SERVER_URL }}" >> .env
+
+      # 의존성 설치
+      - name: Clean and install dependencies
+        working-directory: ./fe
+        run: |
+          rm -rf node_modules package-lock.json
+          pnpm install --force
+
+      # 빌드 수행
+      - name: Build project
+        working-directory: ./fe
+        run: pnpm run build
+
+      # 빌드 결과물 배포
+      - name: Deploy to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST_PROD }}
+          username: ubuntu
+          key: ${{ secrets.PRIVATE_KEY }}
+          source: "./fe/dist/*"
+          target: "/home/ubuntu/nginx-vol/"
