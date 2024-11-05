@@ -166,6 +166,6 @@ pnpm dev
 자세한 코딩 컨벤션은 [[FE] 개발 전략 문서](https://profuse-aftershave-ac6.notion.site/FE-f4469aa1ffd74e12bda321b7f466d97e?pvs=74)를 참고해주세요.
 
 ### Backend
+<img width="1064" alt="스크린샷 2024-11-05 오후 11 55 29" src="https://github.com/user-attachments/assets/15eede39-9503-479a-847e-5c85fe4aa9a4">
 
-[백엔드 아키텍처 정보]
 
