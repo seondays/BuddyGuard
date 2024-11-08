@@ -30,7 +30,7 @@
 -   [🐾 서비스 바로가기](https://buddyguard.site/)
 -   [📖 API 문서](https://api.buddyguard.site/swagger-ui/index.html#/)
 -   [📋 Notion](https://profuse-aftershave-ac6.notion.site/318eaff407e04f3f833343dad7877c83)
-
+-   [📋 GitHub 이슈 & 프로젝트](https://github.com/orgs/myBuddyGuard/projects/2)
 <br/>
 
 ## 🚀 시작하기
