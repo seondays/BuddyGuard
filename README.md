@@ -10,8 +10,8 @@
 `BuddyGuard`는 반려동물의 일상을 체계적으로 관리할 수 있는 통합 케어 플랫폼입니다.  
 산책 기록부터 건강 관리까지, 반려동물과의 모든 순간을 스마트하게 기록하고 관리할 수 있습니다.
 
--   **개발 기간**: 2024.09 ~ 2024.10 (6주)
--   **타겟**: 반려동물의 건강과 일상을 체계적으로 관리하고 싶은 보호자
+- **개발 기간**: 2024.09 ~ 2024.10 (6주)
+- **타겟**: 반려동물의 건강과 일상을 체계적으로 관리하고 싶은 보호자
 
 ## 👥 개발팀 소개
 
@@ -27,23 +27,31 @@
 
 ## 🔗 Links
 
--   [🐾 서비스 바로가기](https://buddyguard.site/)
--   [📖 API 문서](https://api.buddyguard.site/swagger-ui/index.html#/)
--   [📋 Notion](https://profuse-aftershave-ac6.notion.site/318eaff407e04f3f833343dad7877c83)
--   [📋 GitHub 이슈 & 프로젝트](https://github.com/orgs/myBuddyGuard/projects/2)
-<br/>
+- [🐾 서비스 바로가기](https://buddyguard.site/)
+- [📖 API 문서](https://api.buddyguard.site/swagger-ui/index.html#/)
+- [📋 Notion](https://profuse-aftershave-ac6.notion.site/318eaff407e04f3f833343dad7877c83)
+- [📋 GitHub 이슈 & 프로젝트](https://github.com/orgs/myBuddyGuard/projects/2)
+  <br/>
 
 ## 🚀 시작하기
 
+#### frontend 실행
+
 ```bash
 # 저장소 클론
-git clone https://github.com/myBuddyGuard/BuddyGuard.git
+$ git clone https://github.com/myBuddyGuard/BuddyGuard.git
 
-# frontend 실행
-cd fe
-npm install -g pnpm@9.9.0
-pnpm install
-pnpm dev
+#프로젝트 디렉토리로 이동
+$ cd fe
+
+# Node.js 18 이상 사용 권장
+$ corepack enable
+# Node.js 16 이하 사용 시 corepack 전역 설치
+# $ npm install -g corepack
+
+$ pnpm install
+
+$ pnpm dev
 ```
 
 <br/>
@@ -52,9 +60,9 @@ pnpm dev
 
 ### 1. 카카오 소셜 로그인
 
--   간편한 회원가입 및 로그인
+- 간편한 회원가입 및 로그인
 
-    <img src="https://github.com/user-attachments/assets/ca9c2d9f-8129-4c65-9530-476d5abb0a87" alt="1-login" width="200">
+  <img src="https://github.com/user-attachments/assets/ca9c2d9f-8129-4c65-9530-476d5abb0a87" alt="1-login" width="200">
 
 ### 2. 반려동물 산책 관리
 
@@ -68,16 +76,16 @@ pnpm dev
 
 ### 3. 건강 관리
 
--   체중 관리
--   사료/간식 급여 기록
--   급여 시간 관리
+- 체중 관리
+- 사료/간식 급여 기록
+- 급여 시간 관리
 
 <img src="https://github.com/user-attachments/assets/fad29323-61fc-4ee3-a3ae-e304d696166a" alt="3-health" width="200">
 
 ### 4. 일정 관리
 
--   병원, 예방접종 등 일정 등록
--   캘린더 뷰 및 알림 기능
+- 병원, 예방접종 등 일정 등록
+- 캘린더 뷰 및 알림 기능
 
 <img src="https://github.com/user-attachments/assets/f91bfbcd-7392-4395-a8ca-46102a20e8d5" alt="4-plan" width="200">
 
@@ -87,14 +95,14 @@ pnpm dev
 
 <img src="https://github.com/user-attachments/assets/245b6a9d-0b30-4e1d-a9c4-8e45ae92cd75" alt="responsive-layout" width="500">
 
--   mobile 우선 설계
--   PC에서는 mobile 프레임으로 제공
+- mobile 우선 설계
+- PC에서는 mobile 프레임으로 제공
 
 ### 테마 설정
 
--   라이트/다크 모드 지원
--   시스템 설정 연동
--   수동 테마 변경 가능
+- 라이트/다크 모드 지원
+- 시스템 설정 연동
+- 수동 테마 변경 가능
 
 |                                                          mobile                                                           |                                                          PC                                                           |
 | :-----------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: |
@@ -106,17 +114,17 @@ pnpm dev
 
 ### Frontend
 
--   **Config** : <img src="https://img.shields.io/badge/Vite-646CFF?style=&logo=Vite&logoColor=white"><img src="https://img.shields.io/badge/pnpm-F69220?style=&logo=pnpm&logoColor=white">
+- **Config** : <img src="https://img.shields.io/badge/Vite-646CFF?style=&logo=Vite&logoColor=white"><img src="https://img.shields.io/badge/pnpm-F69220?style=&logo=pnpm&logoColor=white">
 
--   **Core** : <img src="https://img.shields.io/badge/TypeScript-3178C6?style=&logo=TypeScript&logoColor=white"><img src="https://img.shields.io/badge/React-61DAFB?style=&logo=React&logoColor=white"><img src="https://img.shields.io/badge/React Router-CA4245?style=&logo=ReactRouter&logoColor=white">
+- **Core** : <img src="https://img.shields.io/badge/TypeScript-3178C6?style=&logo=TypeScript&logoColor=white"><img src="https://img.shields.io/badge/React-61DAFB?style=&logo=React&logoColor=white"><img src="https://img.shields.io/badge/React Router-CA4245?style=&logo=ReactRouter&logoColor=white">
 
--   **State Management** : <img src="https://img.shields.io/badge/Zustand-3E67B1?style=&logo=Zustand&logoColor=white"><img src="https://img.shields.io/badge/Tanstack Query-FF4154?style=&logo=ReactQuery&logoColor=white">
+- **State Management** : <img src="https://img.shields.io/badge/Zustand-3E67B1?style=&logo=Zustand&logoColor=white"><img src="https://img.shields.io/badge/Tanstack Query-FF4154?style=&logo=ReactQuery&logoColor=white">
 
--   **Form & Validation** : <img src="https://img.shields.io/badge/React Hook Form-EC5990?style=&logo=ReactHookForm&logoColor=white"><img src="https://img.shields.io/badge/Zod-3E67B1?style=&logo=Zod&logoColor=white">
+- **Form & Validation** : <img src="https://img.shields.io/badge/React Hook Form-EC5990?style=&logo=ReactHookForm&logoColor=white"><img src="https://img.shields.io/badge/Zod-3E67B1?style=&logo=Zod&logoColor=white">
 
--   **Styling** : <img src="https://img.shields.io/badge/styled components-DB7093?style=&logo=styledComponents&logoColor=white">
+- **Styling** : <img src="https://img.shields.io/badge/styled components-DB7093?style=&logo=styledComponents&logoColor=white">
 
--   **Tools** : <img src="https://img.shields.io/badge/Storybook-FF4785?style=&logo=Storybook&logoColor=white">
+- **Tools** : <img src="https://img.shields.io/badge/Storybook-FF4785?style=&logo=Storybook&logoColor=white">
 
 ### Backend
 
@@ -126,17 +134,17 @@ pnpm dev
 
 ### Frontend
 
--   Atomic Design Pattern 적용
--   모바일 우선 반응형 디자인
+- Atomic Design Pattern 적용
+- 모바일 우선 반응형 디자인
 
 #### 디자인 패턴
 
--   **Atomic Design Pattern** 적용
-    -   `atoms`: 버튼, 입력 필드 등 최소 단위의 컴포넌트
-    -   `molecules`: 여러 개의 atom을 결합한 복잡한 컴포넌트
-    -   `organisms`: molecules를 조합한 큰 단위의 컴포넌트
-    -   `templates`: 페이지 레이아웃을 담당하는 컴포넌트
-    -   `pages`: 실제 라우팅되는 페이지 컴포넌트
+- **Atomic Design Pattern** 적용
+  - `atoms`: 버튼, 입력 필드 등 최소 단위의 컴포넌트
+  - `molecules`: 여러 개의 atom을 결합한 복잡한 컴포넌트
+  - `organisms`: molecules를 조합한 큰 단위의 컴포넌트
+  - `templates`: 페이지 레이아웃을 담당하는 컴포넌트
+  - `pages`: 실제 라우팅되는 페이지 컴포넌트
 
 #### 주요 디렉토리 구조
 
@@ -166,6 +174,5 @@ pnpm dev
 자세한 코딩 컨벤션은 [[FE] 개발 전략 문서](https://profuse-aftershave-ac6.notion.site/FE-f4469aa1ffd74e12bda321b7f466d97e?pvs=74)를 참고해주세요.
 
 ### Backend
+
 <img width="1064" alt="스크린샷 2024-11-05 오후 11 55 29" src="https://github.com/user-attachments/assets/15eede39-9503-479a-847e-5c85fe4aa9a4">
-
-
