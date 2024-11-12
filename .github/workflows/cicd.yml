@@ -84,7 +84,6 @@ jobs:
           script: |
             # Docker Compose 파일 생성
             cat <<EOF | sudo tee /home/ubuntu/docker-compose.yml > /dev/null
-            version: '3.8'
             services:
               backend:
                 image: ${{ secrets.DOCKER_USERNAME }}/docker-test-dev
