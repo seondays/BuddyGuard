@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { fetchAccessToken } from '@/apis/authAPI';
 import PlayIcon from '@/components/icons/PlayIcon';
 import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecules/walk/WalkBuddySelectBar';
 import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
@@ -57,6 +58,7 @@ export default function GoWalk() {
   const [buddyList, setBuddyList] = useState<BuddysType[]>([{ id: 0, img: '', name: '' }]);
   const [isTargetClicked, setIsTargetClicked] = useState(false);
   const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
+  const [isMapLoading, setIsMapLoading] = useState(true);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -109,9 +111,40 @@ export default function GoWalk() {
   const selectBuddy: CheckboxChangeHandler = (selectId: number, isSelect) =>
     setSelectedBuddys((prev) => (isSelect ? [...prev, selectId] : prev.filter((buddyId) => buddyId !== selectId)));
 
+  const handleLocalStorage = () => {
+    const isPetStorage = localStorage.getItem('petsStorage');
+    const isAccessToken = localStorage.getItem('accessToken');
+    const petsStorage =
+      '{"state":{"petsInfo":[{"userId":3,"petId":54,"petName":"우디","profileImage":"none"},{"userId":3,"petId":55,"petName":"렉스","profileImage":"none"}],"selectedBuddy":{"userId":3,"petId":54,"petName":"우디","profileImage":"none"}},"version":0}';
+    const accessToken =
+      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMsInJvbGUiOiJST0xFX1VTRVIiLCJ0b2tlblR5cGUiOiJBQ0NFU1MiLCJpYXQiOjE3MzE1NzExNTcsImV4cCI6NjE3MzE1NzExNTd9.e4a7VaULNJY475Le_DnYflT7KLITHQAlOP3VP4AzQL0';
+    if (!isPetStorage) {
+      localStorage.setItem('petsStorage', petsStorage);
+      message.warning('PetStorage has been set!');
+    }
+    if (!isAccessToken) {
+      localStorage.setItem('accessToken', accessToken);
+      message.warning('AccessToken has been set!');
+    }
+
+    if (isPetStorage && isAccessToken) {
+      message.warning('이미 둘다 있슴다!');
+    }
+  };
+
+  useEffect(() => {
+    if (map) {
+      setIsMapLoading(false);
+    }
+  }, [map]);
+
   return (
     <>
       <StyledWalkWrapper>
+        <button id="setToken" onClick={handleLocalStorage} style={{ zIndex: 9999999, position: 'absolute', top: 0 }}>
+          {' '}
+          로컬스토리지 셋팅
+        </button>
         {isStarted === 'ready' && <StyledBlockLayer />}
         {isStarted === 'ready' && <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />}
         {isStarted === 'start' && (
@@ -119,7 +152,7 @@ export default function GoWalk() {
             <img src={targetIcon} />
           </StyledTargetIcon>
         )}
-        <StyledMap ref={mapRef} />
+        <StyledMap ref={mapRef} $isLoading={isMapLoading} />
         <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* 캔버스는 숨김 */}
         {isStarted === 'start' && (
           <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} timeRef={timeRef} />
@@ -175,11 +208,14 @@ const StyledBlockLayer = styled.div`
   min-height: 100%;
 `;
 
-const StyledMap = styled.div`
+const StyledMap = styled.div<{ $isLoading: boolean }>`
   width: 100%;
   height: 100%;
+  min-height: 400px; // 최소 높이 설정
   object-fit: cover;
   ${fillAvailable}
+
+  visibility: ${(props) => (props.$isLoading ? 'hidden' : 'visible')}; // 추가
 `;
 
 const StyledPlayIcon = styled(PlayIcon)`
