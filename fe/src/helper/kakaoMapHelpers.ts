@@ -1,3 +1,5 @@
+import { message } from 'antd';
+
 import { defaultShadow } from '@/components/atoms/Button';
 import { DEFAULT_MAP_POSITION } from '@/constants/map';
 import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
@@ -233,35 +235,85 @@ export const loadKakaoMapScript = (): Promise<void> => {
 };
 
 /** 현재 위치 가져오기 */
+// export const getcurrentLocation = (): Promise<PositionType> => {
+//   return new Promise((resolve) => {
+//     // console.log('🌍 위치 정보 요청 시작');
+
+//     if (!('geolocation' in navigator)) {
+//       resolve(DEFAULT_MAP_POSITION);
+//       return;
+//     }
+
+//     const options = {
+//       enableHighAccuracy: true,
+//       timeout: 10000,
+//       maximumAge: 0,
+//     };
+
+//     navigator.geolocation.getCurrentPosition(
+//       (position) => {
+//         // console.log('🌍 위치 정보 받기 성공');
+//         resolve([position.coords.latitude, position.coords.longitude]);
+//       },
+//       (error) => {
+//         console.error('🌍 위치 정보 받기 실패:', error.message);
+//         console.error('에러 코드:', error.code);
+//         // 1: PERMISSION_DENIED
+//         // 2: POSITION_UNAVAILABLE
+//         // 3: TIMEOUT
+//         resolve(DEFAULT_MAP_POSITION); // 에러 발생 시 기본 위치 반환
+//       },
+//       options
+//     );
+//   });
+// };
+
 export const getcurrentLocation = (): Promise<PositionType> => {
   return new Promise((resolve) => {
-    // console.log('🌍 위치 정보 요청 시작');
-
     if (!('geolocation' in navigator)) {
+      console.error('🌍 Geolocation not supported');
       resolve(DEFAULT_MAP_POSITION);
       return;
     }
 
-    const options = {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0,
+    // 재시도 로직 추가
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    const tryGetPosition = () => {
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000, // 타임아웃 시간 줄임
+        maximumAge: 0,
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log('🌍 위치 정보 받기 성공');
+          resolve([position.coords.latitude, position.coords.longitude]);
+        },
+        (error) => {
+          const errorMsg = `🌍 위치 정보 시도 ${retryCount + 1}/${maxRetries} 실패: ${error.message}, errorCode:${error.code}`;
+          console.error(errorMsg);
+          message.error(errorMsg);
+
+          if (retryCount < maxRetries - 1) {
+            retryCount++;
+            const retryMsg = `🌍 재시도 중... (${retryCount}/${maxRetries})`;
+            console.log(retryMsg);
+            message.error(errorMsg);
+            setTimeout(tryGetPosition, 1000); // 1초 후 재시도
+          } else {
+            const errorMsg2 = '🌍 최대 재시도 횟수 초과, 기본 위치 사용';
+            console.log(errorMsg2);
+            message.error(errorMsg2);
+            resolve(DEFAULT_MAP_POSITION);
+          }
+        },
+        options
+      );
     };
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        // console.log('🌍 위치 정보 받기 성공');
-        resolve([position.coords.latitude, position.coords.longitude]);
-      },
-      (error) => {
-        console.error('🌍 위치 정보 받기 실패:', error.message);
-        console.error('에러 코드:', error.code);
-        // 1: PERMISSION_DENIED
-        // 2: POSITION_UNAVAILABLE
-        // 3: TIMEOUT
-        resolve(DEFAULT_MAP_POSITION); // 에러 발생 시 기본 위치 반환
-      },
-      options
-    );
+    tryGetPosition();
   });
 };
