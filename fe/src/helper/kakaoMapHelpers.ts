@@ -244,7 +244,7 @@ export const getcurrentLocation = (): Promise<PositionType> => {
 
     const options = {
       enableHighAccuracy: true,
-      timeout: 5000,
+      timeout: 10000,
       maximumAge: 0,
     };
 
@@ -254,7 +254,11 @@ export const getcurrentLocation = (): Promise<PositionType> => {
         resolve([position.coords.latitude, position.coords.longitude]);
       },
       (error) => {
-        console.log('🌍 위치 정보 받기 실패:', error.message);
+        console.error('🌍 위치 정보 받기 실패:', error.message);
+        console.error('에러 코드:', error.code);
+        // 1: PERMISSION_DENIED
+        // 2: POSITION_UNAVAILABLE
+        // 3: TIMEOUT
         resolve(DEFAULT_MAP_POSITION); // 에러 발생 시 기본 위치 반환
       },
       options
