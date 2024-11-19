@@ -235,30 +235,29 @@ export const loadKakaoMapScript = (): Promise<void> => {
 /** 현재 위치 가져오기 */
 export const getcurrentLocation = (): Promise<PositionType> => {
   return new Promise((resolve) => {
+    // console.log('🌍 위치 정보 요청 시작');
+
     if (!('geolocation' in navigator)) {
       resolve(DEFAULT_MAP_POSITION);
       return;
     }
 
-    navigator.geolocation.watchPosition(
-      ({ coords }) => {
-        if (!coords) {
-          resolve(DEFAULT_MAP_POSITION);
-          return;
-        }
-        const latitude = coords.latitude;
-        const longitude = coords.longitude;
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
 
-        if (!(latitude && longitude)) {
-          resolve(DEFAULT_MAP_POSITION);
-          return;
-        }
-        resolve([latitude, longitude]);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // console.log('🌍 위치 정보 받기 성공');
+        resolve([position.coords.latitude, position.coords.longitude]);
       },
       (error) => {
-        console.error(error);
+        console.log('🌍 위치 정보 받기 실패:', error.message);
         resolve(DEFAULT_MAP_POSITION); // 에러 발생 시 기본 위치 반환
-      }
+      },
+      options
     );
   });
 };
