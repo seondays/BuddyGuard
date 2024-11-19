@@ -154,33 +154,8 @@ export default function GoWalk() {
   const selectBuddy: CheckboxChangeHandler = (selectId: number, isSelect) =>
     setSelectedBuddys((prev) => (isSelect ? [...prev, selectId] : prev.filter((buddyId) => buddyId !== selectId)));
 
-  const handleLocalStorage = () => {
-    const isPetStorage = localStorage.getItem('petsStorage');
-    const isAccessToken = localStorage.getItem('accessToken');
-    const petsStorage =
-      '{"state":{"petsInfo":[{"userId":3,"petId":54,"petName":"우디","profileImage":"none"},{"userId":3,"petId":55,"petName":"렉스","profileImage":"none"}],"selectedBuddy":{"userId":3,"petId":54,"petName":"우디","profileImage":"none"}},"version":0}';
-    const accessToken =
-      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMsInJvbGUiOiJST0xFX1VTRVIiLCJ0b2tlblR5cGUiOiJBQ0NFU1MiLCJpYXQiOjE3MzE1NzExNTcsImV4cCI6NjE3MzE1NzExNTd9.e4a7VaULNJY475Le_DnYflT7KLITHQAlOP3VP4AzQL0';
-    if (!isPetStorage) {
-      localStorage.setItem('petsStorage', petsStorage);
-      message.warning('PetStorage has been set!');
-    }
-    if (!isAccessToken) {
-      localStorage.setItem('accessToken', accessToken);
-      message.warning('AccessToken has been set!');
-    }
-
-    if (isPetStorage && isAccessToken) {
-      message.warning('이미 둘다 있슴다!');
-    }
-  };
-
   return (
     <StyledWalkWrapper>
-      <button id="setToken" onClick={handleLocalStorage} style={{ zIndex: 9999999, position: 'absolute', top: 0 }}>
-        {' '}
-        로컬스토리지 셋팅
-      </button>
       {isStarted === 'ready' && <StyledBlockLayer />}
       {isStarted === 'ready' && <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />}
       {isStarted === 'start' && (
