@@ -58,9 +58,52 @@ export default function GoWalk() {
   const [buddyList, setBuddyList] = useState<BuddysType[]>([{ id: 0, img: '', name: '' }]);
   const [isTargetClicked, setIsTargetClicked] = useState(false);
   const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
-  const [isMapLoading, setIsMapLoading] = useState(true);
 
   const navigate = useNavigate();
+
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
+
+  // 디버깅용 코드를 useEffect 안으로 이동
+  useEffect(() => {
+    let listenerCount = 0;
+    const originalWatchPosition = navigator.geolocation.watchPosition;
+    const originalGetCurrentPosition = navigator.geolocation.getCurrentPosition;
+
+    // watchPosition 모니터링
+    navigator.geolocation.watchPosition = function (...args) {
+      try {
+        listenerCount++;
+        const log = `watchPosition count: ${listenerCount}`;
+        console.log(log);
+        setDebugLogs((prev) => [...prev, log].slice(-5));
+        return originalWatchPosition.apply(this, args);
+      } catch (error) {
+        console.error('watchPosition error:', error);
+        return originalWatchPosition.apply(this, args);
+      }
+    };
+
+    // getCurrentPosition 모니터링
+    navigator.geolocation.getCurrentPosition = function (...args) {
+      try {
+        const timestamp = new Date().toLocaleTimeString();
+        const log = `getCurrentPosition (${timestamp})`;
+        console.log(log);
+        setDebugLogs((prev) => [...prev, log].slice(-5));
+        return originalGetCurrentPosition.apply(this, args);
+      } catch (error) {
+        console.error('getCurrentPosition error:', error);
+        return originalGetCurrentPosition.apply(this, args);
+      }
+    };
+
+    // cleanup
+    return () => {
+      navigator.geolocation.watchPosition = originalWatchPosition;
+      navigator.geolocation.getCurrentPosition = originalGetCurrentPosition;
+    };
+  }, []); // 컴포넌트 마운트 시에만 실행
+
   useEffect(() => {
     const petsStorage = localStorage.getItem('petsStorage');
     if (!petsStorage) return;
@@ -132,48 +175,48 @@ export default function GoWalk() {
     }
   };
 
-  useEffect(() => {
-    if (map) {
-      setIsMapLoading(false);
-    }
-  }, [map]);
-
   return (
-    <>
-      <StyledWalkWrapper>
-        <button id="setToken" onClick={handleLocalStorage} style={{ zIndex: 9999999, position: 'absolute', top: 0 }}>
-          {' '}
-          로컬스토리지 셋팅
-        </button>
-        {isStarted === 'ready' && <StyledBlockLayer />}
-        {isStarted === 'ready' && <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />}
-        {isStarted === 'start' && (
-          <StyledTargetIcon onClick={() => setIsTargetClicked((prev) => !prev)}>
-            <img src={targetIcon} />
-          </StyledTargetIcon>
-        )}
-        <StyledMap ref={mapRef} $isLoading={isMapLoading} />
-        <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* 캔버스는 숨김 */}
-        {isStarted === 'start' && (
-          <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} timeRef={timeRef} />
-        )}
-        {isStarted === 'ready' && (
-          <WalkBuddySelectBar buddys={buddyList} selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
-        )}
-        {isStarted === 'done' && (
-          <WalkModal
-            formTitle={'산책 완료'}
-            timeRef={timeRef}
-            linePathRef={linePathRef}
-            selectedBuddys={selectedBuddys}
-            buddyList={buddyList}
-            canvasRef={canvasRef}
-            changedPosition={changedPosition}
-            map={map}
-          />
-        )}
-      </StyledWalkWrapper>
-    </>
+    <StyledWalkWrapper>
+      <button id="setToken" onClick={handleLocalStorage} style={{ zIndex: 9999999, position: 'absolute', top: 0 }}>
+        {' '}
+        로컬스토리지 셋팅
+      </button>
+      {isStarted === 'ready' && <StyledBlockLayer />}
+      {isStarted === 'ready' && <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />}
+      {isStarted === 'start' && (
+        <StyledTargetIcon onClick={() => setIsTargetClicked((prev) => !prev)}>
+          <img src={targetIcon} />
+        </StyledTargetIcon>
+      )}
+      <StyledMap ref={mapRef} />
+      <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* 캔버스는 숨김 */}
+      {isStarted === 'start' && (
+        <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} timeRef={timeRef} />
+      )}
+      {isStarted === 'ready' && (
+        <WalkBuddySelectBar buddys={buddyList} selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
+      )}
+      {isStarted === 'done' && (
+        <WalkModal
+          formTitle={'산책 완료'}
+          timeRef={timeRef}
+          linePathRef={linePathRef}
+          selectedBuddys={selectedBuddys}
+          buddyList={buddyList}
+          canvasRef={canvasRef}
+          changedPosition={changedPosition}
+          map={map}
+        />
+      )}
+      <StyledDebugPanel>
+        <StyledDebugTitle>Debug Logs</StyledDebugTitle>
+        <StyledDebugContent>
+          {debugLogs.map((log, index) => (
+            <div key={index}>{log}</div>
+          ))}
+        </StyledDebugContent>
+      </StyledDebugPanel>
+    </StyledWalkWrapper>
   );
 }
 
@@ -208,14 +251,12 @@ const StyledBlockLayer = styled.div`
   min-height: 100%;
 `;
 
-const StyledMap = styled.div<{ $isLoading: boolean }>`
+const StyledMap = styled.div`
   width: 100%;
   height: 100%;
   min-height: 400px; // 최소 높이 설정
   object-fit: cover;
   ${fillAvailable}
-
-  visibility: ${(props) => (props.$isLoading ? 'hidden' : 'visible')}; // 추가
 `;
 
 const StyledPlayIcon = styled(PlayIcon)`
@@ -231,4 +272,53 @@ export const StyledWalkWrapper = styled.div`
   width: 100%;
   height: 100%;
   ${fillAvailable}
+`;
+
+const StyledDebugPanel = styled.div`
+  position: absolute;
+  bottom: 100px;
+  right: 10px;
+  top: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 9999;
+  max-height: 150px;
+  width: 60%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+  & * {
+    color: #fff;
+  }
+`;
+
+const StyledDebugTitle = styled.div`
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 3px;
+`;
+
+const StyledDebugContent = styled.div`
+  font-size: 11px;
+  overflow-y: auto;
+  max-height: 120px;
+
+  & > div {
+    margin: 2px 0;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+  }
 `;
