@@ -19,7 +19,6 @@ export function useLoadUserInfo() {
 export function useLoadPetsInfo() {
   const { data: petsData, isSuccess: isPetsInfoSuccess } = usePetsInfoQuery();
   const { setPetsInfo, setSelectedBuddy } = usePetStore();
-  console.log(petsData);
   useEffect(() => {
     if (isPetsInfoSuccess && petsData) {
       setPetsInfo(petsData);

@@ -16,6 +16,7 @@ import Notification from '@/components/pages/Notification';
 import Schedule from '@/components/pages/Schedule';
 import GoWalk from '@/components/pages/walk/GoWalk';
 import Walk from '@/components/pages/walk/Walk';
+import WalkRefactor from '@/components/pages/walk/WalkRefactor';
 import Weight from '@/components/pages/Weight';
 import ResponsiveLayout from '@/components/templates/ResponsiveLayout';
 import RequireAuth from '@/routes/requireAuth';
@@ -30,11 +31,31 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: '/menu/walkRefactor',
+    element: (
+      <RequireAuth>
+        <ResponsiveLayout>
+          <WalkRefactor />
+        </ResponsiveLayout>
+      </RequireAuth>
+    ),
+  },
+  {
     path: '/menu/walk',
     element: (
       <RequireAuth>
         <ResponsiveLayout>
           <Walk />
+        </ResponsiveLayout>
+      </RequireAuth>
+    ),
+  },
+  {
+    path: '/menu/walk/go',
+    element: (
+      <RequireAuth>
+        <ResponsiveLayout>
+          <GoWalk />
         </ResponsiveLayout>
       </RequireAuth>
     ),
@@ -97,16 +118,7 @@ export const router = createBrowserRouter([
       </ResponsiveLayout>
     ),
   },
-  {
-    path: '/menu/walk/go',
-    element: (
-      <RequireAuth>
-        <ResponsiveLayout>
-          <GoWalk />
-        </ResponsiveLayout>
-      </RequireAuth>
-    ),
-  },
+
   {
     path: '/menu/schedule',
     element: (
@@ -143,16 +155,6 @@ export const router = createBrowserRouter([
       <RequireAuth>
         <ResponsiveLayout>
           <AddVaccination />
-        </ResponsiveLayout>
-      </RequireAuth>
-    ),
-  },
-  {
-    path: '/menu/walk',
-    element: (
-      <RequireAuth>
-        <ResponsiveLayout>
-          <Walk />
         </ResponsiveLayout>
       </RequireAuth>
     ),

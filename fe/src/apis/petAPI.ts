@@ -6,7 +6,6 @@ const PET_BASE_URL = '/pet';
 export const getPetsInfo = async () => {
   try {
     const response = await apiClient.get(`${PET_BASE_URL}`);
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -27,7 +26,6 @@ export const getPetInfo = async (petId: number) => {
 // 버디 추가하기
 export const createPet = async (formData: FormData) => {
   try {
-    console.log(formData);
     const response = await apiClient.post(`${PET_BASE_URL}`, formData, {
       headers: {
         'Content-Type': 'application/json',

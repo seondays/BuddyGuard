@@ -295,19 +295,29 @@ export const useKakaoMap = ({
       handleMapMoveAndStateUpdate();
   }, [isTargetClicked, positions, changedPosition, map, walkStatus, handleMapMoveAndStateUpdate, setIsTargetClicked]);
 
-  // 최초에만 Kakao Map을 초기화 (초기 한 번만 실행)
   useEffect(() => {
     const initMap = async () => {
+      console.log('initMap start');
       try {
-        // 스크립트 로드
+        console.log('1. Before loadKakaoMapScript');
+        //1. 스크립트 로드
         await loadKakaoMapScript();
+        console.log('2. After loadKakaoMapScript');
 
-        // 위치 가져오기
+        console.log('3. Requesting location');
+        // 2. 위치 권한 상태 확인
+        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+        console.log('4. Location permission status:', permissionStatus.state);
+
+        // 3. 위치 가져오기
         const currentLocation = await getcurrentLocation();
+        console.log('5. Location received:', currentLocation);
+
+        // 4. 가져온 위치 셋팅
         setPositions((prev) => ({ ...prev, current: currentLocation }));
 
-        // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
+
         window.kakao.maps.load(() => {
           const mapInstance = createMap(currentLocation, mapRef, setChangedPosition);
           const newMarker = createMarker(currentLocation, mapInstance);
@@ -315,20 +325,67 @@ export const useKakaoMap = ({
           markerRef.current = newMarker;
         });
       } catch (error) {
-        console.error('Map initialization error', error);
+        console.error('Map initialization error:', error);
       }
     };
-
-    // 최초 실행
     if (!map) initMap();
 
     return () => {
-      if (map)
+      // 필수적인 cleanup만 남기기
+      if (map) {
+        // 이벤트 리스너 제거
         kakao.maps.event.removeListener(map, 'center_changed', () =>
           centerChangedEventListener(map, setChangedPosition)
         );
+        console.log('🧹 클린업1/9: 이벤트리스너 제거');
+
+        // 마커 제거
+        if (markerRef.current) {
+          markerRef.current.setMap(null);
+          markerRef.current = null;
+          console.log('🧹 클린업2/9: 마커 제거');
+        }
+
+        // 메모리 누수 방지를 위한 map 인스턴스 제거
+        // setMap(null);
+        // console.log('🧹 클린업3/9: 맵 인스턴스 제거');
+
+        // 오버레이 제거
+        if (overlayRef.current) {
+          overlayRef.current.setMap(null);
+          overlayRef.current = null;
+        }
+        console.log('🧹 클린업3,4/9: 오버레이 제거');
+
+        // 지도 컨테이너 초기화
+        if (mapRef.current) {
+          mapRef.current.innerHTML = '';
+        }
+        console.log('🧹 클린업5/9: 지도 컨테이너 초기화 제거');
+        // 위치 추적 중지
+        if (watchID.current !== null) {
+          navigator.geolocation.clearWatch(watchID.current);
+          watchID.current = null;
+        }
+        console.log('🧹 클린업6/9: 위치 추적 중지');
+
+        // polyline 제거
+        if (linePathRef.current.length > 0) {
+          linePathRef.current = [];
+        }
+        console.log('🧹 클린업7/9: 폴리라인 제거');
+        // 상태 초기화
+        setPositions({ previous: null, current: DEFAULT_MAP_POSITION });
+        setChangedPosition(null);
+        console.log('🧹 클린업8/9: 상태 제거');
+
+        // 지도 인스턴스 제거
+        map.relayout();
+        setMap(null);
+        console.log('🧹 클린업9/9: 맵 인스턴스 제거');
+      }
     };
-  }, [mapRef, map, selectedBuddys, buddyList]);
+  }, [mapRef, map]);
 
   useEffect(() => {
     const handleResize = () => {
