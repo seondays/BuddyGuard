@@ -48,12 +48,16 @@ export const setOverlay = ({
 
 /** 전체경로가 보이도록 지도범위 재설정 */
 export const adjustMapBounds = (map: kakao.maps.Map, linePath: kakao.maps.LatLng[]) => {
-  const bounds = new kakao.maps.LatLngBounds();
-  linePath.forEach((latLng) => {
-    bounds.extend(latLng);
-  });
+  try {
+    const bounds = new kakao.maps.LatLngBounds();
+    linePath.forEach((latLng) => {
+      bounds.extend(latLng);
+    });
 
-  map.setBounds(bounds);
+    map.setBounds(bounds);
+  } catch (error) {
+    console.error('전체경로가 보이도록 지도범위 재설정 error:', error);
+  }
 };
 
 /** Polyline 지도에 추가 */
