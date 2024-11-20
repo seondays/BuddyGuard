@@ -193,10 +193,10 @@ export const useKakaoMap = ({
   // 산책 종료 후 경로 그리고 이미지 저장
   useEffect(() => {
     const donelogic = async () => {
-      if (!canvasRef.current) return;
-      if (!(changedPosition && walkStatus === 'stop' && mapRef.current)) return;
+      console.log('🎨 2. 이미지 그리기 시작');
 
       const canvas = canvasRef.current;
+      if (!canvas) return;
       const ctx = initCanvas(canvas, canvasWidth, canvasHeight);
       if (!ctx) return;
       const filledCtx = fillBackground(ctx, canvasWidth, canvasHeight);
@@ -209,40 +209,33 @@ export const useKakaoMap = ({
 
       if (isDrawn) convertImageAndSave(canvas, setCapturedImage);
 
-      // const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
-      // console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
-      // const endDate = getCurrentDate({ isDay: true, isTime: false });
-      // console.log(`🏃‍♀️💦 End Date: ${endDate}`);
-
       await delay(1500);
+      console.log('🎨 5. 팝업 띄울 준비');
       setIsStarted('done');
-
-      // console.log('map Level : ', map?.getLevel());
-      // console.log('center Position : ', changedPosition);
-      // console.log('center Position.getLat() : ', changedPosition[0]);
-      // console.log('center Position.getLng() : ', changedPosition[1]);
-      // const pathData = linePathRef.current.map((latLng) => ({
-      //   lat: latLng.getLat(),
-      //   lng: latLng.getLng(),
-      // }));
-      // console.log('pathData : ', pathData);
     };
 
     // 산책 종료 후 경로 그리고 이미지 저장
-    donelogic();
-  }, [canvasPaddingX, canvasPaddingY, canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
+    if (walkStatus === 'stop' && mapRef.current && canvasRef.current && changedPosition) {
+      console.log('🎨 1. 산책 종료 후 경로 그리고 이미지 저장');
+      donelogic();
+    }
+  }, [canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
 
   // 종료 버튼
   useEffect(() => {
     if (walkStatus === 'stop' && map && linePathRef.current && overlayRef.current) {
+      console.log('👽 1. 종료 버튼 누름');
+
+      console.log('👽 2. 전체경로가 보이도록 지도범위 재설정');
       adjustMapBounds(map, linePathRef.current);
 
-      // 지도 범위가 설정된 후 중심 좌표 및 레벨 저장
       const newCenter = map.getCenter();
-
+      console.log('👽 3. 지도 범위가 설정된 후 중심 좌표 및 레벨 저장');
+      console.log('newCenter:', newCenter);
+      map.relayout();
       setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
 
-      overlayRef.current.setMap(null);
+      if (overlayRef.current) overlayRef.current.setMap(null);
 
       if (watchID.current !== null) stopWatchingPosition();
     }
