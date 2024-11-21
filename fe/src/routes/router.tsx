@@ -16,7 +16,6 @@ import Notification from '@/components/pages/Notification';
 import Schedule from '@/components/pages/Schedule';
 import GoWalk from '@/components/pages/walk/GoWalk';
 import Walk from '@/components/pages/walk/Walk';
-import WalkRefactor from '@/components/pages/walk/WalkRefactor';
 import Weight from '@/components/pages/Weight';
 import ResponsiveLayout from '@/components/templates/ResponsiveLayout';
 import RequireAuth from '@/routes/requireAuth';
@@ -28,16 +27,6 @@ export const router = createBrowserRouter([
       <ResponsiveLayout>
         <Home />
       </ResponsiveLayout>
-    ),
-  },
-  {
-    path: '/menu/walkRefactor',
-    element: (
-      <RequireAuth>
-        <ResponsiveLayout>
-          <WalkRefactor />
-        </ResponsiveLayout>
-      </RequireAuth>
     ),
   },
   {
