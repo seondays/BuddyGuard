@@ -101,14 +101,25 @@ export const useKakaoMap = ({
         const updatedPosition: PositionType = [position.coords.latitude, position.coords.longitude];
         const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
+        console.log('📍 Position Update - newLatLng:', newLatLng);
+        console.log('📍 Current linePath length:', linePathRef.current.length);
+
+        // 첫 위치인 경우 무조건 추가
+        if (linePathRef.current.length === 0) {
+          console.log('📍 Adding first position to empty linePath');
+          linePathRef.current.push(newLatLng);
+        }
+
         // 이전 위치와 거리 계산
         const prevPosition = positions.current;
+        console.log('이전 위치:', prevPosition);
+
         const distance = prevPosition
           ? calculateDistance(prevPosition[0], prevPosition[1], updatedPosition[0], updatedPosition[1]) * 1000
           : null;
 
         // 위치 변화가 거리 임계 값 이상일 경우에만 업데이트
-        if (!distance || distance >= THRESHOLD_METER) {
+        if (distance && distance >= THRESHOLD_METER) {
           // console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
 
           // linePath에 좌표 추가
