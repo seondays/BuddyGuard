@@ -203,6 +203,7 @@ export const useKakaoMap = ({
       const gridedCtx = drawGrid(filledCtx, canvasWidth, canvasHeight, canvasGridGab);
 
       const linePath = linePathRef.current;
+      console.log('linePath: ', linePath);
       if (!(linePath && linePath.length > 0)) return;
 
       const isDrawn = drawPath(gridedCtx, linePath, canvasWidth, canvasHeight, canvasPaddingX, canvasPaddingY);
@@ -223,22 +224,40 @@ export const useKakaoMap = ({
 
   // 종료 버튼
   useEffect(() => {
-    if (walkStatus === 'stop' && map && linePathRef.current && overlayRef.current) {
-      console.log('👽 1. 종료 버튼 누름');
+    if (!(walkStatus === 'stop' && map && linePathRef.current && overlayRef.current)) return;
+    console.log('👽 1. 종료 버튼 누름');
 
-      console.log('👽 2. 전체경로가 보이도록 지도범위 재설정');
-      adjustMapBounds(map, linePathRef.current);
+    // 오버레이 제거
+    if (overlayRef.current) {
+      console.log('👽 오버레이 제거');
+      overlayRef.current.setMap(null);
+    }
+    // 위치 추적 중지
+    if (watchID.current !== null) {
+      console.log('👽 위치추적 중지');
+      stopWatchingPosition();
+    }
+    // adjustMapBounds(map, linePathRef.current); //여기서문제발생같음
+    // const newCenter = map.getCenter(); // 여기서 NaN이 나오는 이유?
 
+    // bounds_changed 이벤트 리스너 추가
+    const handleBoundsChanged = () => {
+      // 지도가 실제로 업데이트된 후에 실행됨
       const newCenter = map.getCenter();
-      console.log('👽 3. 지도 범위가 설정된 후 중심 좌표 및 레벨 저장');
-      console.log('newCenter:', newCenter);
-      map.relayout();
+      console.log('👽 3. 지도 범위가 설정된 후 중심 좌표 및 레벨 저장:', newCenter);
       setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
 
-      if (overlayRef.current) overlayRef.current.setMap(null);
+      // 실행 후 리스너 제거 (한 번만 실행되도록)
+      kakao.maps.event.removeListener(map, 'bounds_changed', handleBoundsChanged);
+    };
 
-      if (watchID.current !== null) stopWatchingPosition();
-    }
+    // 리스너 등록
+    console.log('👽 2. bounds_changed 이벤트 리스너 추가');
+    kakao.maps.event.addListener(map, 'bounds_changed', handleBoundsChanged);
+
+    adjustMapBounds(map, linePathRef.current);
+
+    map.relayout();
   }, [map, walkStatus, stopWatchingPosition]);
 
   // 시작, 일시중지, 재시작

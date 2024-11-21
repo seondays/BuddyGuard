@@ -11,21 +11,26 @@ export const initCanvas = (canvas: HTMLCanvasElement, widthDefault: number, heig
 
 /** canvas 배경 격자무늬 그리기 */
 export const drawGrid = (ctx: CanvasRenderingContext2D, width: number, height: number, gab: number) => {
-  ctx.strokeStyle = '#cccccc';
-  ctx.lineWidth = 0.5;
-  for (let x = 0; x <= width; x += gab) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, height);
-    ctx.stroke();
+  try {
+    ctx.strokeStyle = '#cccccc';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x <= width; x += gab) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= height; y += gab) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+    return ctx;
+  } catch (error) {
+    console.error('drawGrid error :', error);
+    return ctx;
   }
-  for (let y = 0; y <= height; y += gab) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(width, y);
-    ctx.stroke();
-  }
-  return ctx;
 };
 
 /** canvas 배경 채우기 */
