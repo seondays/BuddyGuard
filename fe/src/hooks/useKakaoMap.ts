@@ -101,18 +101,13 @@ export const useKakaoMap = ({
         const updatedPosition: PositionType = [position.coords.latitude, position.coords.longitude];
         const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
-        console.log('📍 Position Update - newLatLng:', newLatLng);
-        console.log('📍 Current linePath length:', linePathRef.current.length);
-
         // 첫 위치인 경우 무조건 추가
         if (linePathRef.current.length === 0) {
-          console.log('📍 Adding first position to empty linePath');
           linePathRef.current.push(newLatLng);
         }
 
         // 이전 위치와 거리 계산
         const prevPosition = positions.current;
-        console.log('이전 위치:', prevPosition);
 
         const distance = prevPosition
           ? calculateDistance(prevPosition[0], prevPosition[1], updatedPosition[0], updatedPosition[1]) * 1000
@@ -120,8 +115,6 @@ export const useKakaoMap = ({
 
         // 위치 변화가 거리 임계 값 이상일 경우에만 업데이트
         if (distance && distance >= THRESHOLD_METER) {
-          // console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
-
           // linePath에 좌표 추가
           linePathRef.current.push(newLatLng);
 
@@ -204,8 +197,6 @@ export const useKakaoMap = ({
   // 산책 종료 후 경로 그리고 이미지 저장
   useEffect(() => {
     const donelogic = async () => {
-      console.log('🎨 2. 이미지 그리기 시작');
-
       const canvas = canvasRef.current;
       if (!canvas) {
         console.error('Canvas not found');
@@ -222,7 +213,6 @@ export const useKakaoMap = ({
       const gridedCtx = drawGrid(filledCtx, canvasWidth, canvasHeight, canvasGridGab);
 
       const linePath = linePathRef.current;
-      console.log('linePath: ', linePath);
 
       if (!(linePath && linePath.length > 0)) {
         console.error('No path to draw');
@@ -232,20 +222,17 @@ export const useKakaoMap = ({
       const isDrawn = drawPath(gridedCtx, linePath, canvasWidth, canvasHeight, canvasPaddingX, canvasPaddingY);
 
       if (isDrawn) {
-        console.log('Path drawn successfully');
         convertImageAndSave(canvas, setCapturedImage);
       } else {
-        console.log('Path drawn fail');
+        console.error('Path drawn fail');
       }
 
       await delay(1500);
-      console.log('🎨 5. 팝업 띄울 준비');
       setIsStarted('done');
     };
 
     // 산책 종료 후 경로 그리고 이미지 저장
     if (walkStatus === 'stop' && mapRef.current && canvasRef.current && changedPosition) {
-      console.log('🎨 1. 산책 종료 후 경로 그리고 이미지 저장');
       donelogic();
     }
   }, [canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
@@ -253,26 +240,24 @@ export const useKakaoMap = ({
   // 종료 버튼
   useEffect(() => {
     if (!(walkStatus === 'stop' && map && linePathRef.current && overlayRef.current)) return;
-    console.log('👽 1. 종료 버튼 누름');
+    // console.log('👽 1. 종료 버튼 누름');
 
     // 오버레이 제거
     if (overlayRef.current) {
-      console.log('👽 오버레이 제거');
+      // console.log('👽 오버레이 제거');
       overlayRef.current.setMap(null);
     }
     // 위치 추적 중지
     if (watchID.current !== null) {
-      console.log('👽 위치추적 중지');
+      // console.log('👽 위치추적 중지');
       stopWatchingPosition();
     }
-    // adjustMapBounds(map, linePathRef.current); //여기서문제발생같음
-    // const newCenter = map.getCenter(); // 여기서 NaN이 나오는 이유?
 
     // bounds_changed 이벤트 리스너 추가
     const handleBoundsChanged = () => {
       // 지도가 실제로 업데이트된 후에 실행됨
       const newCenter = map.getCenter();
-      console.log('👽 3. 지도 범위가 설정된 후 중심 좌표 및 레벨 저장:', newCenter);
+      // console.log('👽 3. 지도 범위가 설정된 후 중심 좌표 및 레벨 저장:', newCenter);
       setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
 
       // 실행 후 리스너 제거 (한 번만 실행되도록)
@@ -280,7 +265,7 @@ export const useKakaoMap = ({
     };
 
     // 리스너 등록
-    console.log('👽 2. bounds_changed 이벤트 리스너 추가');
+    // console.log('👽 2. bounds_changed 이벤트 리스너 추가');
     kakao.maps.event.addListener(map, 'bounds_changed', handleBoundsChanged);
 
     adjustMapBounds(map, linePathRef.current);
@@ -337,21 +322,16 @@ export const useKakaoMap = ({
 
   useEffect(() => {
     const initMap = async () => {
-      console.log('initMap start');
       try {
-        console.log('1. Before loadKakaoMapScript');
         //1. 스크립트 로드
         await loadKakaoMapScript();
-        console.log('2. After loadKakaoMapScript');
 
-        console.log('3. Requesting location');
         // 2. 위치 권한 상태 확인
-        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
-        console.log('4. Location permission status:', permissionStatus.state);
+        // const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+        // console.log('4. Location permission status:', permissionStatus.state);
 
         // 3. 위치 가져오기
         const currentLocation = await getcurrentLocation();
-        console.log('5. Location received:', currentLocation);
 
         // 4. 가져온 위치 셋팅
         setPositions((prev) => ({ ...prev, current: currentLocation }));
@@ -377,52 +357,40 @@ export const useKakaoMap = ({
         kakao.maps.event.removeListener(map, 'center_changed', () =>
           centerChangedEventListener(map, setChangedPosition)
         );
-        console.log('🧹 클린업1/9: 이벤트리스너 제거');
 
         // 마커 제거
         if (markerRef.current) {
           markerRef.current.setMap(null);
           markerRef.current = null;
-          console.log('🧹 클린업2/9: 마커 제거');
         }
-
-        // 메모리 누수 방지를 위한 map 인스턴스 제거
-        // setMap(null);
-        // console.log('🧹 클린업3/9: 맵 인스턴스 제거');
 
         // 오버레이 제거
         if (overlayRef.current) {
           overlayRef.current.setMap(null);
           overlayRef.current = null;
         }
-        console.log('🧹 클린업3,4/9: 오버레이 제거');
 
         // 지도 컨테이너 초기화
         if (mapRef.current) {
           mapRef.current.innerHTML = '';
         }
-        console.log('🧹 클린업5/9: 지도 컨테이너 초기화 제거');
         // 위치 추적 중지
         if (watchID.current !== null) {
           navigator.geolocation.clearWatch(watchID.current);
           watchID.current = null;
         }
-        console.log('🧹 클린업6/9: 위치 추적 중지');
 
         // polyline 제거
         if (linePathRef.current.length > 0) {
           linePathRef.current = [];
         }
-        console.log('🧹 클린업7/9: 폴리라인 제거');
         // 상태 초기화
         setPositions({ previous: null, current: DEFAULT_MAP_POSITION });
         setChangedPosition(null);
-        console.log('🧹 클린업8/9: 상태 제거');
 
         // 지도 인스턴스 제거
         map.relayout();
         setMap(null);
-        console.log('🧹 클린업9/9: 맵 인스턴스 제거');
       }
     };
   }, [mapRef, map]);

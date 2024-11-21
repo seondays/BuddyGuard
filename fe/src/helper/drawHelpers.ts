@@ -19,7 +19,6 @@ export const drawPath = (
   canvasPaddingY: number
 ) => {
   try {
-    console.log('🎨 3. 이미지에 경로 그리기');
     const { latMin, latMax, lngMin, lngMax } = calculateLatLng(path);
     if (!path || path.length === 0) return false; // 경로가 없으면 그리기를 실패
 
@@ -53,7 +52,6 @@ export const convertImageAndSave = (
   try {
     const dataUrl = canvas.toDataURL('image/png');
     setCapturedImage(dataUrl);
-    console.log('🎨 4. 이미지 변환 및 저장');
   } catch (error) {
     console.error('convertImageAndSave error:', error);
   }
