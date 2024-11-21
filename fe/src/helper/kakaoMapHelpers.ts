@@ -49,7 +49,6 @@ export const setOverlay = ({
 /** 전체경로가 보이도록 지도범위 재설정 */
 export const adjustMapBounds = (map: kakao.maps.Map, linePath: kakao.maps.LatLng[]) => {
   try {
-    console.log('👽 3. 전체경로가 보이도록 지도범위 재설정');
     const bounds = new kakao.maps.LatLngBounds();
     linePath.forEach((latLng) => {
       bounds.extend(latLng);
@@ -240,39 +239,6 @@ export const loadKakaoMapScript = (): Promise<void> => {
 };
 
 /** 현재 위치 가져오기 */
-// export const getcurrentLocation = (): Promise<PositionType> => {
-//   return new Promise((resolve) => {
-//     // console.log('🌍 위치 정보 요청 시작');
-
-//     if (!('geolocation' in navigator)) {
-//       resolve(DEFAULT_MAP_POSITION);
-//       return;
-//     }
-
-//     const options = {
-//       enableHighAccuracy: true,
-//       timeout: 10000,
-//       maximumAge: 0,
-//     };
-
-//     navigator.geolocation.getCurrentPosition(
-//       (position) => {
-//         // console.log('🌍 위치 정보 받기 성공');
-//         resolve([position.coords.latitude, position.coords.longitude]);
-//       },
-//       (error) => {
-//         console.error('🌍 위치 정보 받기 실패:', error.message);
-//         console.error('에러 코드:', error.code);
-//         // 1: PERMISSION_DENIED
-//         // 2: POSITION_UNAVAILABLE
-//         // 3: TIMEOUT
-//         resolve(DEFAULT_MAP_POSITION); // 에러 발생 시 기본 위치 반환
-//       },
-//       options
-//     );
-//   });
-// };
-
 export const getcurrentLocation = (): Promise<PositionType> => {
   return new Promise((resolve) => {
     if (!('geolocation' in navigator)) {
@@ -288,7 +254,7 @@ export const getcurrentLocation = (): Promise<PositionType> => {
     const tryGetPosition = () => {
       const options = {
         enableHighAccuracy: true,
-        timeout: 5000, // 타임아웃 시간 줄임
+        timeout: 5000,
         maximumAge: 0,
       };
 
@@ -305,12 +271,12 @@ export const getcurrentLocation = (): Promise<PositionType> => {
           if (retryCount < maxRetries - 1) {
             retryCount++;
             const retryMsg = `🌍 재시도 중... (${retryCount}/${maxRetries})`;
-            console.log(retryMsg);
+            console.error(retryMsg);
             message.error(errorMsg);
             setTimeout(tryGetPosition, 1000); // 1초 후 재시도
           } else {
             const errorMsg2 = '🌍 최대 재시도 횟수 초과, 기본 위치 사용';
-            console.log(errorMsg2);
+            console.error(errorMsg2);
             message.error(errorMsg2);
             resolve(DEFAULT_MAP_POSITION);
           }

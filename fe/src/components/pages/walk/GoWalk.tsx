@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { fetchAccessToken } from '@/apis/authAPI';
 import PlayIcon from '@/components/icons/PlayIcon';
 import WalkBuddySelectBar, { BUDDY_SELECTBAR_HEIGHT } from '@/components/molecules/walk/WalkBuddySelectBar';
 import WalkSatusBar from '@/components/molecules/walk/WalkSatusBar';
@@ -60,49 +59,6 @@ export default function GoWalk() {
   const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
 
   const navigate = useNavigate();
-
-  const [debugLogs, setDebugLogs] = useState<string[]>([]);
-
-  // 디버깅용 코드를 useEffect 안으로 이동
-  useEffect(() => {
-    let listenerCount = 0;
-    const originalWatchPosition = navigator.geolocation.watchPosition;
-    const originalGetCurrentPosition = navigator.geolocation.getCurrentPosition;
-
-    // watchPosition 모니터링
-    navigator.geolocation.watchPosition = function (...args) {
-      try {
-        listenerCount++;
-        const log = `watchPosition count: ${listenerCount}`;
-        console.log(log);
-        setDebugLogs((prev) => [...prev, log].slice(-5));
-        return originalWatchPosition.apply(this, args);
-      } catch (error) {
-        console.error('watchPosition error:', error);
-        return originalWatchPosition.apply(this, args);
-      }
-    };
-
-    // getCurrentPosition 모니터링
-    navigator.geolocation.getCurrentPosition = function (...args) {
-      try {
-        const timestamp = new Date().toLocaleTimeString();
-        const log = `getCurrentPosition (${timestamp})`;
-        console.log(log);
-        setDebugLogs((prev) => [...prev, log].slice(-5));
-        return originalGetCurrentPosition.apply(this, args);
-      } catch (error) {
-        console.error('getCurrentPosition error:', error);
-        return originalGetCurrentPosition.apply(this, args);
-      }
-    };
-
-    // cleanup
-    return () => {
-      navigator.geolocation.watchPosition = originalWatchPosition;
-      navigator.geolocation.getCurrentPosition = originalGetCurrentPosition;
-    };
-  }, []); // 컴포넌트 마운트 시에만 실행
 
   useEffect(() => {
     const petsStorage = localStorage.getItem('petsStorage');
@@ -183,14 +139,6 @@ export default function GoWalk() {
           map={map}
         />
       )}
-      <StyledDebugPanel>
-        <StyledDebugTitle>Debug Logs</StyledDebugTitle>
-        <StyledDebugContent>
-          {debugLogs.map((log, index) => (
-            <div key={index}>{log}</div>
-          ))}
-        </StyledDebugContent>
-      </StyledDebugPanel>
     </StyledWalkWrapper>
   );
 }
@@ -247,53 +195,4 @@ export const StyledWalkWrapper = styled.div`
   width: 100%;
   height: 100%;
   ${fillAvailable}
-`;
-
-const StyledDebugPanel = styled.div`
-  position: absolute;
-  bottom: 100px;
-  right: 10px;
-  top: 0;
-  background: rgba(0, 0, 0, 0.7);
-  color: #fff;
-  padding: 10px;
-  border-radius: 5px;
-  z-index: 9999;
-  max-height: 150px;
-  width: 60%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-
-  & * {
-    color: #fff;
-  }
-`;
-
-const StyledDebugTitle = styled.div`
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 5px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  padding-bottom: 3px;
-`;
-
-const StyledDebugContent = styled.div`
-  font-size: 11px;
-  overflow-y: auto;
-  max-height: 120px;
-
-  & > div {
-    margin: 2px 0;
-    padding: 2px 5px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
-  }
 `;
