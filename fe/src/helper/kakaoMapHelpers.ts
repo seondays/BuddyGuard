@@ -49,6 +49,7 @@ export const setOverlay = ({
 /** 전체경로가 보이도록 지도범위 재설정 */
 export const adjustMapBounds = (map: kakao.maps.Map, linePath: kakao.maps.LatLng[]) => {
   try {
+    console.log('👽 3. 전체경로가 보이도록 지도범위 재설정');
     const bounds = new kakao.maps.LatLngBounds();
     linePath.forEach((latLng) => {
       bounds.extend(latLng);

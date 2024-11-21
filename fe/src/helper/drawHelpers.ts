@@ -41,6 +41,7 @@ export const drawPath = (
     return true;
   } catch (error) {
     console.error('drawpath:', error);
+    return false;
   }
 };
 
