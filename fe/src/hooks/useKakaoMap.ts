@@ -193,22 +193,39 @@ export const useKakaoMap = ({
   // 산책 종료 후 경로 그리고 이미지 저장
   useEffect(() => {
     const donelogic = async () => {
-      // console.log('🎨 2. 이미지 그리기 시작');
+      console.log('🎨 2. 이미지 그리기 시작');
 
-      // const canvas = canvasRef.current;
-      // if (!canvas) return;
-      // const ctx = initCanvas(canvas, canvasWidth, canvasHeight);
-      // if (!ctx) return;
-      // const filledCtx = fillBackground(ctx, canvasWidth, canvasHeight);
-      // const gridedCtx = drawGrid(filledCtx, canvasWidth, canvasHeight, canvasGridGab);
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        console.error('Canvas not found');
+        return;
+      }
 
-      // const linePath = linePathRef.current;
-      // console.log('linePath: ', linePath);
-      // if (!(linePath && linePath.length > 0)) return;
+      const ctx = initCanvas(canvas, canvasWidth, canvasHeight);
+      if (!ctx) {
+        console.error('Context not found');
+        return;
+      }
 
-      // const isDrawn = drawPath(gridedCtx, linePath, canvasWidth, canvasHeight, canvasPaddingX, canvasPaddingY);
+      const filledCtx = fillBackground(ctx, canvasWidth, canvasHeight);
+      const gridedCtx = drawGrid(filledCtx, canvasWidth, canvasHeight, canvasGridGab);
 
-      // if (isDrawn) convertImageAndSave(canvas, setCapturedImage);
+      const linePath = linePathRef.current;
+      console.log('linePath: ', linePath);
+
+      if (!(linePath && linePath.length > 0)) {
+        console.error('No path to draw');
+        return;
+      }
+
+      const isDrawn = drawPath(gridedCtx, linePath, canvasWidth, canvasHeight, canvasPaddingX, canvasPaddingY);
+
+      if (isDrawn) {
+        console.log('Path drawn successfully');
+        convertImageAndSave(canvas, setCapturedImage);
+      } else {
+        console.log('Path drawn fail');
+      }
 
       await delay(1500);
       console.log('🎨 5. 팝업 띄울 준비');
