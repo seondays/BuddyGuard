@@ -40,6 +40,16 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: '/menu/walk/go',
+    element: (
+      <RequireAuth>
+        <ResponsiveLayout>
+          <GoWalk />
+        </ResponsiveLayout>
+      </RequireAuth>
+    ),
+  },
+  {
     path: '/menu',
     element: (
       <RequireAuth>
@@ -97,16 +107,7 @@ export const router = createBrowserRouter([
       </ResponsiveLayout>
     ),
   },
-  {
-    path: '/menu/walk/go',
-    element: (
-      <RequireAuth>
-        <ResponsiveLayout>
-          <GoWalk />
-        </ResponsiveLayout>
-      </RequireAuth>
-    ),
-  },
+
   {
     path: '/menu/schedule',
     element: (
@@ -143,16 +144,6 @@ export const router = createBrowserRouter([
       <RequireAuth>
         <ResponsiveLayout>
           <AddVaccination />
-        </ResponsiveLayout>
-      </RequireAuth>
-    ),
-  },
-  {
-    path: '/menu/walk',
-    element: (
-      <RequireAuth>
-        <ResponsiveLayout>
-          <Walk />
         </ResponsiveLayout>
       </RequireAuth>
     ),

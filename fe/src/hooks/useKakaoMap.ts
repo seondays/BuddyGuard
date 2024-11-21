@@ -101,16 +101,20 @@ export const useKakaoMap = ({
         const updatedPosition: PositionType = [position.coords.latitude, position.coords.longitude];
         const newLatLng = new kakao.maps.LatLng(updatedPosition[0], updatedPosition[1]);
 
+        // 첫 위치인 경우 무조건 추가
+        if (linePathRef.current.length === 0) {
+          linePathRef.current.push(newLatLng);
+        }
+
         // 이전 위치와 거리 계산
         const prevPosition = positions.current;
+
         const distance = prevPosition
           ? calculateDistance(prevPosition[0], prevPosition[1], updatedPosition[0], updatedPosition[1]) * 1000
           : null;
 
         // 위치 변화가 거리 임계 값 이상일 경우에만 업데이트
-        if (!distance || distance >= THRESHOLD_METER) {
-          // console.log('🎀handlePositionUpdate() : updatedPosition: ', updatedPosition);
-
+        if (distance && distance >= THRESHOLD_METER) {
           // linePath에 좌표 추가
           linePathRef.current.push(newLatLng);
 
@@ -193,59 +197,80 @@ export const useKakaoMap = ({
   // 산책 종료 후 경로 그리고 이미지 저장
   useEffect(() => {
     const donelogic = async () => {
-      if (!canvasRef.current) return;
-      if (!(changedPosition && walkStatus === 'stop' && mapRef.current)) return;
-
       const canvas = canvasRef.current;
+      if (!canvas) {
+        console.error('Canvas not found');
+        return;
+      }
+
       const ctx = initCanvas(canvas, canvasWidth, canvasHeight);
-      if (!ctx) return;
+      if (!ctx) {
+        console.error('Context not found');
+        return;
+      }
+
       const filledCtx = fillBackground(ctx, canvasWidth, canvasHeight);
       const gridedCtx = drawGrid(filledCtx, canvasWidth, canvasHeight, canvasGridGab);
 
       const linePath = linePathRef.current;
-      if (!(linePath && linePath.length > 0)) return;
+
+      if (!(linePath && linePath.length > 0)) {
+        console.error('No path to draw');
+        return;
+      }
 
       const isDrawn = drawPath(gridedCtx, linePath, canvasWidth, canvasHeight, canvasPaddingX, canvasPaddingY);
 
-      if (isDrawn) convertImageAndSave(canvas, setCapturedImage);
-
-      // const totalDistanceInKm = calculateTotalDistance(linePathRef.current);
-      // console.log(`🏃‍♀️💦 Total Distance: ${totalDistanceInKm} km`);
-      // const endDate = getCurrentDate({ isDay: true, isTime: false });
-      // console.log(`🏃‍♀️💦 End Date: ${endDate}`);
+      if (isDrawn) {
+        convertImageAndSave(canvas, setCapturedImage);
+      } else {
+        console.error('Path drawn fail');
+      }
 
       await delay(1500);
       setIsStarted('done');
-
-      // console.log('map Level : ', map?.getLevel());
-      // console.log('center Position : ', changedPosition);
-      // console.log('center Position.getLat() : ', changedPosition[0]);
-      // console.log('center Position.getLng() : ', changedPosition[1]);
-      // const pathData = linePathRef.current.map((latLng) => ({
-      //   lat: latLng.getLat(),
-      //   lng: latLng.getLng(),
-      // }));
-      // console.log('pathData : ', pathData);
     };
 
     // 산책 종료 후 경로 그리고 이미지 저장
-    donelogic();
-  }, [canvasPaddingX, canvasPaddingY, canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
+    if (walkStatus === 'stop' && mapRef.current && canvasRef.current && changedPosition) {
+      donelogic();
+    }
+  }, [canvasRef, changedPosition, mapRef, setCapturedImage, walkStatus]);
 
   // 종료 버튼
   useEffect(() => {
-    if (walkStatus === 'stop' && map && linePathRef.current && overlayRef.current) {
-      adjustMapBounds(map, linePathRef.current);
+    if (!(walkStatus === 'stop' && map && linePathRef.current && overlayRef.current)) return;
+    // console.log('👽 1. 종료 버튼 누름');
 
-      // 지도 범위가 설정된 후 중심 좌표 및 레벨 저장
+    // 오버레이 제거
+    if (overlayRef.current) {
+      // console.log('👽 오버레이 제거');
+      overlayRef.current.setMap(null);
+    }
+    // 위치 추적 중지
+    if (watchID.current !== null) {
+      // console.log('👽 위치추적 중지');
+      stopWatchingPosition();
+    }
+
+    // bounds_changed 이벤트 리스너 추가
+    const handleBoundsChanged = () => {
+      // 지도가 실제로 업데이트된 후에 실행됨
       const newCenter = map.getCenter();
-
+      // console.log('👽 3. 지도 범위가 설정된 후 중심 좌표 및 레벨 저장:', newCenter);
       setChangedPosition([newCenter.getLat(), newCenter.getLng()]);
 
-      overlayRef.current.setMap(null);
+      // 실행 후 리스너 제거 (한 번만 실행되도록)
+      kakao.maps.event.removeListener(map, 'bounds_changed', handleBoundsChanged);
+    };
 
-      if (watchID.current !== null) stopWatchingPosition();
-    }
+    // 리스너 등록
+    // console.log('👽 2. bounds_changed 이벤트 리스너 추가');
+    kakao.maps.event.addListener(map, 'bounds_changed', handleBoundsChanged);
+
+    adjustMapBounds(map, linePathRef.current);
+
+    map.relayout();
   }, [map, walkStatus, stopWatchingPosition]);
 
   // 시작, 일시중지, 재시작
@@ -295,19 +320,24 @@ export const useKakaoMap = ({
       handleMapMoveAndStateUpdate();
   }, [isTargetClicked, positions, changedPosition, map, walkStatus, handleMapMoveAndStateUpdate, setIsTargetClicked]);
 
-  // 최초에만 Kakao Map을 초기화 (초기 한 번만 실행)
   useEffect(() => {
     const initMap = async () => {
       try {
-        // 스크립트 로드
+        //1. 스크립트 로드
         await loadKakaoMapScript();
 
-        // 위치 가져오기
+        // 2. 위치 권한 상태 확인
+        // const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+        // console.log('4. Location permission status:', permissionStatus.state);
+
+        // 3. 위치 가져오기
         const currentLocation = await getcurrentLocation();
+
+        // 4. 가져온 위치 셋팅
         setPositions((prev) => ({ ...prev, current: currentLocation }));
 
-        // 지도 생성
         if (!(window.kakao && mapRef.current)) return;
+
         window.kakao.maps.load(() => {
           const mapInstance = createMap(currentLocation, mapRef, setChangedPosition);
           const newMarker = createMarker(currentLocation, mapInstance);
@@ -315,20 +345,55 @@ export const useKakaoMap = ({
           markerRef.current = newMarker;
         });
       } catch (error) {
-        console.error('Map initialization error', error);
+        console.error('Map initialization error:', error);
       }
     };
-
-    // 최초 실행
     if (!map) initMap();
 
     return () => {
-      if (map)
+      // 필수적인 cleanup만 남기기
+      if (map) {
+        // 이벤트 리스너 제거
         kakao.maps.event.removeListener(map, 'center_changed', () =>
           centerChangedEventListener(map, setChangedPosition)
         );
+
+        // 마커 제거
+        if (markerRef.current) {
+          markerRef.current.setMap(null);
+          markerRef.current = null;
+        }
+
+        // 오버레이 제거
+        if (overlayRef.current) {
+          overlayRef.current.setMap(null);
+          overlayRef.current = null;
+        }
+
+        // 지도 컨테이너 초기화
+        if (mapRef.current) {
+          mapRef.current.innerHTML = '';
+        }
+        // 위치 추적 중지
+        if (watchID.current !== null) {
+          navigator.geolocation.clearWatch(watchID.current);
+          watchID.current = null;
+        }
+
+        // polyline 제거
+        if (linePathRef.current.length > 0) {
+          linePathRef.current = [];
+        }
+        // 상태 초기화
+        setPositions({ previous: null, current: DEFAULT_MAP_POSITION });
+        setChangedPosition(null);
+
+        // 지도 인스턴스 제거
+        map.relayout();
+        setMap(null);
+      }
     };
-  }, [mapRef, map, selectedBuddys, buddyList]);
+  }, [mapRef, map]);
 
   useEffect(() => {
     const handleResize = () => {

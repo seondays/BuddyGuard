@@ -59,6 +59,7 @@ export default function GoWalk() {
   const [walkStatus, setWalkStatus] = useState<StatusOfTime>('start');
 
   const navigate = useNavigate();
+
   useEffect(() => {
     const petsStorage = localStorage.getItem('petsStorage');
     if (!petsStorage) return;
@@ -110,37 +111,35 @@ export default function GoWalk() {
     setSelectedBuddys((prev) => (isSelect ? [...prev, selectId] : prev.filter((buddyId) => buddyId !== selectId)));
 
   return (
-    <>
-      <StyledWalkWrapper>
-        {isStarted === 'ready' && <StyledBlockLayer />}
-        {isStarted === 'ready' && <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />}
-        {isStarted === 'start' && (
-          <StyledTargetIcon onClick={() => setIsTargetClicked((prev) => !prev)}>
-            <img src={targetIcon} />
-          </StyledTargetIcon>
-        )}
-        <StyledMap ref={mapRef} />
-        <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* 캔버스는 숨김 */}
-        {isStarted === 'start' && (
-          <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} timeRef={timeRef} />
-        )}
-        {isStarted === 'ready' && (
-          <WalkBuddySelectBar buddys={buddyList} selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
-        )}
-        {isStarted === 'done' && (
-          <WalkModal
-            formTitle={'산책 완료'}
-            timeRef={timeRef}
-            linePathRef={linePathRef}
-            selectedBuddys={selectedBuddys}
-            buddyList={buddyList}
-            canvasRef={canvasRef}
-            changedPosition={changedPosition}
-            map={map}
-          />
-        )}
-      </StyledWalkWrapper>
-    </>
+    <StyledWalkWrapper>
+      {isStarted === 'ready' && <StyledBlockLayer />}
+      {isStarted === 'ready' && <StyledPlayIcon customStyle={playIconStyle} onClick={startGoWalk} />}
+      {isStarted === 'start' && (
+        <StyledTargetIcon onClick={() => setIsTargetClicked((prev) => !prev)}>
+          <img src={targetIcon} />
+        </StyledTargetIcon>
+      )}
+      <StyledMap ref={mapRef} />
+      <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* 캔버스는 숨김 */}
+      {isStarted === 'start' && (
+        <WalkSatusBar walkStatus={walkStatus} setWalkStatus={setWalkStatus} timeRef={timeRef} />
+      )}
+      {isStarted === 'ready' && (
+        <WalkBuddySelectBar buddys={buddyList} selectedBuddys={selectedBuddys} handleOnChange={selectBuddy} />
+      )}
+      {isStarted === 'done' && (
+        <WalkModal
+          formTitle={'산책 완료'}
+          timeRef={timeRef}
+          linePathRef={linePathRef}
+          selectedBuddys={selectedBuddys}
+          buddyList={buddyList}
+          canvasRef={canvasRef}
+          changedPosition={changedPosition}
+          map={map}
+        />
+      )}
+    </StyledWalkWrapper>
   );
 }
 
@@ -178,6 +177,7 @@ const StyledBlockLayer = styled.div`
 const StyledMap = styled.div`
   width: 100%;
   height: 100%;
+  min-height: 400px; // 최소 높이 설정
   object-fit: cover;
   ${fillAvailable}
 `;

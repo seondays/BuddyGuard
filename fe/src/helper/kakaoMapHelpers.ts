@@ -1,3 +1,5 @@
+import { message } from 'antd';
+
 import { defaultShadow } from '@/components/atoms/Button';
 import { DEFAULT_MAP_POSITION } from '@/constants/map';
 import { KAKAOMAP_API_SRC } from '@/constants/urlConstants';
@@ -46,12 +48,16 @@ export const setOverlay = ({
 
 /** 전체경로가 보이도록 지도범위 재설정 */
 export const adjustMapBounds = (map: kakao.maps.Map, linePath: kakao.maps.LatLng[]) => {
-  const bounds = new kakao.maps.LatLngBounds();
-  linePath.forEach((latLng) => {
-    bounds.extend(latLng);
-  });
+  try {
+    const bounds = new kakao.maps.LatLngBounds();
+    linePath.forEach((latLng) => {
+      bounds.extend(latLng);
+    });
 
-  map.setBounds(bounds);
+    map.setBounds(bounds);
+  } catch (error) {
+    console.error('전체경로가 보이도록 지도범위 재설정 error:', error);
+  }
 };
 
 /** Polyline 지도에 추가 */
@@ -236,29 +242,49 @@ export const loadKakaoMapScript = (): Promise<void> => {
 export const getcurrentLocation = (): Promise<PositionType> => {
   return new Promise((resolve) => {
     if (!('geolocation' in navigator)) {
+      console.error('🌍 Geolocation not supported');
       resolve(DEFAULT_MAP_POSITION);
       return;
     }
 
-    navigator.geolocation.watchPosition(
-      ({ coords }) => {
-        if (!coords) {
-          resolve(DEFAULT_MAP_POSITION);
-          return;
-        }
-        const latitude = coords.latitude;
-        const longitude = coords.longitude;
+    // 재시도 로직 추가
+    let retryCount = 0;
+    const maxRetries = 3;
 
-        if (!(latitude && longitude)) {
-          resolve(DEFAULT_MAP_POSITION);
-          return;
-        }
-        resolve([latitude, longitude]);
-      },
-      (error) => {
-        console.error(error);
-        resolve(DEFAULT_MAP_POSITION); // 에러 발생 시 기본 위치 반환
-      }
-    );
+    const tryGetPosition = () => {
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log('🌍 위치 정보 받기 성공');
+          resolve([position.coords.latitude, position.coords.longitude]);
+        },
+        (error) => {
+          const errorMsg = `🌍 위치 정보 시도 ${retryCount + 1}/${maxRetries} 실패: ${error.message}, errorCode:${error.code}`;
+          console.error(errorMsg);
+          message.error(errorMsg);
+
+          if (retryCount < maxRetries - 1) {
+            retryCount++;
+            const retryMsg = `🌍 재시도 중... (${retryCount}/${maxRetries})`;
+            console.error(retryMsg);
+            message.error(errorMsg);
+            setTimeout(tryGetPosition, 1000); // 1초 후 재시도
+          } else {
+            const errorMsg2 = '🌍 최대 재시도 횟수 초과, 기본 위치 사용';
+            console.error(errorMsg2);
+            message.error(errorMsg2);
+            resolve(DEFAULT_MAP_POSITION);
+          }
+        },
+        options
+      );
+    };
+
+    tryGetPosition();
   });
 };
