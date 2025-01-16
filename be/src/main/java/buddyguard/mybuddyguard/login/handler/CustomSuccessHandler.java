@@ -29,11 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final TokenService tokenService;
-    private final RefreshTokenRepository repository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public CustomSuccessHandler(TokenService tokenService, RefreshTokenRepository repository) {
+    public CustomSuccessHandler(TokenService tokenService, RefreshTokenRepository refreshTokenRepository) {
         this.tokenService = tokenService;
-        this.repository = repository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Transactional
@@ -79,9 +79,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private void saveRefreshToken(Long userId, String refreshToken, Long expiredSeconds) {
-        RefreshToken token = RefreshToken.builder().userId(userId).token(refreshToken)
-                .expiration(String.valueOf(Date.from(Instant.now().plusSeconds(expiredSeconds))))
-                .build();
-        repository.save(token);
+        RefreshToken token = RefreshToken.create(userId, refreshToken, expiredSeconds);
+        refreshTokenRepository.save(token);
     }
 }
