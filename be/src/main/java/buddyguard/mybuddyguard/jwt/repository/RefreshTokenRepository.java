@@ -1,6 +1,8 @@
 package buddyguard.mybuddyguard.jwt.repository;
 
 import buddyguard.mybuddyguard.jwt.entity.RefreshToken;
+import buddyguard.mybuddyguard.jwt.mapper.RefreshTokenMapper;
+import buddyguard.mybuddyguard.jwt.repository.dto.StoredRefreshToken;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,7 +25,8 @@ public class RefreshTokenRepository {
     public void save(RefreshToken refreshToken) {
         String key = makeKey(refreshToken.getToken());
         redisTemplate.opsForValue()
-                .set(key, refreshToken, refreshToken.getTimeToLive(), TimeUnit.SECONDS);
+                .set(key, RefreshTokenMapper.toStoredRefreshToken(refreshToken),
+                        refreshToken.getTimeToLive(), TimeUnit.SECONDS);
     }
 
     /**
@@ -32,9 +35,9 @@ public class RefreshTokenRepository {
      * @param token
      * @return
      */
-    public Optional<RefreshToken> findByToken(String token) {
+    public Optional<StoredRefreshToken> findByToken(String token) {
         String key = makeKey(token);
-        RefreshToken refreshToken = (RefreshToken) redisTemplate.opsForValue().get(key);
+        StoredRefreshToken refreshToken = (StoredRefreshToken) redisTemplate.opsForValue().get(key);
         return Optional.ofNullable(refreshToken);
     }
 
