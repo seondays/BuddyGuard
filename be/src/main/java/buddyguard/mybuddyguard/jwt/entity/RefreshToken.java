@@ -8,10 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.TimeToLive;
 
-@RedisHash(value = "refresh")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
@@ -21,7 +18,6 @@ public class RefreshToken {
     private String token;
     private Long userId;
     private String expiration;
-    @TimeToLive
     private Long timeToLive;
 
     public static RefreshToken create(Long id, String token, Long timeToLive) {
