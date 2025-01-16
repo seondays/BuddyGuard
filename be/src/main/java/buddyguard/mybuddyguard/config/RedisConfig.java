@@ -8,17 +8,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisKeyValueAdapter.EnableKeyspaceEvents;
+import org.springframework.data.redis.core.RedisKeyValueAdapter.ShadowCopy;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableJpaRepositories(basePackages = {"buddyguard.mybuddyguard.hospital",
-        "buddyguard.mybuddyguard.login", "buddyguard.mybuddyguard.pet",
-        "buddyguard.mybuddyguard.weight", "buddyguard.mybuddyguard.walk", 
-        "buddyguard.mybuddyguard.alert", "buddyguard.mybuddyguard.walkimage",
-        "buddyguard.mybuddyguard.vaccination", "buddyguard.mybuddyguard.feed"})
-@EnableRedisRepositories(basePackages = {"buddyguard.mybuddyguard.invitation",
-        "buddyguard.mybuddyguard.weight", "buddyguard.mybuddyguard.walk",
-        "buddyguard.mybuddyguard.alert",  "buddyguard.mybuddyguard.jwt"})
 public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
@@ -35,5 +32,16 @@ public class RedisConfig {
                 .build();
         return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort),
                 clientConfig);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        return redisTemplate;
     }
 }
