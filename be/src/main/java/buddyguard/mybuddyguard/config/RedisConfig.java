@@ -1,22 +1,17 @@
 package buddyguard.mybuddyguard.config;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import buddyguard.mybuddyguard.invitation.entity.InvitationInformation;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisKeyValueAdapter.EnableKeyspaceEvents;
-import org.springframework.data.redis.core.RedisKeyValueAdapter.ShadowCopy;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -49,6 +44,24 @@ public class RedisConfig {
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, InvitationInformation> invitationRedisTemplate(
+            LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<String, InvitationInformation> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.deactivateDefaultTyping();
+
+        Jackson2JsonRedisSerializer<InvitationInformation> serializer =
+                new Jackson2JsonRedisSerializer<>(objectMapper, InvitationInformation.class);
+
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(serializer);
 
         return redisTemplate;
     }
