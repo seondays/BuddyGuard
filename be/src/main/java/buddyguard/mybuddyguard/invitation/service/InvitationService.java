@@ -10,6 +10,7 @@ import buddyguard.mybuddyguard.invitation.entity.InvitationInformation;
 import buddyguard.mybuddyguard.invitation.exception.InvitationLinkExpiredException;
 import buddyguard.mybuddyguard.invitation.exception.UserPetGroupNotFound;
 import buddyguard.mybuddyguard.invitation.repository.InvitationRepository;
+import buddyguard.mybuddyguard.invitation.repository.dto.StoredInvitationInformation;
 import buddyguard.mybuddyguard.invitation.utils.InvitationLinkGenerator;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
