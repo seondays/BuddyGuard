@@ -70,6 +70,9 @@ public class InvitationService {
                 .pet(pet)
                 .role(UserPetRole.GUEST).build();
         userPetRepository.save(userPet);
+
+        // 종료하고 해당 링크 삭제하기 (링크는 1회용이다)
+        invitationRepository.delete(uuid);
     }
 
     private void validateInvitation(Long userId, Long petId) {
