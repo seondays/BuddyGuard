@@ -30,6 +30,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final TokenService tokenService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private static final long REFRESH_TOKEN_EXPIRATION_SECONDS = 7 * 24 * 60 * 60L;
+    private static final String REDIRACTION_URL = "https://buddyguard.site/";
 
     public CustomSuccessHandler(TokenService tokenService, RefreshTokenRepository refreshTokenRepository) {
         this.tokenService = tokenService;
@@ -51,16 +53,16 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = authority.getAuthority();
 
         String refreshToken = tokenService.createJwt(userId, role, TokenType.REFRESH,
-                7 * 24 * 60 * 60L);
+                REFRESH_TOKEN_EXPIRATION_SECONDS);
 
         // refresh 토큰 저장
-        saveRefreshToken(userId, refreshToken, 7 * 24 * 60 * 60L);
+        saveRefreshToken(userId, refreshToken);
 
         // 쿠키에 토큰 저장
         response.addCookie(createCookie("refresh", refreshToken));
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 
-        response.sendRedirect("https://buddyguard.site/");
+        response.sendRedirect(REDIRACTION_URL);
     }
 
     /**
@@ -78,8 +80,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         return cookie;
     }
 
-    private void saveRefreshToken(Long userId, String refreshToken, Long expiredSeconds) {
-        RefreshToken token = RefreshToken.create(userId, refreshToken, expiredSeconds);
+    private void saveRefreshToken(Long userId, String refreshToken) {
+        RefreshToken token = RefreshToken.create(userId, refreshToken, REFRESH_TOKEN_EXPIRATION_SECONDS);
         refreshTokenRepository.save(token);
     }
 }
