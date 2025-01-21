@@ -43,8 +43,8 @@ public class InvitationService {
 
         String uuid = InvitationLinkGenerator.generateUuid().toString();
 
-        InvitationInformation invitationInformation = InvitationInformation.builder().id(uuid)
-                .userId(userId).petId(petId).build();
+        InvitationInformation invitationInformation = InvitationInformation.create(uuid, petId,
+                userId);
 
         invitationRepository.save(invitationInformation);
 
