@@ -1,6 +1,8 @@
 package buddyguard.mybuddyguard.invitation.repository;
 
 import buddyguard.mybuddyguard.invitation.entity.InvitationInformation;
+import buddyguard.mybuddyguard.invitation.mapper.InvitationMapper;
+import buddyguard.mybuddyguard.invitation.repository.dto.StoredInvitationInformation;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,9 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class InvitationRepository {
 
-    private final RedisTemplate<String, InvitationInformation> redisTemplate;
+    private final RedisTemplate<String, StoredInvitationInformation> redisTemplate;
 
-    public InvitationRepository(RedisTemplate<String, InvitationInformation> redisTemplate) {
+    public InvitationRepository(RedisTemplate<String, StoredInvitationInformation> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -23,7 +25,8 @@ public class InvitationRepository {
     public void save(InvitationInformation invitationInformation) {
         String key = makeKey(invitationInformation.getId());
         redisTemplate.opsForValue()
-                .set(key, invitationInformation, invitationInformation.getTimeToLive(),
+                .set(key, InvitationMapper.toStoredInvitationInformation(invitationInformation),
+                        invitationInformation.getTimeToLive(),
                         TimeUnit.SECONDS);
     }
 
@@ -33,11 +36,11 @@ public class InvitationRepository {
      * @param uuid
      * @return
      */
-    public Optional<InvitationInformation> findById(String uuid) {
+    public Optional<StoredInvitationInformation> findById(String uuid) {
         String key = makeKey(uuid);
-        InvitationInformation invitationInformation = redisTemplate.opsForValue()
+        StoredInvitationInformation storedInvitationInformation = redisTemplate.opsForValue()
                 .get(key);
-        return Optional.ofNullable(invitationInformation);
+        return Optional.ofNullable(storedInvitationInformation);
     }
 
     /**
@@ -52,6 +55,7 @@ public class InvitationRepository {
 
     /**
      * uuid 값과 키스페이스 값을 합쳐 key를 생성합니다.
+     *
      * @param uuid
      * @return
      */

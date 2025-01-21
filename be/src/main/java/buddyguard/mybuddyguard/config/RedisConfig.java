@@ -1,6 +1,6 @@
 package buddyguard.mybuddyguard.config;
 
-import buddyguard.mybuddyguard.invitation.entity.InvitationInformation;
+import buddyguard.mybuddyguard.invitation.repository.dto.StoredInvitationInformation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,16 +49,16 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, InvitationInformation> invitationRedisTemplate(
+    public RedisTemplate<String, StoredInvitationInformation> invitationRedisTemplate(
             LettuceConnectionFactory connectionFactory) {
-        RedisTemplate<String, InvitationInformation> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, StoredInvitationInformation> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.deactivateDefaultTyping();
 
-        Jackson2JsonRedisSerializer<InvitationInformation> serializer =
-                new Jackson2JsonRedisSerializer<>(objectMapper, InvitationInformation.class);
+        Jackson2JsonRedisSerializer<StoredInvitationInformation> serializer =
+                new Jackson2JsonRedisSerializer<>(objectMapper, StoredInvitationInformation.class);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(serializer);

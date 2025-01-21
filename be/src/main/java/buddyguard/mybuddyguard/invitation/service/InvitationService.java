@@ -57,10 +57,10 @@ public class InvitationService {
         Users user = userRepository.findById(userId)
                 .orElseThrow(UserInformationNotFoundException::new);
 
-        InvitationInformation invitation = invitationRepository.findById(uuid).orElseThrow(
+        StoredInvitationInformation invitation = invitationRepository.findById(uuid).orElseThrow(
                 InvitationLinkExpiredException::new);
 
-        Pet pet = petRepository.findById(invitation.getPetId())
+        Pet pet = petRepository.findById(invitation.petId())
                 .orElseThrow(PetNotFoundException::new);
 
         validateRegister(user.getId(), pet.getId());
