@@ -54,6 +54,17 @@ public class InvitationRepository {
     }
 
     /**
+     * 초대링크 정보를 조회 후 바로 삭제합니다.
+     *
+     * @param uuid
+     * @return
+     */
+    public Optional<StoredInvitationInformation> getAndDelete(String uuid) {
+        String key = makeKey(uuid);
+        return Optional.ofNullable(redisTemplate.opsForValue().getAndDelete(key));
+    }
+
+    /**
      * uuid 값과 키스페이스 값을 합쳐 key를 생성합니다.
      *
      * @param uuid

@@ -58,8 +58,8 @@ public class InvitationService {
         Users user = userRepository.findById(userId)
                 .orElseThrow(UserInformationNotFoundException::new);
 
-        StoredInvitationInformation invitation = invitationRepository.findById(uuid).orElseThrow(
-                InvitationLinkExpiredException::new);
+        StoredInvitationInformation invitation = invitationRepository.getAndDelete(uuid)
+                .orElseThrow(InvitationLinkExpiredException::new);
 
         Pet pet = petRepository.findById(invitation.petId())
                 .orElseThrow(PetNotFoundException::new);
@@ -71,9 +71,6 @@ public class InvitationService {
                 .pet(pet)
                 .role(UserPetRole.GUEST).build();
         userPetRepository.save(userPet);
-
-        // 종료하고 해당 링크 삭제하기 (링크는 1회용이다)
-        invitationRepository.delete(uuid);
     }
 
     private void validateInvitation(Long userId, Long petId) {
