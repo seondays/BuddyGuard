@@ -44,6 +44,7 @@ public class RedisConfig {
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        redisTemplate.setEnableTransactionSupport(true);
 
         return redisTemplate;
     }
@@ -62,6 +63,7 @@ public class RedisConfig {
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(serializer);
+        redisTemplate.setEnableTransactionSupport(true);
 
         return redisTemplate;
     }
