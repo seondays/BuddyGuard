@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import buddyguard.mybuddyguard.exception.AlreadyInGroupException;
 import buddyguard.mybuddyguard.exception.PetNotFoundException;
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
 import buddyguard.mybuddyguard.exception.UserInformationNotFoundException;
@@ -15,7 +16,7 @@ import buddyguard.mybuddyguard.invitation.exception.InvalidInvitationException;
 import buddyguard.mybuddyguard.invitation.exception.InvitationLinkExpiredException;
 import buddyguard.mybuddyguard.invitation.exception.UserPetGroupNotFound;
 import buddyguard.mybuddyguard.invitation.repository.InvitationRepository;
-import buddyguard.mybuddyguard.jwt.service.TokenService;
+import buddyguard.mybuddyguard.invitation.repository.dto.StoredInvitationInformation;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
 import buddyguard.mybuddyguard.pet.entity.Pet;
@@ -28,15 +29,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@DataRedisTest
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class InvitationServiceTest {
 
     private InvitationService invitationService;
@@ -72,7 +70,7 @@ public class InvitationServiceTest {
 
     @AfterEach
     void finish() {
-        invitationRepository.deleteById(uuid);
+        invitationRepository.delete(uuid);
     }
 
     @Test
@@ -93,10 +91,10 @@ public class InvitationServiceTest {
 
         // THEN
         assertThat(invitationLink).isNotNull();
-        InvitationInformation savedInvitation = invitationRepository.findById(uuid).orElseThrow();
+        StoredInvitationInformation savedInvitation = invitationRepository.findById(uuid).orElseThrow();
 
-        assertThat(savedInvitation.getUserId()).isEqualTo(user.getId());
-        assertThat(savedInvitation.getPetId()).isEqualTo(pet.getId());
+        assertThat(savedInvitation.userId()).isEqualTo(user.getId());
+        assertThat(savedInvitation.petId()).isEqualTo(pet.getId());
     }
 
     @Test
@@ -164,8 +162,8 @@ public class InvitationServiceTest {
                 .pet(pet)
                 .role(UserPetRole.GUEST).build();
 
-        InvitationInformation invitation = InvitationInformation.builder().userId(user.getId())
-                .petId(pet.getId()).id(uuid).build();
+        InvitationInformation invitation = InvitationInformation.create(uuid, pet.getId(),
+                user.getId());
 
         invitationRepository.save(invitation);
 
@@ -218,8 +216,8 @@ public class InvitationServiceTest {
     @Test
     void 펫_3마리_이상_유저가_초대_링크로_그룹_가입_시_예외_발생() {
         // GIVEN
-        InvitationInformation invitation = InvitationInformation.builder().userId(user.getId())
-                .petId(pet.getId()).id(uuid).build();
+        InvitationInformation invitation = InvitationInformation.create(uuid, pet.getId(),
+                user.getId());
 
         invitationRepository.save(invitation);
 
@@ -235,8 +233,8 @@ public class InvitationServiceTest {
     @Test
     void 호스트가_존재하지_않는_그룹에_초대_링크로_그룹_가입_시_예외_발생() {
         // GIVEN
-        InvitationInformation invitation = InvitationInformation.builder().userId(user.getId())
-                .petId(pet.getId()).id(uuid).build();
+        InvitationInformation invitation = InvitationInformation.create(uuid, pet.getId(),
+                user.getId());
 
         invitationRepository.save(invitation);
 
@@ -256,8 +254,8 @@ public class InvitationServiceTest {
     @Test
     void 이미_가입된_그룹에_초대_링크로_그룹_가입_시_예외_발생() {
         // GIVEN
-        InvitationInformation invitation = InvitationInformation.builder().userId(user.getId())
-                .petId(pet.getId()).id(uuid).build();
+        InvitationInformation invitation = InvitationInformation.create(uuid, pet.getId(),
+                user.getId());
 
         UserPet userPet = UserPet.builder()
                 .user(user)
@@ -276,6 +274,6 @@ public class InvitationServiceTest {
 
         // WHEN, THEN
         assertThatThrownBy(() -> invitationService.register(uuid, user.getId())).isInstanceOf(
-                InvalidPetRegisterException.class);
+                AlreadyInGroupException.class);
     }
 }

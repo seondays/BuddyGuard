@@ -1,24 +1,20 @@
 package buddyguard.mybuddyguard.config;
 
+import buddyguard.mybuddyguard.invitation.repository.dto.StoredInvitationInformation;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableJpaRepositories(basePackages = {"buddyguard.mybuddyguard.hospital",
-        "buddyguard.mybuddyguard.login", "buddyguard.mybuddyguard.pet",
-        "buddyguard.mybuddyguard.weight", "buddyguard.mybuddyguard.walk", 
-        "buddyguard.mybuddyguard.alert", "buddyguard.mybuddyguard.walkimage",
-        "buddyguard.mybuddyguard.vaccination", "buddyguard.mybuddyguard.feed"})
-@EnableRedisRepositories(basePackages = {"buddyguard.mybuddyguard.invitation",
-        "buddyguard.mybuddyguard.weight", "buddyguard.mybuddyguard.walk",
-        "buddyguard.mybuddyguard.alert",  "buddyguard.mybuddyguard.jwt"})
 public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
@@ -35,5 +31,40 @@ public class RedisConfig {
                 .build();
         return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort),
                 clientConfig);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+
+        // 메타정보 제거를 위해 ObjectMapper 따로 선언
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.deactivateDefaultTyping();
+
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        redisTemplate.setEnableTransactionSupport(true);
+
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, StoredInvitationInformation> invitationRedisTemplate(
+            LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<String, StoredInvitationInformation> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.deactivateDefaultTyping();
+
+        Jackson2JsonRedisSerializer<StoredInvitationInformation> serializer =
+                new Jackson2JsonRedisSerializer<>(objectMapper, StoredInvitationInformation.class);
+
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(serializer);
+        redisTemplate.setEnableTransactionSupport(true);
+
+        return redisTemplate;
     }
 }

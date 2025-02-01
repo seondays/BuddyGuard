@@ -10,6 +10,7 @@ import buddyguard.mybuddyguard.invitation.entity.InvitationInformation;
 import buddyguard.mybuddyguard.invitation.exception.InvitationLinkExpiredException;
 import buddyguard.mybuddyguard.invitation.exception.UserPetGroupNotFound;
 import buddyguard.mybuddyguard.invitation.repository.InvitationRepository;
+import buddyguard.mybuddyguard.invitation.repository.dto.StoredInvitationInformation;
 import buddyguard.mybuddyguard.invitation.utils.InvitationLinkGenerator;
 import buddyguard.mybuddyguard.login.entity.Users;
 import buddyguard.mybuddyguard.login.repository.UserRepository;
@@ -43,8 +44,8 @@ public class InvitationService {
 
         String uuid = InvitationLinkGenerator.generateUuid().toString();
 
-        InvitationInformation invitationInformation = InvitationInformation.builder().id(uuid)
-                .userId(userId).petId(petId).build();
+        InvitationInformation invitationInformation = InvitationInformation.create(uuid, petId,
+                userId);
 
         invitationRepository.save(invitationInformation);
 
@@ -57,10 +58,10 @@ public class InvitationService {
         Users user = userRepository.findById(userId)
                 .orElseThrow(UserInformationNotFoundException::new);
 
-        InvitationInformation invitation = invitationRepository.findById(uuid).orElseThrow(
-                InvitationLinkExpiredException::new);
+        StoredInvitationInformation invitation = invitationRepository.getAndDelete(uuid)
+                .orElseThrow(InvitationLinkExpiredException::new);
 
-        Pet pet = petRepository.findById(invitation.getPetId())
+        Pet pet = petRepository.findById(invitation.petId())
                 .orElseThrow(PetNotFoundException::new);
 
         validateRegister(user.getId(), pet.getId());
