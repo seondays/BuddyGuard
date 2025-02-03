@@ -49,7 +49,7 @@ public class PetService {
      * @param userId
      */
     @Transactional
-    public void register(PetRegisterRequest petRegisterRequest, MultipartFile imageFile,
+    public UserPet create(PetRegisterRequest petRegisterRequest, MultipartFile imageFile,
             Long userId) {
         String imageUrl;
 

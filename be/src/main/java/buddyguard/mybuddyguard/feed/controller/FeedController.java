@@ -40,7 +40,7 @@ public class FeedController {
     public ResponseEntity<Void> createFeedRecord(
             @PathVariable("petId") Long petId,
             @RequestBody FeedRecordCreateRequest feedRecordCreateRequest) {
-        feedService.save(petId, feedRecordCreateRequest);
+        feedService.create(petId, feedRecordCreateRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
