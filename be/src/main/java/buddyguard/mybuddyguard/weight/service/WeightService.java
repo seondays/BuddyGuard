@@ -23,8 +23,8 @@ public class WeightService {
     private final AlertService alertService;
 
     @Transactional
-    public void createNewWeightRecord(WeightCreateRequest request) {
-        Weight weight = WeightMapper.toEntity(request);
+    public void createNewWeightRecord(Long petId, WeightCreateRequest request) {
+        Weight weight = WeightMapper.toEntity(petId, request);
 
         Weight savedWeight = weightRepository.save(weight);
 

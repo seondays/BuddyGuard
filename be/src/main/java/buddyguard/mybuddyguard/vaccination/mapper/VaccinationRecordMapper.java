@@ -24,9 +24,9 @@ public class VaccinationRecordMapper {
                 .toList();
     }
 
-    public static VaccinationRecord toEntity(VaccinationRecordCreateRequest request) {
+    public static VaccinationRecord toEntity(Long petId, VaccinationRecordCreateRequest request) {
         return VaccinationRecord.builder()
-                .petId(request.petId())
+                .petId(petId)
                 .vaccinationDate(request.vaccinationDate())
                 .vaccinationName(request.vaccinationName())
                 .description(request.description())
