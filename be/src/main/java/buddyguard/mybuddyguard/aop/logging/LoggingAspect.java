@@ -1,6 +1,7 @@
 package buddyguard.mybuddyguard.aop.logging;
 
 import buddyguard.mybuddyguard.login.dto.CustomOAuth2User;
+import buddyguard.mybuddyguard.pet.entity.UserPet;
 import java.lang.reflect.Parameter;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @Component
 public class LoggingAspect {
 
-    @AfterReturning("execution(* buddyguard.mybuddyguard..*.create*(..)) && @annotation(org.springframework.transaction.annotation.Transactional)")
+    @AfterReturning("execution(* buddyguard.mybuddyguard..*.create*(..)) && @annotation(org.springframework.transaction.annotation.Transactional) "
+            + "&& !execution(* buddyguard.mybuddyguard.pet.service.PetService.create(..))")
     public void logCreateMethod(JoinPoint joinPoint) {
         logAfterTransaction(joinPoint, "저장");
     }
@@ -32,6 +34,15 @@ public class LoggingAspect {
     @AfterReturning("execution(* buddyguard.mybuddyguard..*.update*(..)) && @annotation(org.springframework.transaction.annotation.Transactional)")
     public void logUpdateMethod(JoinPoint joinPoint) {
         logAfterTransaction(joinPoint, "업데이트");
+    }
+
+    @AfterReturning(pointcut = "execution(* buddyguard.mybuddyguard.pet.service.PetService.create(..))", returning = "result")
+    public void logPetCreateMethod(JoinPoint joinPoint, Object result) {
+        Long petId = null;
+        if(result instanceof UserPet) {
+            petId = ((UserPet) result).getId();
+        }
+        logAfterTransaction(joinPoint, petId);
     }
 
     public void logAfterTransaction(JoinPoint joinPoint, String message) {
@@ -63,6 +74,21 @@ public class LoggingAspect {
                     }
                 }
         );
+    }
+
+    public void logAfterTransaction(JoinPoint joinPoint, Long petId) {
+        String methodName = joinPoint.getSignature().getName();
+        String className = joinPoint.getTarget().getClass().getName();
+
+        Long finalUserId = Objects.requireNonNull(getLoginUserId());
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                log.info("========== [{}] 클래스의 [{}] 메서드 실행 결과로, [userId : {}]에게 새로운 [petId : {}] 펫 등록 작업 완료 ==========",
+                        className, methodName, finalUserId, petId);
+            }
+        });
     }
 
     /**
