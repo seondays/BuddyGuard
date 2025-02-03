@@ -30,10 +30,8 @@ public class FeedController {
     @Operation(summary = "펫의 먹이 기록 전체를 조회하는 api", description = "해당 펫의 모든 먹이 기록을 조회합니다")
     @GetMapping
     public ResponseEntity<List<FeedRecordResponse>> getPetFeedRecord(
-            @PathVariable("petId") Long petId,
-            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        Long userId = customOAuth2User.getId();
-        List<FeedRecordResponse> result = feedService.getPetFeedRecord(petId, userId);
+            @PathVariable("petId") Long petId) {
+        List<FeedRecordResponse> result = feedService.getPetFeedRecord(petId);
         return ResponseEntity.ok(result);
     }
 
@@ -41,20 +39,16 @@ public class FeedController {
     @PostMapping
     public ResponseEntity<Void> createFeedRecord(
             @PathVariable("petId") Long petId,
-            @RequestBody FeedRecordCreateRequest feedRecordCreateRequest,
-            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        Long userId = customOAuth2User.getId();
-        feedService.save(petId, userId, feedRecordCreateRequest);
+            @RequestBody FeedRecordCreateRequest feedRecordCreateRequest) {
+        feedService.save(petId, feedRecordCreateRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "펫의 먹이 기록을 삭제하는 api", description = "펫의 특정 먹이 기록을 삭제합니다")
     @DeleteMapping("/{feedId}")
     public ResponseEntity<Void> deleteFeedRecord(@PathVariable("petId") Long petId,
-            @PathVariable("feedId") Long feedId,
-            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        Long userId = customOAuth2User.getId();
-        feedService.delete(petId, userId, feedId);
+            @PathVariable("feedId") Long feedId) {
+        feedService.delete(petId, feedId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -62,10 +56,8 @@ public class FeedController {
     @PatchMapping("/{feedId}")
     public ResponseEntity<Void> updateFeedRecord(
             @RequestBody FeedRecordUpdateRequest feedRecordUpdateRequest,
-            @PathVariable("petId") Long petId, @PathVariable("feedId") Long feedId,
-            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        Long userId = customOAuth2User.getId();
-        feedService.update(petId, userId, feedId, feedRecordUpdateRequest);
+            @PathVariable("petId") Long petId, @PathVariable("feedId") Long feedId) {
+        feedService.update(petId, feedId, feedRecordUpdateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -1,4 +1,4 @@
-package buddyguard.mybuddyguard.feed.aop;
+package buddyguard.mybuddyguard.aop.userCheck;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

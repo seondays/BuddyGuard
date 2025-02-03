@@ -1,7 +1,7 @@
 package buddyguard.mybuddyguard.feed.service;
 
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
-import buddyguard.mybuddyguard.feed.aop.UserPetGroupValidation;
+import buddyguard.mybuddyguard.aop.userCheck.UserPetGroupValidation;
 import buddyguard.mybuddyguard.feed.controller.request.FeedRecordCreateRequest;
 import buddyguard.mybuddyguard.feed.controller.request.FeedRecordUpdateRequest;
 import buddyguard.mybuddyguard.feed.controller.response.FeedRecordResponse;
@@ -22,7 +22,7 @@ public class FeedService {
     private final FeedRepository feedRepository;
 
     @UserPetGroupValidation
-    public List<FeedRecordResponse> getPetFeedRecord(Long petId, Long userId) {
+    public List<FeedRecordResponse> getPetFeedRecord(Long petId) {
 
         List<FeedRecord> feedRecords = feedRepository.findByPetId(petId);
 
@@ -36,7 +36,7 @@ public class FeedService {
 
     @Transactional
     @UserPetGroupValidation
-    public void save(Long petId, Long userId, FeedRecordCreateRequest feedRecordCreateRequest) {
+    public void save(Long petId, FeedRecordCreateRequest feedRecordCreateRequest) {
         FeedRecord feedRecord = feedRecordCreateRequest.toEntity(petId);
 
         feedRepository.save(feedRecord);
@@ -46,7 +46,7 @@ public class FeedService {
 
     @Transactional
     @UserPetGroupValidation
-    public void delete(Long petId, Long userId, Long feedId) {
+    public void delete(Long petId, Long feedId) {
         FeedRecord feedRecord = feedRepository.findById(feedId)
                 .orElseThrow(RecordNotFoundException::new);
 
@@ -57,7 +57,7 @@ public class FeedService {
 
     @Transactional
     @UserPetGroupValidation
-    public void update(Long petId, Long userId, Long feedId, FeedRecordUpdateRequest feedRecordUpdateRequest) {
+    public void update(Long petId, Long feedId, FeedRecordUpdateRequest feedRecordUpdateRequest) {
         FeedRecord feedRecord = feedRepository.findById(feedId)
                 .orElseThrow(RecordNotFoundException::new);
 
