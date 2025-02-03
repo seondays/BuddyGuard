@@ -36,12 +36,10 @@ public class FeedService {
 
     @Transactional
     @UserPetGroupValidation
-    public void save(Long petId, FeedRecordCreateRequest feedRecordCreateRequest) {
+    public void create(Long petId, FeedRecordCreateRequest feedRecordCreateRequest) {
         FeedRecord feedRecord = feedRecordCreateRequest.toEntity(petId);
 
         feedRepository.save(feedRecord);
-
-        log.info("SAVE FEED RECORD : {}번 펫 먹이 기록 등록", feedRecord.getPetId());
     }
 
     @Transactional
@@ -51,8 +49,6 @@ public class FeedService {
                 .orElseThrow(RecordNotFoundException::new);
 
         feedRepository.delete(feedRecord);
-
-        log.info("DELETE FEED RECORD : {}번 펫 먹이 기록 삭제", feedRecord.getPetId());
     }
 
     @Transactional
@@ -65,7 +61,5 @@ public class FeedService {
                 feedRecordUpdateRequest.feedType(), feedRecordUpdateRequest.date());
 
         feedRepository.save(feedRecord);
-
-        log.info("UPDATE FEED RECORE : {}번 펫의 {}번 기록 수정 완료", petId, feedRecord.getId());
     }
 }

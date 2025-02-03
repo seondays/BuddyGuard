@@ -24,9 +24,7 @@ public class VaccinationRecordService {
     public void createVaccinationRecord(Long petId, VaccinationRecordCreateRequest request) {
         VaccinationRecord vaccinationRecord = VaccinationRecordMapper.toEntity(petId, request);
 
-        VaccinationRecord savedVaccinationRecord = vaccinationRecordRepository.save(vaccinationRecord);
-
-        log.info("SAVED VACCINATION RECORD : {}", savedVaccinationRecord);
+        vaccinationRecordRepository.save(vaccinationRecord);
     }
 
     public List<VaccinationRecordResponse> getAllVaccinationRecords(Long petId) {

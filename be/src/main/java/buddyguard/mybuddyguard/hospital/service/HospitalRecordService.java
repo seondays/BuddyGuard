@@ -42,9 +42,7 @@ public class HospitalRecordService {
         HospitalRecord hospitalRecord = HospitalRecordMapper.toEntity(
                 petId, request);
 
-        HospitalRecord saveHospitalRecord = hospitalRecordRepository.save(hospitalRecord);
-
-        log.info("SAVED HOSPITAL RECORD : {}", saveHospitalRecord);
+        hospitalRecordRepository.save(hospitalRecord);
     }
 
     @Transactional

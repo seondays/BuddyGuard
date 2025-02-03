@@ -73,10 +73,7 @@ public class PetService {
                 .pet(pet)
                 .role(UserPetRole.HOST).build();
 
-        userPetRepository.save(userPet);
-
-        log.info("REGISTER PET : {}번 {} 펫 등록", pet.getId(), pet.getName());
-        log.info("REGISTER USER_PET : 유저 {}에게 {}번 펫 등록", user.getId(), pet.getId());
+        return userPetRepository.save(userPet);
     }
 
     /**
@@ -152,8 +149,6 @@ public class PetService {
                 petUpdateInformationRequest.birth());
 
         repository.save(pet);
-
-        log.info("UPDATE PET : {}번 펫 정보 수정 완료", petId);
     }
 
     /**
@@ -181,8 +176,6 @@ public class PetService {
         pet.updateProfileImage(imageUrl);
 
         repository.save(pet);
-
-        log.info("UPDATE PET : {}번 펫 프로필 이미지 수정 완료", petId);
     }
 
     /**
