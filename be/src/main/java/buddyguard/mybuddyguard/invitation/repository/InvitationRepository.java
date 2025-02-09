@@ -55,6 +55,11 @@ public class InvitationRepository {
         return Optional.ofNullable(redisTemplate.opsForValue().getAndDelete(key));
     }
 
+    public void restore(String uuid, StoredInvitationInformation target) {
+        String key = makeKey(uuid);
+        redisTemplate.opsForValue().set(key, target, 3600L, TimeUnit.SECONDS);
+    }
+
     /**
      * uuid 값과 키스페이스 값을 합쳐 key를 생성합니다.
      *
