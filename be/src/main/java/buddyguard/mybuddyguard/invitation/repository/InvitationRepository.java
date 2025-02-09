@@ -55,6 +55,13 @@ public class InvitationRepository {
         return Optional.ofNullable(redisTemplate.opsForValue().getAndDelete(key));
     }
 
+    /**
+     * 삭제된 초대링크를 복구합니다.
+     * 트랜잭션 롤백 시 사용됩니다.
+     *
+     * @param uuid
+     * @param target
+     */
     public void restore(String uuid, StoredInvitationInformation target) {
         String key = makeKey(uuid);
         redisTemplate.opsForValue().set(key, target, 3600L, TimeUnit.SECONDS);
