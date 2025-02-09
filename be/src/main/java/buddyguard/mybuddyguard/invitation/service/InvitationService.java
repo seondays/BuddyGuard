@@ -20,8 +20,11 @@ import buddyguard.mybuddyguard.pet.exception.InvalidPetRegisterException;
 import buddyguard.mybuddyguard.pet.repository.PetRepository;
 import buddyguard.mybuddyguard.pet.repository.UserPetRepository;
 import buddyguard.mybuddyguard.pet.utils.UserPetRole;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 public class InvitationService {
@@ -55,11 +58,24 @@ public class InvitationService {
 
     @Transactional
     public void register(String uuid, Long userId) {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(UserInformationNotFoundException::new);
+        AtomicBoolean invitationDeleted = new AtomicBoolean(false);
 
         StoredInvitationInformation invitation = invitationRepository.getAndDelete(uuid)
                 .orElseThrow(InvitationLinkExpiredException::new);
+        invitationDeleted.set(true);
+
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCompletion(int status) {
+                        if (status == STATUS_ROLLED_BACK && invitationDeleted.get()) {
+                            invitationRepository.restore(uuid, invitation);
+                        }
+                    }
+                });
+
+        Users user = userRepository.findById(userId)
+                .orElseThrow(UserInformationNotFoundException::new);
 
         Pet pet = petRepository.findById(invitation.petId())
                 .orElseThrow(PetNotFoundException::new);
