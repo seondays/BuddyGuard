@@ -43,15 +43,6 @@ public class InvitationRepository {
         return Optional.ofNullable(storedInvitationInformation);
     }
 
-    /**
-     * uuid를 이용해 해당 초대링크 정보를 삭제합니다.
-     *
-     * @param uuid
-     */
-    public void delete(String uuid) {
-        String key = makeKey(uuid);
-        redisTemplate.delete(key);
-    }
 
     /**
      * 초대링크 정보를 조회 후 바로 삭제합니다.
