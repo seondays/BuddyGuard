@@ -80,6 +80,8 @@ dependencies {
 
     // prometheus
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation 'org.redisson:redisson:3.43.0'
 }
 
 jar {
