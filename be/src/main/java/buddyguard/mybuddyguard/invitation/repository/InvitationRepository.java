@@ -3,6 +3,7 @@ package buddyguard.mybuddyguard.invitation.repository;
 import buddyguard.mybuddyguard.invitation.entity.InvitationInformation;
 import buddyguard.mybuddyguard.invitation.mapper.InvitationMapper;
 import buddyguard.mybuddyguard.invitation.repository.dto.StoredInvitationInformation;
+import buddyguard.mybuddyguard.invitation.utils.SecondConverter;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -64,7 +65,8 @@ public class InvitationRepository {
      */
     public void restore(String uuid, StoredInvitationInformation target) {
         String key = makeKey(uuid);
-        redisTemplate.opsForValue().set(key, target, 3600L, TimeUnit.SECONDS);
+        long leftTtl = SecondConverter.stringToLong(target.expiration());
+        redisTemplate.opsForValue().set(key, target, leftTtl, TimeUnit.SECONDS);
     }
 
     /**
