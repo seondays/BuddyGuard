@@ -38,13 +38,11 @@ public class HospitalRecordService {
     }
 
     @Transactional
-    public void createHospitalRecord(HospitalRecordCreateRequest request) {
+    public void createHospitalRecord(Long petId, HospitalRecordCreateRequest request) {
         HospitalRecord hospitalRecord = HospitalRecordMapper.toEntity(
-                request.petId(), request);
+                petId, request);
 
-        HospitalRecord saveHospitalRecord = hospitalRecordRepository.save(hospitalRecord);
-
-        log.info("SAVED HOSPITAL RECORD : {}", saveHospitalRecord);
+        hospitalRecordRepository.save(hospitalRecord);
     }
 
     @Transactional

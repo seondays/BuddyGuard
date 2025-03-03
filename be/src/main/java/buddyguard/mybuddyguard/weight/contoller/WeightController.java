@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/weight")
+@RequestMapping("/weight/{petId}")
 public class WeightController {
 
     private final WeightService weightService;
 
     @Operation(summary = "해당 id pet의 모든 체중 기록 조회")
-    @GetMapping("/{petId}")
+    @GetMapping
     public ResponseEntity<List<WeightResponse>> getAllWeightRecords(
             @PathVariable("petId") Long petId) {
 
@@ -36,7 +36,7 @@ public class WeightController {
     }
 
     @Operation(summary = "체중 단일 조회", description = "pet id는 체중이 해당 pet의 기록이 맞는지 검증 위해 쓰임.")
-    @GetMapping("/{petId}/detail/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<WeightResponse> getDetailWeightRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id) {
@@ -47,14 +47,14 @@ public class WeightController {
 
     @Operation(summary = "체중 기록 생성")
     @PostMapping
-    public ResponseEntity<Void> createNewWeightRecord(@RequestBody @Valid WeightCreateRequest request) {
+    public ResponseEntity<Void> createNewWeightRecord(@PathVariable("petId") Long petId, @RequestBody @Valid WeightCreateRequest request) {
 
-        weightService.createNewWeightRecord(request);
+        weightService.createNewWeightRecord(petId, request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "체중 기록 수정", description = "pet id는 체중이 해당 pet의 기록이 맞는지 검증 위해 쓰임.")
-    @PutMapping("/{petId}/detail/{id}")
+    @PutMapping("/detail/{id}")
     public ResponseEntity<Void> updateWeightRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id,
@@ -66,7 +66,7 @@ public class WeightController {
     }
 
     @Operation(summary = "체중 기록 삭제", description = "pet id는 체중이 해당 pet의 기록이 맞는지 검증 위해 쓰임.")
-    @DeleteMapping("/{petId}/detail/{id}")
+    @DeleteMapping("/detail/{id}")
     public ResponseEntity<Void> deleteWeightRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id) {

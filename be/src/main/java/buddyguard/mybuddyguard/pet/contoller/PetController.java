@@ -39,7 +39,7 @@ public class PetController {
             @RequestPart(name = "image", required = false) MultipartFile imageFile,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getId();
-        service.register(petRegisterRequest, imageFile, userId);
+        service.create(petRegisterRequest, imageFile, userId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

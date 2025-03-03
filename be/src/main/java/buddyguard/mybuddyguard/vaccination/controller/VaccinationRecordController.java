@@ -21,21 +21,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/vaccination")
+@RequestMapping("/vaccination/{petId}")
 public class VaccinationRecordController {
 
     private final VaccinationRecordService vaccinationRecordService;
 
     @Operation(summary = "예방접종 기록 생성", description = "petId 별 예방접종 기록 생성")
     @PostMapping
-    public ResponseEntity<Void> createVaccinationRecord(@Valid @RequestBody VaccinationRecordCreateRequest request) {
+    public ResponseEntity<Void> createVaccinationRecord(@PathVariable("petId") Long petId,
+            @Valid @RequestBody VaccinationRecordCreateRequest request) {
 
-        vaccinationRecordService.createVaccinationRecord(request);
+        vaccinationRecordService.createVaccinationRecord(petId, request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "예방접종 전체 기록 조회", description = "petId 별 모든 예방접종 기록 조회")
-    @GetMapping("/{petId}")
+    @GetMapping
     public ResponseEntity<List<VaccinationRecordResponse>> getAllVaccinationRecords(
             @PathVariable("petId") Long petId) {
         List<VaccinationRecordResponse> records = vaccinationRecordService.getAllVaccinationRecords(
@@ -45,7 +46,7 @@ public class VaccinationRecordController {
     }
 
     @Operation(summary = "예방접종 기록 상세 조회", description = "petId 별 특정 예방접종 기록 조회")
-    @GetMapping("/{petId}/detail/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<VaccinationRecordResponse> getVaccinationRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id
@@ -57,7 +58,7 @@ public class VaccinationRecordController {
     }
 
     @Operation(summary = "예방접종 기록 수정", description = "petId 별 특정 예방접종 기록 수정")
-    @PutMapping("/{petId}/detail/{id}")
+    @PutMapping("/detail/{id}")
     public ResponseEntity<Void> updateVaccinationRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id,
@@ -69,7 +70,7 @@ public class VaccinationRecordController {
     }
 
     @Operation(summary = "예방접종 기록 삭제", description = "petId 별 특정 예방접종 기록 삭제")
-    @DeleteMapping("/{petId}/detail/{id}")
+    @DeleteMapping("/detail/{id}")
     public ResponseEntity<Void> deleteVaccinationRecord(
             @PathVariable("petId") Long petId,
             @PathVariable("id") Long id

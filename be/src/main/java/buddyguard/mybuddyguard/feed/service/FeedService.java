@@ -1,7 +1,7 @@
 package buddyguard.mybuddyguard.feed.service;
 
 import buddyguard.mybuddyguard.exception.RecordNotFoundException;
-import buddyguard.mybuddyguard.feed.aop.UserPetGroupValidation;
+import buddyguard.mybuddyguard.aop.userCheck.UserPetGroupValidation;
 import buddyguard.mybuddyguard.feed.controller.request.FeedRecordCreateRequest;
 import buddyguard.mybuddyguard.feed.controller.request.FeedRecordUpdateRequest;
 import buddyguard.mybuddyguard.feed.controller.response.FeedRecordResponse;
@@ -22,7 +22,7 @@ public class FeedService {
     private final FeedRepository feedRepository;
 
     @UserPetGroupValidation
-    public List<FeedRecordResponse> getPetFeedRecord(Long petId, Long userId) {
+    public List<FeedRecordResponse> getPetFeedRecord(Long petId) {
 
         List<FeedRecord> feedRecords = feedRepository.findByPetId(petId);
 
@@ -36,28 +36,24 @@ public class FeedService {
 
     @Transactional
     @UserPetGroupValidation
-    public void save(Long petId, Long userId, FeedRecordCreateRequest feedRecordCreateRequest) {
+    public void create(Long petId, FeedRecordCreateRequest feedRecordCreateRequest) {
         FeedRecord feedRecord = feedRecordCreateRequest.toEntity(petId);
 
         feedRepository.save(feedRecord);
-
-        log.info("SAVE FEED RECORD : {}번 펫 먹이 기록 등록", feedRecord.getPetId());
     }
 
     @Transactional
     @UserPetGroupValidation
-    public void delete(Long petId, Long userId, Long feedId) {
+    public void delete(Long petId, Long feedId) {
         FeedRecord feedRecord = feedRepository.findById(feedId)
                 .orElseThrow(RecordNotFoundException::new);
 
         feedRepository.delete(feedRecord);
-
-        log.info("DELETE FEED RECORD : {}번 펫 먹이 기록 삭제", feedRecord.getPetId());
     }
 
     @Transactional
     @UserPetGroupValidation
-    public void update(Long petId, Long userId, Long feedId, FeedRecordUpdateRequest feedRecordUpdateRequest) {
+    public void update(Long petId, Long feedId, FeedRecordUpdateRequest feedRecordUpdateRequest) {
         FeedRecord feedRecord = feedRepository.findById(feedId)
                 .orElseThrow(RecordNotFoundException::new);
 
@@ -65,7 +61,5 @@ public class FeedService {
                 feedRecordUpdateRequest.feedType(), feedRecordUpdateRequest.date());
 
         feedRepository.save(feedRecord);
-
-        log.info("UPDATE FEED RECORE : {}번 펫의 {}번 기록 수정 완료", petId, feedRecord.getId());
     }
 }

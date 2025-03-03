@@ -24,9 +24,9 @@ public class WeightMapper {
                 .toList();
     }
 
-    public static Weight toEntity(WeightCreateRequest request) {
+    public static Weight toEntity(Long petId, WeightCreateRequest request) {
         return new Weight(
-                request.petId(),
+                petId,
                 request.recordedAt(),
                 request.weight(),
                 request.description()

@@ -40,9 +40,9 @@ public class HospitalRecordController {
 
     @Operation(summary = "병원 기록 생성", description = "petId 별 병원 기록 생성")
     @PostMapping
-    public ResponseEntity<Void> createHospitalRecord(
+    public ResponseEntity<Void> createHospitalRecord(@PathVariable("petId") Long petId,
             @Valid @RequestBody HospitalRecordCreateRequest request) {
-        hospitalRecordService.createHospitalRecord(request);
+        hospitalRecordService.createHospitalRecord(petId, request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
